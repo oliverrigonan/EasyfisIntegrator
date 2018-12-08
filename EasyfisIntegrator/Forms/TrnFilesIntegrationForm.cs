@@ -8,11 +8,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace EasyfisIntegrator
+namespace EasyfisIntegrator.Forms
 {
-    public partial class Form1 : Form
+    public partial class TrnFilesIntegrationForm : Form
     {
-        public Form1()
+        public TrnFilesIntegrationForm()
         {
             InitializeComponent();
         }

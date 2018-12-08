@@ -34,6 +34,8 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -45,14 +47,51 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Form1.cs">
+    <Compile Include="Controllers\SysGlobalSettings.cs" />
+    <Compile Include="Entities\SysSettings.cs" />
+    <Compile Include="Forms\SysLoginForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="Forms\SysLoginForm.Designer.cs">
+      <DependentUpon>SysLoginForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\TrnFilesIntegrationForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\TrnFilesIntegrationForm.Designer.cs">
+      <DependentUpon>TrnFilesIntegrationForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\TrnInnosoftPOSIntegrationForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\TrnInnosoftPOSIntegrationForm.Designer.cs">
+      <DependentUpon>TrnInnosoftPOSIntegrationForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="InnosoftPOSData\InnosoftPOSData.designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>InnosoftPOSData.dbml</DependentUpon>
+    </Compile>
+    <Compile Include="MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <None Include="InnosoftPOSData\InnosoftPOSData.dbml.layout">
+      <DependentUpon>InnosoftPOSData.dbml</DependentUpon>
+    </None>
+    <EmbeddedResource Include="Forms\SysLoginForm.resx">
+      <DependentUpon>SysLoginForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\TrnInnosoftPOSIntegrationForm.resx">
+      <DependentUpon>TrnInnosoftPOSIntegrationForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -62,6 +101,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="InnosoftPOSData\InnosoftPOSData.dbml">
+      <Generator>MSLinqToSQLGenerator</Generator>
+      <LastGenOutput>InnosoftPOSData.designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -71,9 +115,21 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="Settings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Images\Ico\easyfislogo.ico" />
+    <Content Include="Images\PNG\easyfislogo.png" />
+    <Content Include="Images\PNG\innosoftlogo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
