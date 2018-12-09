@@ -43,6 +43,8 @@ namespace EasyfisIntegrator.Forms
             InitializeComponent();
             sysLoginForm = form;
 
+            isSettingsClicked = false;
+
             getPOSSettings();
         }
 
@@ -164,11 +166,16 @@ namespace EasyfisIntegrator.Forms
 
         private void btnOpenFolderMonitoring_Click(object sender, EventArgs e)
         {
-            Forms.TrnFolderMonitoringIntegrationForm trnFilesIntegrationForm = new Forms.TrnFolderMonitoringIntegrationForm();
+            TrnFolderMonitoringIntegrationForm trnFilesIntegrationForm = new TrnFolderMonitoringIntegrationForm();
             trnFilesIntegrationForm.Show();
         }
 
         private void btnStartIntegration_Click(object sender, EventArgs e)
+        {
+            startIntegration();
+        }
+
+        public void startIntegration()
         {
             isIntegrationStarted = true;
 
@@ -195,13 +202,8 @@ namespace EasyfisIntegrator.Forms
         public void integrationTimerTick(object sender, EventArgs e)
         {
             integrationTimer.Enabled = false;
-
-            startIntegration();
-        }
-
-        public void startIntegration()
-        {
             btnStopIntegration.Enabled = true;
+
             integrate();
         }
 
