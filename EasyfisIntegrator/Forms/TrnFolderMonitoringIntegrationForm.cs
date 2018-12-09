@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace EasyfisIntegrator.Forms
 {
-    public partial class TrnFilesIntegrationForm : Form
+    public partial class TrnFolderMonitoringIntegrationForm : Form
     {
-        public TrnFilesIntegrationForm()
+        public TrnFolderMonitoringIntegrationForm()
         {
             InitializeComponent();
         }

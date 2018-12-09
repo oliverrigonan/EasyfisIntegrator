@@ -132,7 +132,7 @@ namespace EasyfisIntegrator
             btnMainIntegrate.Enabled = false;
             btnIntegrateFiles.Enabled = false;
 
-            Forms.TrnFilesIntegrationForm trnFilesIntegrationForm = new Forms.TrnFilesIntegrationForm();
+            Forms.TrnFolderMonitoringIntegrationForm trnFilesIntegrationForm = new Forms.TrnFolderMonitoringIntegrationForm();
             trnFilesIntegrationForm.Show();
             
             Hide();

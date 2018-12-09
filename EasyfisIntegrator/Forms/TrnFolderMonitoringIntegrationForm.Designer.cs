@@ -1,6 +1,6 @@
 ﻿namespace EasyfisIntegrator.Forms
 {
-    partial class TrnFilesIntegrationForm
+    partial class TrnFolderMonitoringIntegrationForm
     {
         /// <summary>
         /// Required designer variable.
@@ -28,10 +28,17 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
+            this.SuspendLayout();
+            // 
+            // TrnFolderMonitoringIntegrationForm
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Text = "TrnFilesIntegrationForm";
+            this.Name = "TrnFolderMonitoringIntegrationForm";
+            this.Text = "TrnFolderMonitoringIntegrationForm";
+            this.ResumeLayout(false);
+
         }
 
         #endregion

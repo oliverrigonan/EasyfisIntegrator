@@ -47,19 +47,51 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\ISPOSMstCustomerController.cs" />
+    <Compile Include="Controllers\ISPOSMstItemController.cs" />
+    <Compile Include="Controllers\ISPOSMstSupplierController.cs" />
     <Compile Include="Controllers\SysGlobalSettings.cs" />
+    <Compile Include="Controllers\ISPOSTrnCollectionController.cs" />
+    <Compile Include="Controllers\ISPOSTrnItemPriceController.cs" />
+    <Compile Include="Controllers\ISPOSTrnReceivingReceiptController.cs" />
+    <Compile Include="Controllers\ISPOSTrnSalesReturnController.cs" />
+    <Compile Include="Controllers\ISPOSTrnStockInController.cs" />
+    <Compile Include="Controllers\ISPOSTrnStockOutController.cs" />
+    <Compile Include="Controllers\ISPOSTrnStockTransferInController.cs" />
+    <Compile Include="Controllers\ISPOSTrnStockTransferOutController.cs" />
+    <Compile Include="Entities\ISPOSMstCustomer.cs" />
+    <Compile Include="Entities\ISPOSMstItem.cs" />
+    <Compile Include="Entities\ISPOSMstItemPrice.cs" />
+    <Compile Include="Entities\ISPOSMstSupplier.cs" />
     <Compile Include="Entities\SysSettings.cs" />
+    <Compile Include="Entities\ISPOSTrnArticlePrice.cs" />
+    <Compile Include="Entities\ISPOSTrnCollection.cs" />
+    <Compile Include="Entities\ISPOSTrnCollectionLines.cs" />
+    <Compile Include="Entities\ISPOSTrnReceivingReceipt.cs" />
+    <Compile Include="Entities\ISPOSTrnReceivingReceiptItem.cs" />
+    <Compile Include="Entities\ISPOSTrnStockIn.cs" />
+    <Compile Include="Entities\ISPOSTrnStockInItem.cs" />
+    <Compile Include="Entities\ISPOSTrnStockOut.cs" />
+    <Compile Include="Entities\ISPOSTrnStockOutItem.cs" />
+    <Compile Include="Entities\ISPOSTrnStockTransfer.cs" />
+    <Compile Include="Entities\ISPOSTrnStockTransferItem.cs" />
     <Compile Include="Forms\SysLoginForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\SysLoginForm.Designer.cs">
       <DependentUpon>SysLoginForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\TrnFilesIntegrationForm.cs">
+    <Compile Include="Forms\SysSettings.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\TrnFilesIntegrationForm.Designer.cs">
-      <DependentUpon>TrnFilesIntegrationForm.cs</DependentUpon>
+    <Compile Include="Forms\SysSettings.Designer.cs">
+      <DependentUpon>SysSettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\TrnFolderMonitoringIntegrationForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\TrnFolderMonitoringIntegrationForm.Designer.cs">
+      <DependentUpon>TrnFolderMonitoringIntegrationForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\TrnInnosoftPOSIntegrationForm.cs">
       <SubType>Form</SubType>
@@ -85,6 +117,12 @@
     </None>
     <EmbeddedResource Include="Forms\SysLoginForm.resx">
       <DependentUpon>SysLoginForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\SysSettings.resx">
+      <DependentUpon>SysSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\TrnFolderMonitoringIntegrationForm.resx">
+      <DependentUpon>TrnFolderMonitoringIntegrationForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\TrnInnosoftPOSIntegrationForm.resx">
       <DependentUpon>TrnInnosoftPOSIntegrationForm.cs</DependentUpon>

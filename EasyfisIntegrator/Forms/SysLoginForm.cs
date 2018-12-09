@@ -14,6 +14,8 @@ namespace EasyfisIntegrator.Forms
     {
         private InnosoftPOSData.InnosoftPOSDataDataContext posdb = new InnosoftPOSData.InnosoftPOSDataDataContext(Controllers.SysGlobalSettings.getConnectionString());
 
+        public String currentUser = "";
+
         public SysLoginForm()
         {
             InitializeComponent();
@@ -41,7 +43,9 @@ namespace EasyfisIntegrator.Forms
 
                 if (user.Any())
                 {
-                    TrnInnosoftPOSIntegrationForm trnInnosoftPOSIntegrationForm = new TrnInnosoftPOSIntegrationForm();
+                    currentUser = user.FirstOrDefault().FullName;
+
+                    TrnInnosoftPOSIntegrationForm trnInnosoftPOSIntegrationForm = new TrnInnosoftPOSIntegrationForm(this);
                     trnInnosoftPOSIntegrationForm.Show();
 
                     Hide();

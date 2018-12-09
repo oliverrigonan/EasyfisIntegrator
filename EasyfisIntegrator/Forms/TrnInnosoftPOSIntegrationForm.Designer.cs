@@ -35,17 +35,17 @@
             this.label4 = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.btnOpenFolderMonitoring = new System.Windows.Forms.Button();
             this.btnLogout = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
-            this.btnLogin = new System.Windows.Forms.Button();
-            this.label3 = new System.Windows.Forms.Label();
+            this.btnStopIntegration = new System.Windows.Forms.Button();
+            this.lblCurrentUser = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.txtLogs = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.txtBranchCode = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
-            this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
+            this.dtpIntegrationDate = new System.Windows.Forms.DateTimePicker();
             this.label9 = new System.Windows.Forms.Label();
             this.txtDomain = new System.Windows.Forms.TextBox();
             this.panel3 = new System.Windows.Forms.Panel();
@@ -54,9 +54,10 @@
             this.label10 = new System.Windows.Forms.Label();
             this.txtUserCode = new System.Windows.Forms.TextBox();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
-            this.button4 = new System.Windows.Forms.Button();
-            this.button5 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
+            this.btnSaveLogs = new System.Windows.Forms.Button();
+            this.btnClearLogs = new System.Windows.Forms.Button();
+            this.btnSettings = new System.Windows.Forms.Button();
+            this.btnStartIntegration = new System.Windows.Forms.Button();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel1.SuspendLayout();
@@ -117,6 +118,7 @@
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(64)))));
+            this.panel1.Controls.Add(this.btnOpenFolderMonitoring);
             this.panel1.Controls.Add(this.btnLogout);
             this.panel1.Controls.Add(this.label1);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
@@ -124,6 +126,21 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(809, 51);
             this.panel1.TabIndex = 8;
+            // 
+            // btnOpenFolderMonitoring
+            // 
+            this.btnOpenFolderMonitoring.BackColor = System.Drawing.Color.Teal;
+            this.btnOpenFolderMonitoring.FlatAppearance.BorderSize = 0;
+            this.btnOpenFolderMonitoring.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnOpenFolderMonitoring.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
+            this.btnOpenFolderMonitoring.ForeColor = System.Drawing.Color.White;
+            this.btnOpenFolderMonitoring.Location = new System.Drawing.Point(541, 9);
+            this.btnOpenFolderMonitoring.Name = "btnOpenFolderMonitoring";
+            this.btnOpenFolderMonitoring.Size = new System.Drawing.Size(157, 29);
+            this.btnOpenFolderMonitoring.TabIndex = 23;
+            this.btnOpenFolderMonitoring.Text = "Folder Monitoring";
+            this.btnOpenFolderMonitoring.UseVisualStyleBackColor = false;
+            this.btnOpenFolderMonitoring.Click += new System.EventHandler(this.btnOpenFolderMonitoring_Click);
             // 
             // btnLogout
             // 
@@ -151,43 +168,30 @@
             this.label1.TabIndex = 0;
             this.label1.Text = "Innosoft POS Integration";
             // 
-            // button1
+            // btnStopIntegration
             // 
-            this.button1.BackColor = System.Drawing.Color.SeaGreen;
-            this.button1.FlatAppearance.BorderSize = 0;
-            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.button1.ForeColor = System.Drawing.Color.White;
-            this.button1.Location = new System.Drawing.Point(605, 234);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(93, 37);
-            this.button1.TabIndex = 11;
-            this.button1.Text = "Start";
-            this.button1.UseVisualStyleBackColor = false;
+            this.btnStopIntegration.BackColor = System.Drawing.Color.IndianRed;
+            this.btnStopIntegration.FlatAppearance.BorderSize = 0;
+            this.btnStopIntegration.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnStopIntegration.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.btnStopIntegration.ForeColor = System.Drawing.Color.White;
+            this.btnStopIntegration.Location = new System.Drawing.Point(704, 234);
+            this.btnStopIntegration.Name = "btnStopIntegration";
+            this.btnStopIntegration.Size = new System.Drawing.Size(93, 37);
+            this.btnStopIntegration.TabIndex = 10;
+            this.btnStopIntegration.Text = "Stop";
+            this.btnStopIntegration.UseVisualStyleBackColor = false;
+            this.btnStopIntegration.Click += new System.EventHandler(this.btnStopIntegration_Click);
             // 
-            // btnLogin
+            // lblCurrentUser
             // 
-            this.btnLogin.BackColor = System.Drawing.Color.IndianRed;
-            this.btnLogin.FlatAppearance.BorderSize = 0;
-            this.btnLogin.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnLogin.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.btnLogin.ForeColor = System.Drawing.Color.White;
-            this.btnLogin.Location = new System.Drawing.Point(704, 234);
-            this.btnLogin.Name = "btnLogin";
-            this.btnLogin.Size = new System.Drawing.Size(93, 37);
-            this.btnLogin.TabIndex = 10;
-            this.btnLogin.Text = "Stop";
-            this.btnLogin.UseVisualStyleBackColor = false;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.label3.Location = new System.Drawing.Point(97, 239);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(109, 20);
-            this.label3.TabIndex = 13;
-            this.label3.Text = "Administrator";
+            this.lblCurrentUser.AutoSize = true;
+            this.lblCurrentUser.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.lblCurrentUser.Location = new System.Drawing.Point(97, 239);
+            this.lblCurrentUser.Name = "lblCurrentUser";
+            this.lblCurrentUser.Size = new System.Drawing.Size(110, 20);
+            this.lblCurrentUser.TabIndex = 13;
+            this.lblCurrentUser.Text = "#CurrentUser";
             // 
             // label2
             // 
@@ -199,17 +203,20 @@
             this.label2.TabIndex = 12;
             this.label2.Text = "Current:";
             // 
-            // textBox1
+            // txtLogs
             // 
-            this.textBox1.BackColor = System.Drawing.Color.Black;
-            this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.textBox1.ForeColor = System.Drawing.Color.White;
-            this.textBox1.Location = new System.Drawing.Point(11, 281);
-            this.textBox1.Multiline = true;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(786, 410);
-            this.textBox1.TabIndex = 14;
+            this.txtLogs.BackColor = System.Drawing.Color.Black;
+            this.txtLogs.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtLogs.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.txtLogs.ForeColor = System.Drawing.Color.White;
+            this.txtLogs.Location = new System.Drawing.Point(11, 281);
+            this.txtLogs.MaxLength = 0;
+            this.txtLogs.Multiline = true;
+            this.txtLogs.Name = "txtLogs";
+            this.txtLogs.ReadOnly = true;
+            this.txtLogs.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtLogs.Size = new System.Drawing.Size(786, 410);
+            this.txtLogs.TabIndex = 14;
             // 
             // label7
             // 
@@ -240,15 +247,15 @@
             this.label8.TabIndex = 17;
             this.label8.Text = "Date:";
             // 
-            // dateTimePicker1
+            // dtpIntegrationDate
             // 
-            this.dateTimePicker1.CalendarFont = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.dateTimePicker1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.dateTimePicker1.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dateTimePicker1.Location = new System.Drawing.Point(167, 12);
-            this.dateTimePicker1.Name = "dateTimePicker1";
-            this.dateTimePicker1.Size = new System.Drawing.Size(152, 26);
-            this.dateTimePicker1.TabIndex = 18;
+            this.dtpIntegrationDate.CalendarFont = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.dtpIntegrationDate.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.dtpIntegrationDate.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dtpIntegrationDate.Location = new System.Drawing.Point(167, 12);
+            this.dtpIntegrationDate.Name = "dtpIntegrationDate";
+            this.dtpIntegrationDate.Size = new System.Drawing.Size(152, 26);
+            this.dtpIntegrationDate.TabIndex = 18;
             // 
             // label9
             // 
@@ -280,7 +287,7 @@
             this.panel3.Controls.Add(this.label10);
             this.panel3.Controls.Add(this.txtUserCode);
             this.panel3.Controls.Add(this.pictureBox2);
-            this.panel3.Controls.Add(this.dateTimePicker1);
+            this.panel3.Controls.Add(this.dtpIntegrationDate);
             this.panel3.Controls.Add(this.txtDomain);
             this.panel3.Controls.Add(this.label7);
             this.panel3.Controls.Add(this.label9);
@@ -341,47 +348,65 @@
             this.pictureBox2.TabIndex = 21;
             this.pictureBox2.TabStop = false;
             // 
-            // button4
+            // btnSaveLogs
             // 
-            this.button4.BackColor = System.Drawing.SystemColors.Control;
-            this.button4.FlatAppearance.BorderSize = 0;
-            this.button4.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.button4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
-            this.button4.ForeColor = System.Drawing.Color.Black;
-            this.button4.Location = new System.Drawing.Point(11, 697);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(119, 32);
-            this.button4.TabIndex = 22;
-            this.button4.Text = "Save Logs";
-            this.button4.UseVisualStyleBackColor = false;
+            this.btnSaveLogs.BackColor = System.Drawing.SystemColors.Control;
+            this.btnSaveLogs.FlatAppearance.BorderSize = 0;
+            this.btnSaveLogs.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.btnSaveLogs.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
+            this.btnSaveLogs.ForeColor = System.Drawing.Color.Black;
+            this.btnSaveLogs.Location = new System.Drawing.Point(11, 697);
+            this.btnSaveLogs.Name = "btnSaveLogs";
+            this.btnSaveLogs.Size = new System.Drawing.Size(119, 32);
+            this.btnSaveLogs.TabIndex = 22;
+            this.btnSaveLogs.Text = "Save Logs";
+            this.btnSaveLogs.UseVisualStyleBackColor = false;
+            this.btnSaveLogs.Click += new System.EventHandler(this.btnSaveLogs_Click);
             // 
-            // button5
+            // btnClearLogs
             // 
-            this.button5.BackColor = System.Drawing.SystemColors.Control;
-            this.button5.FlatAppearance.BorderSize = 0;
-            this.button5.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.button5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
-            this.button5.ForeColor = System.Drawing.Color.Black;
-            this.button5.Location = new System.Drawing.Point(136, 697);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(107, 32);
-            this.button5.TabIndex = 23;
-            this.button5.Text = "Clear Logs";
-            this.button5.UseVisualStyleBackColor = false;
+            this.btnClearLogs.BackColor = System.Drawing.SystemColors.Control;
+            this.btnClearLogs.FlatAppearance.BorderSize = 0;
+            this.btnClearLogs.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.btnClearLogs.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
+            this.btnClearLogs.ForeColor = System.Drawing.Color.Black;
+            this.btnClearLogs.Location = new System.Drawing.Point(136, 697);
+            this.btnClearLogs.Name = "btnClearLogs";
+            this.btnClearLogs.Size = new System.Drawing.Size(107, 32);
+            this.btnClearLogs.TabIndex = 23;
+            this.btnClearLogs.Text = "Clear Logs";
+            this.btnClearLogs.UseVisualStyleBackColor = false;
+            this.btnClearLogs.Click += new System.EventHandler(this.btnClearLogs_Click);
             // 
-            // button2
+            // btnSettings
             // 
-            this.button2.BackColor = System.Drawing.SystemColors.Control;
-            this.button2.FlatAppearance.BorderSize = 0;
-            this.button2.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
-            this.button2.ForeColor = System.Drawing.Color.Black;
-            this.button2.Location = new System.Drawing.Point(690, 697);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(107, 32);
-            this.button2.TabIndex = 24;
-            this.button2.Text = "Settings";
-            this.button2.UseVisualStyleBackColor = false;
+            this.btnSettings.BackColor = System.Drawing.SystemColors.Control;
+            this.btnSettings.FlatAppearance.BorderSize = 0;
+            this.btnSettings.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.btnSettings.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
+            this.btnSettings.ForeColor = System.Drawing.Color.Black;
+            this.btnSettings.Location = new System.Drawing.Point(690, 697);
+            this.btnSettings.Name = "btnSettings";
+            this.btnSettings.Size = new System.Drawing.Size(107, 32);
+            this.btnSettings.TabIndex = 24;
+            this.btnSettings.Text = "Settings";
+            this.btnSettings.UseVisualStyleBackColor = false;
+            this.btnSettings.Click += new System.EventHandler(this.btnSettings_Click);
+            // 
+            // btnStartIntegration
+            // 
+            this.btnStartIntegration.BackColor = System.Drawing.Color.SeaGreen;
+            this.btnStartIntegration.FlatAppearance.BorderSize = 0;
+            this.btnStartIntegration.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnStartIntegration.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.btnStartIntegration.ForeColor = System.Drawing.Color.White;
+            this.btnStartIntegration.Location = new System.Drawing.Point(605, 234);
+            this.btnStartIntegration.Name = "btnStartIntegration";
+            this.btnStartIntegration.Size = new System.Drawing.Size(93, 37);
+            this.btnStartIntegration.TabIndex = 11;
+            this.btnStartIntegration.Text = "Start";
+            this.btnStartIntegration.UseVisualStyleBackColor = false;
+            this.btnStartIntegration.Click += new System.EventHandler(this.btnStartIntegration_Click);
             // 
             // TrnInnosoftPOSIntegrationForm
             // 
@@ -389,17 +414,17 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(809, 817);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.button5);
-            this.Controls.Add(this.button4);
+            this.Controls.Add(this.btnSettings);
+            this.Controls.Add(this.btnClearLogs);
+            this.Controls.Add(this.btnSaveLogs);
             this.Controls.Add(this.panel3);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.txtLogs);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.label3);
+            this.Controls.Add(this.lblCurrentUser);
             this.Controls.Add(this.panel2);
-            this.Controls.Add(this.btnLogin);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.btnStopIntegration);
+            this.Controls.Add(this.btnStartIntegration);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
@@ -430,26 +455,27 @@
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button btnLogin;
-        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Button btnStopIntegration;
+        private System.Windows.Forms.Label lblCurrentUser;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox txtLogs;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.TextBox txtBranchCode;
         private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.DateTimePicker dateTimePicker1;
+        private System.Windows.Forms.DateTimePicker dtpIntegrationDate;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.TextBox txtDomain;
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.Button btnLogout;
         private System.Windows.Forms.PictureBox pictureBox2;
-        private System.Windows.Forms.Button button4;
-        private System.Windows.Forms.Button button5;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button btnSaveLogs;
+        private System.Windows.Forms.Button btnClearLogs;
+        private System.Windows.Forms.Button btnSettings;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.TextBox txtUserCode;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.CheckBox cbxUseItemPrice;
+        private System.Windows.Forms.Button btnOpenFolderMonitoring;
+        private System.Windows.Forms.Button btnStartIntegration;
     }
 }

@@ -37,14 +37,14 @@
             this.lblLoading = new System.Windows.Forms.Label();
             this.btnIntegrateFiles = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.panel3 = new System.Windows.Forms.Panel();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
+            this.panel3 = new System.Windows.Forms.Panel();
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel2.SuspendLayout();
-            this.panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
+            this.panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             this.SuspendLayout();
             // 
@@ -125,7 +125,7 @@
             this.btnIntegrateFiles.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnIntegrateFiles.BackColor = System.Drawing.Color.SeaGreen;
+            this.btnIntegrateFiles.BackColor = System.Drawing.Color.Teal;
             this.btnIntegrateFiles.FlatAppearance.BorderSize = 0;
             this.btnIntegrateFiles.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnIntegrateFiles.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
@@ -147,15 +147,6 @@
             this.panel2.Size = new System.Drawing.Size(254, 100);
             this.panel2.TabIndex = 5;
             // 
-            // panel3
-            // 
-            this.panel3.BackColor = System.Drawing.Color.White;
-            this.panel3.Controls.Add(this.pictureBox3);
-            this.panel3.Location = new System.Drawing.Point(278, 139);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(254, 100);
-            this.panel3.TabIndex = 6;
-            // 
             // pictureBox2
             // 
             this.pictureBox2.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox2.Image")));
@@ -165,6 +156,15 @@
             this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox2.TabIndex = 0;
             this.pictureBox2.TabStop = false;
+            // 
+            // panel3
+            // 
+            this.panel3.BackColor = System.Drawing.Color.White;
+            this.panel3.Controls.Add(this.pictureBox3);
+            this.panel3.Location = new System.Drawing.Point(278, 139);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(254, 100);
+            this.panel3.TabIndex = 6;
             // 
             // pictureBox3
             // 
@@ -203,8 +203,8 @@
             this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.panel2.ResumeLayout(false);
-            this.panel3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
+            this.panel3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

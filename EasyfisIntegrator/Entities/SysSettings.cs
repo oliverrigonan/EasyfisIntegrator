@@ -10,5 +10,8 @@ namespace EasyfisIntegrator.Entities
     {
         public String ConnectionString { get; set; }
         public String Domain { get; set; }
+        public String LogFileLocation { get; set; }
+        public String FolderToMonitor { get; set; }
+        public Boolean IsAutoStartIntegration { get; set; }
     }
 }
