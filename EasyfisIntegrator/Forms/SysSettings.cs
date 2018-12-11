@@ -103,5 +103,17 @@ namespace EasyfisIntegrator.Forms
                 Close();
             }
         }
+
+        private void btnLocateLogFileLocation_Click(object sender, EventArgs e)
+        {
+            fbdLogFileLocation.ShowDialog();
+            txtLogFileLocation.Text = fbdLogFileLocation.SelectedPath;
+        }
+
+        private void btnLocateFolderToMonitor_Click(object sender, EventArgs e)
+        {
+            fbdFolderToMonitor.ShowDialog();
+            txtFolderToMonitor.Text = fbdFolderToMonitor.SelectedPath;
+        }
     }
 }

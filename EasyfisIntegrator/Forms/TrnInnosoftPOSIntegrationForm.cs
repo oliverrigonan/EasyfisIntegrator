@@ -188,7 +188,6 @@ namespace EasyfisIntegrator.Forms
             btnClearLogs.Enabled = false;
             btnSaveLogs.Enabled = false;
 
-            btnOpenFolderMonitoring.Enabled = false;
             btnLogout.Enabled = false;
 
             logMessages("Started! \r\n\nTime Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n\r\n\n");
@@ -274,7 +273,6 @@ namespace EasyfisIntegrator.Forms
             btnClearLogs.Enabled = true;
             btnSaveLogs.Enabled = true;
 
-            btnOpenFolderMonitoring.Enabled = true;
             btnLogout.Enabled = true;
 
             isIntegrating = true;

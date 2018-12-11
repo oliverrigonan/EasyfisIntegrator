@@ -44,6 +44,8 @@
             this.label7 = new System.Windows.Forms.Label();
             this.txtBranchCode = new System.Windows.Forms.TextBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.cbxIsAutoStartIntegration = new System.Windows.Forms.CheckBox();
+            this.label8 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.txtFolderToMonitor = new System.Windows.Forms.TextBox();
@@ -55,8 +57,10 @@
             this.txtConnectionString = new System.Windows.Forms.TextBox();
             this.btnCloseSettings = new System.Windows.Forms.Button();
             this.btnSaveSettings = new System.Windows.Forms.Button();
-            this.label8 = new System.Windows.Forms.Label();
-            this.cbxIsAutoStartIntegration = new System.Windows.Forms.CheckBox();
+            this.btnLocateFolderToMonitor = new System.Windows.Forms.Button();
+            this.btnLocateLogFileLocation = new System.Windows.Forms.Button();
+            this.fbdLogFileLocation = new System.Windows.Forms.FolderBrowserDialog();
+            this.fbdFolderToMonitor = new System.Windows.Forms.FolderBrowserDialog();
             this.panel1.SuspendLayout();
             this.tabSettings.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -215,6 +219,8 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.btnLocateLogFileLocation);
+            this.tabPage2.Controls.Add(this.btnLocateFolderToMonitor);
             this.tabPage2.Controls.Add(this.cbxIsAutoStartIntegration);
             this.tabPage2.Controls.Add(this.label8);
             this.tabPage2.Controls.Add(this.label6);
@@ -230,6 +236,26 @@
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "System";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // cbxIsAutoStartIntegration
+            // 
+            this.cbxIsAutoStartIntegration.AutoSize = true;
+            this.cbxIsAutoStartIntegration.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.cbxIsAutoStartIntegration.Location = new System.Drawing.Point(199, 112);
+            this.cbxIsAutoStartIntegration.Name = "cbxIsAutoStartIntegration";
+            this.cbxIsAutoStartIntegration.Size = new System.Drawing.Size(18, 17);
+            this.cbxIsAutoStartIntegration.TabIndex = 46;
+            this.cbxIsAutoStartIntegration.UseVisualStyleBackColor = true;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.label8.Location = new System.Drawing.Point(69, 109);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(107, 20);
+            this.label8.TabIndex = 45;
+            this.label8.Text = "Is Auto Start:";
             // 
             // label6
             // 
@@ -256,7 +282,8 @@
             this.txtFolderToMonitor.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.txtFolderToMonitor.Location = new System.Drawing.Point(199, 80);
             this.txtFolderToMonitor.Name = "txtFolderToMonitor";
-            this.txtFolderToMonitor.Size = new System.Drawing.Size(370, 26);
+            this.txtFolderToMonitor.ReadOnly = true;
+            this.txtFolderToMonitor.Size = new System.Drawing.Size(310, 26);
             this.txtFolderToMonitor.TabIndex = 43;
             // 
             // txtDomain
@@ -282,7 +309,8 @@
             this.txtLogFileLocation.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.txtLogFileLocation.Location = new System.Drawing.Point(199, 16);
             this.txtLogFileLocation.Name = "txtLogFileLocation";
-            this.txtLogFileLocation.Size = new System.Drawing.Size(370, 26);
+            this.txtLogFileLocation.ReadOnly = true;
+            this.txtLogFileLocation.Size = new System.Drawing.Size(310, 26);
             this.txtLogFileLocation.TabIndex = 35;
             // 
             // tabPage3
@@ -309,11 +337,11 @@
             // 
             // txtConnectionString
             // 
-            this.txtConnectionString.Enabled = false;
             this.txtConnectionString.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.txtConnectionString.Location = new System.Drawing.Point(199, 16);
             this.txtConnectionString.Multiline = true;
             this.txtConnectionString.Name = "txtConnectionString";
+            this.txtConnectionString.ReadOnly = true;
             this.txtConnectionString.Size = new System.Drawing.Size(370, 138);
             this.txtConnectionString.TabIndex = 37;
             // 
@@ -349,25 +377,37 @@
             this.btnSaveSettings.UseVisualStyleBackColor = false;
             this.btnSaveSettings.Click += new System.EventHandler(this.btnSaveSettings_Click);
             // 
-            // label8
+            // btnLocateFolderToMonitor
             // 
-            this.label8.AutoSize = true;
-            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.label8.Location = new System.Drawing.Point(69, 109);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(107, 20);
-            this.label8.TabIndex = 45;
-            this.label8.Text = "Is Auto Start:";
+            this.btnLocateFolderToMonitor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnLocateFolderToMonitor.BackColor = System.Drawing.SystemColors.Control;
+            this.btnLocateFolderToMonitor.FlatAppearance.BorderSize = 0;
+            this.btnLocateFolderToMonitor.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.btnLocateFolderToMonitor.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.btnLocateFolderToMonitor.ForeColor = System.Drawing.Color.Black;
+            this.btnLocateFolderToMonitor.Location = new System.Drawing.Point(515, 83);
+            this.btnLocateFolderToMonitor.Name = "btnLocateFolderToMonitor";
+            this.btnLocateFolderToMonitor.Size = new System.Drawing.Size(54, 30);
+            this.btnLocateFolderToMonitor.TabIndex = 27;
+            this.btnLocateFolderToMonitor.Text = "...";
+            this.btnLocateFolderToMonitor.UseVisualStyleBackColor = false;
+            this.btnLocateFolderToMonitor.Click += new System.EventHandler(this.btnLocateFolderToMonitor_Click);
             // 
-            // cbxIsAutoStartIntegration
+            // btnLocateLogFileLocation
             // 
-            this.cbxIsAutoStartIntegration.AutoSize = true;
-            this.cbxIsAutoStartIntegration.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.cbxIsAutoStartIntegration.Location = new System.Drawing.Point(199, 112);
-            this.cbxIsAutoStartIntegration.Name = "cbxIsAutoStartIntegration";
-            this.cbxIsAutoStartIntegration.Size = new System.Drawing.Size(18, 17);
-            this.cbxIsAutoStartIntegration.TabIndex = 46;
-            this.cbxIsAutoStartIntegration.UseVisualStyleBackColor = true;
+            this.btnLocateLogFileLocation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnLocateLogFileLocation.BackColor = System.Drawing.SystemColors.Control;
+            this.btnLocateLogFileLocation.FlatAppearance.BorderSize = 0;
+            this.btnLocateLogFileLocation.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.btnLocateLogFileLocation.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.btnLocateLogFileLocation.ForeColor = System.Drawing.Color.Black;
+            this.btnLocateLogFileLocation.Location = new System.Drawing.Point(515, 19);
+            this.btnLocateLogFileLocation.Name = "btnLocateLogFileLocation";
+            this.btnLocateLogFileLocation.Size = new System.Drawing.Size(54, 30);
+            this.btnLocateLogFileLocation.TabIndex = 47;
+            this.btnLocateLogFileLocation.Text = "...";
+            this.btnLocateLogFileLocation.UseVisualStyleBackColor = false;
+            this.btnLocateLogFileLocation.Click += new System.EventHandler(this.btnLocateLogFileLocation_Click);
             // 
             // SysSettings
             // 
@@ -428,5 +468,9 @@
         private System.Windows.Forms.ComboBox cboPostUser;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.CheckBox cbxIsAutoStartIntegration;
+        private System.Windows.Forms.Button btnLocateFolderToMonitor;
+        private System.Windows.Forms.Button btnLocateLogFileLocation;
+        private System.Windows.Forms.FolderBrowserDialog fbdLogFileLocation;
+        private System.Windows.Forms.FolderBrowserDialog fbdFolderToMonitor;
     }
 }
