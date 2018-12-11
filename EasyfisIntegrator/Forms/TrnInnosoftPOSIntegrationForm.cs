@@ -201,8 +201,6 @@ namespace EasyfisIntegrator.Forms
         public void integrationTimerTick(object sender, EventArgs e)
         {
             integrationTimer.Enabled = false;
-            btnStopIntegration.Enabled = true;
-
             integrate();
         }
 
@@ -210,6 +208,8 @@ namespace EasyfisIntegrator.Forms
         {
             if (isIntegrating == false)
             {
+                btnStopIntegration.Enabled = true;
+
                 String apiUrlHost = txtDomain.Text;
 
                 var sysSettings = from d in posdb.SysSettings select d;

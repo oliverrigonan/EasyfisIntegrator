@@ -16,7 +16,7 @@ namespace EasyfisIntegrator
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Forms.SysLoginForm());
+            Application.Run(new MainForm());
         }
     }
 }
