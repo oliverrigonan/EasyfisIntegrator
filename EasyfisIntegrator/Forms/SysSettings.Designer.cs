@@ -32,7 +32,7 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.label1 = new System.Windows.Forms.Label();
             this.tabSettings = new System.Windows.Forms.TabControl();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.tabPagePOSSettings = new System.Windows.Forms.TabPage();
             this.cboPostSupplier = new System.Windows.Forms.ComboBox();
             this.cboPostUser = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -43,7 +43,9 @@
             this.txtUserCode = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.txtBranchCode = new System.Windows.Forms.TextBox();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.tabPageSystem = new System.Windows.Forms.TabPage();
+            this.btnLocateLogFileLocation = new System.Windows.Forms.Button();
+            this.btnLocateFolderToMonitor = new System.Windows.Forms.Button();
             this.cbxIsAutoStartIntegration = new System.Windows.Forms.CheckBox();
             this.label8 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
@@ -52,20 +54,20 @@
             this.txtDomain = new System.Windows.Forms.TextBox();
             this.label9 = new System.Windows.Forms.Label();
             this.txtLogFileLocation = new System.Windows.Forms.TextBox();
-            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.tabPageConnection = new System.Windows.Forms.TabPage();
             this.label5 = new System.Windows.Forms.Label();
             this.txtConnectionString = new System.Windows.Forms.TextBox();
             this.btnCloseSettings = new System.Windows.Forms.Button();
             this.btnSaveSettings = new System.Windows.Forms.Button();
-            this.btnLocateFolderToMonitor = new System.Windows.Forms.Button();
-            this.btnLocateLogFileLocation = new System.Windows.Forms.Button();
             this.fbdLogFileLocation = new System.Windows.Forms.FolderBrowserDialog();
             this.fbdFolderToMonitor = new System.Windows.Forms.FolderBrowserDialog();
+            this.cbxIsFolderMonitoring = new System.Windows.Forms.CheckBox();
+            this.label12 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.tabSettings.SuspendLayout();
-            this.tabPage1.SuspendLayout();
-            this.tabPage2.SuspendLayout();
-            this.tabPage3.SuspendLayout();
+            this.tabPagePOSSettings.SuspendLayout();
+            this.tabPageSystem.SuspendLayout();
+            this.tabPageConnection.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
@@ -94,34 +96,34 @@
             this.tabSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tabSettings.Controls.Add(this.tabPage1);
-            this.tabSettings.Controls.Add(this.tabPage2);
-            this.tabSettings.Controls.Add(this.tabPage3);
+            this.tabSettings.Controls.Add(this.tabPagePOSSettings);
+            this.tabSettings.Controls.Add(this.tabPageSystem);
+            this.tabSettings.Controls.Add(this.tabPageConnection);
             this.tabSettings.Location = new System.Drawing.Point(12, 57);
             this.tabSettings.Name = "tabSettings";
             this.tabSettings.SelectedIndex = 0;
             this.tabSettings.Size = new System.Drawing.Size(610, 282);
             this.tabSettings.TabIndex = 10;
             // 
-            // tabPage1
+            // tabPagePOSSettings
             // 
-            this.tabPage1.Controls.Add(this.cboPostSupplier);
-            this.tabPage1.Controls.Add(this.cboPostUser);
-            this.tabPage1.Controls.Add(this.label2);
-            this.tabPage1.Controls.Add(this.label3);
-            this.tabPage1.Controls.Add(this.label11);
-            this.tabPage1.Controls.Add(this.cbxUseItemPrice);
-            this.tabPage1.Controls.Add(this.label10);
-            this.tabPage1.Controls.Add(this.txtUserCode);
-            this.tabPage1.Controls.Add(this.label7);
-            this.tabPage1.Controls.Add(this.txtBranchCode);
-            this.tabPage1.Location = new System.Drawing.Point(4, 25);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(602, 253);
-            this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "POS Settings";
-            this.tabPage1.UseVisualStyleBackColor = true;
+            this.tabPagePOSSettings.Controls.Add(this.cboPostSupplier);
+            this.tabPagePOSSettings.Controls.Add(this.cboPostUser);
+            this.tabPagePOSSettings.Controls.Add(this.label2);
+            this.tabPagePOSSettings.Controls.Add(this.label3);
+            this.tabPagePOSSettings.Controls.Add(this.label11);
+            this.tabPagePOSSettings.Controls.Add(this.cbxUseItemPrice);
+            this.tabPagePOSSettings.Controls.Add(this.label10);
+            this.tabPagePOSSettings.Controls.Add(this.txtUserCode);
+            this.tabPagePOSSettings.Controls.Add(this.label7);
+            this.tabPagePOSSettings.Controls.Add(this.txtBranchCode);
+            this.tabPagePOSSettings.Location = new System.Drawing.Point(4, 25);
+            this.tabPagePOSSettings.Name = "tabPagePOSSettings";
+            this.tabPagePOSSettings.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPagePOSSettings.Size = new System.Drawing.Size(602, 253);
+            this.tabPagePOSSettings.TabIndex = 0;
+            this.tabPagePOSSettings.Text = "POS Settings";
+            this.tabPagePOSSettings.UseVisualStyleBackColor = true;
             // 
             // cboPostSupplier
             // 
@@ -217,25 +219,59 @@
             this.txtBranchCode.Size = new System.Drawing.Size(370, 26);
             this.txtBranchCode.TabIndex = 25;
             // 
-            // tabPage2
+            // tabPageSystem
             // 
-            this.tabPage2.Controls.Add(this.btnLocateLogFileLocation);
-            this.tabPage2.Controls.Add(this.btnLocateFolderToMonitor);
-            this.tabPage2.Controls.Add(this.cbxIsAutoStartIntegration);
-            this.tabPage2.Controls.Add(this.label8);
-            this.tabPage2.Controls.Add(this.label6);
-            this.tabPage2.Controls.Add(this.label4);
-            this.tabPage2.Controls.Add(this.txtFolderToMonitor);
-            this.tabPage2.Controls.Add(this.txtDomain);
-            this.tabPage2.Controls.Add(this.label9);
-            this.tabPage2.Controls.Add(this.txtLogFileLocation);
-            this.tabPage2.Location = new System.Drawing.Point(4, 25);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(602, 253);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "System";
-            this.tabPage2.UseVisualStyleBackColor = true;
+            this.tabPageSystem.Controls.Add(this.cbxIsFolderMonitoring);
+            this.tabPageSystem.Controls.Add(this.label12);
+            this.tabPageSystem.Controls.Add(this.btnLocateLogFileLocation);
+            this.tabPageSystem.Controls.Add(this.btnLocateFolderToMonitor);
+            this.tabPageSystem.Controls.Add(this.cbxIsAutoStartIntegration);
+            this.tabPageSystem.Controls.Add(this.label8);
+            this.tabPageSystem.Controls.Add(this.label6);
+            this.tabPageSystem.Controls.Add(this.label4);
+            this.tabPageSystem.Controls.Add(this.txtFolderToMonitor);
+            this.tabPageSystem.Controls.Add(this.txtDomain);
+            this.tabPageSystem.Controls.Add(this.label9);
+            this.tabPageSystem.Controls.Add(this.txtLogFileLocation);
+            this.tabPageSystem.Location = new System.Drawing.Point(4, 25);
+            this.tabPageSystem.Name = "tabPageSystem";
+            this.tabPageSystem.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageSystem.Size = new System.Drawing.Size(602, 253);
+            this.tabPageSystem.TabIndex = 1;
+            this.tabPageSystem.Text = "System";
+            this.tabPageSystem.UseVisualStyleBackColor = true;
+            // 
+            // btnLocateLogFileLocation
+            // 
+            this.btnLocateLogFileLocation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnLocateLogFileLocation.BackColor = System.Drawing.SystemColors.Control;
+            this.btnLocateLogFileLocation.FlatAppearance.BorderSize = 0;
+            this.btnLocateLogFileLocation.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.btnLocateLogFileLocation.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.btnLocateLogFileLocation.ForeColor = System.Drawing.Color.Black;
+            this.btnLocateLogFileLocation.Location = new System.Drawing.Point(515, 19);
+            this.btnLocateLogFileLocation.Name = "btnLocateLogFileLocation";
+            this.btnLocateLogFileLocation.Size = new System.Drawing.Size(54, 30);
+            this.btnLocateLogFileLocation.TabIndex = 47;
+            this.btnLocateLogFileLocation.Text = "...";
+            this.btnLocateLogFileLocation.UseVisualStyleBackColor = false;
+            this.btnLocateLogFileLocation.Click += new System.EventHandler(this.btnLocateLogFileLocation_Click);
+            // 
+            // btnLocateFolderToMonitor
+            // 
+            this.btnLocateFolderToMonitor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnLocateFolderToMonitor.BackColor = System.Drawing.SystemColors.Control;
+            this.btnLocateFolderToMonitor.FlatAppearance.BorderSize = 0;
+            this.btnLocateFolderToMonitor.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.btnLocateFolderToMonitor.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.btnLocateFolderToMonitor.ForeColor = System.Drawing.Color.Black;
+            this.btnLocateFolderToMonitor.Location = new System.Drawing.Point(515, 83);
+            this.btnLocateFolderToMonitor.Name = "btnLocateFolderToMonitor";
+            this.btnLocateFolderToMonitor.Size = new System.Drawing.Size(54, 30);
+            this.btnLocateFolderToMonitor.TabIndex = 27;
+            this.btnLocateFolderToMonitor.Text = "...";
+            this.btnLocateFolderToMonitor.UseVisualStyleBackColor = false;
+            this.btnLocateFolderToMonitor.Click += new System.EventHandler(this.btnLocateFolderToMonitor_Click);
             // 
             // cbxIsAutoStartIntegration
             // 
@@ -313,17 +349,17 @@
             this.txtLogFileLocation.Size = new System.Drawing.Size(310, 26);
             this.txtLogFileLocation.TabIndex = 35;
             // 
-            // tabPage3
+            // tabPageConnection
             // 
-            this.tabPage3.Controls.Add(this.label5);
-            this.tabPage3.Controls.Add(this.txtConnectionString);
-            this.tabPage3.Location = new System.Drawing.Point(4, 25);
-            this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(602, 253);
-            this.tabPage3.TabIndex = 2;
-            this.tabPage3.Text = "Connection";
-            this.tabPage3.UseVisualStyleBackColor = true;
+            this.tabPageConnection.Controls.Add(this.label5);
+            this.tabPageConnection.Controls.Add(this.txtConnectionString);
+            this.tabPageConnection.Location = new System.Drawing.Point(4, 25);
+            this.tabPageConnection.Name = "tabPageConnection";
+            this.tabPageConnection.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageConnection.Size = new System.Drawing.Size(602, 253);
+            this.tabPageConnection.TabIndex = 2;
+            this.tabPageConnection.Text = "Connection";
+            this.tabPageConnection.UseVisualStyleBackColor = true;
             // 
             // label5
             // 
@@ -377,37 +413,25 @@
             this.btnSaveSettings.UseVisualStyleBackColor = false;
             this.btnSaveSettings.Click += new System.EventHandler(this.btnSaveSettings_Click);
             // 
-            // btnLocateFolderToMonitor
+            // cbxIsFolderMonitoring
             // 
-            this.btnLocateFolderToMonitor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnLocateFolderToMonitor.BackColor = System.Drawing.SystemColors.Control;
-            this.btnLocateFolderToMonitor.FlatAppearance.BorderSize = 0;
-            this.btnLocateFolderToMonitor.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.btnLocateFolderToMonitor.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.btnLocateFolderToMonitor.ForeColor = System.Drawing.Color.Black;
-            this.btnLocateFolderToMonitor.Location = new System.Drawing.Point(515, 83);
-            this.btnLocateFolderToMonitor.Name = "btnLocateFolderToMonitor";
-            this.btnLocateFolderToMonitor.Size = new System.Drawing.Size(54, 30);
-            this.btnLocateFolderToMonitor.TabIndex = 27;
-            this.btnLocateFolderToMonitor.Text = "...";
-            this.btnLocateFolderToMonitor.UseVisualStyleBackColor = false;
-            this.btnLocateFolderToMonitor.Click += new System.EventHandler(this.btnLocateFolderToMonitor_Click);
+            this.cbxIsFolderMonitoring.AutoSize = true;
+            this.cbxIsFolderMonitoring.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.cbxIsFolderMonitoring.Location = new System.Drawing.Point(199, 135);
+            this.cbxIsFolderMonitoring.Name = "cbxIsFolderMonitoring";
+            this.cbxIsFolderMonitoring.Size = new System.Drawing.Size(18, 17);
+            this.cbxIsFolderMonitoring.TabIndex = 49;
+            this.cbxIsFolderMonitoring.UseVisualStyleBackColor = true;
             // 
-            // btnLocateLogFileLocation
+            // label12
             // 
-            this.btnLocateLogFileLocation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnLocateLogFileLocation.BackColor = System.Drawing.SystemColors.Control;
-            this.btnLocateLogFileLocation.FlatAppearance.BorderSize = 0;
-            this.btnLocateLogFileLocation.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.btnLocateLogFileLocation.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.btnLocateLogFileLocation.ForeColor = System.Drawing.Color.Black;
-            this.btnLocateLogFileLocation.Location = new System.Drawing.Point(515, 19);
-            this.btnLocateLogFileLocation.Name = "btnLocateLogFileLocation";
-            this.btnLocateLogFileLocation.Size = new System.Drawing.Size(54, 30);
-            this.btnLocateLogFileLocation.TabIndex = 47;
-            this.btnLocateLogFileLocation.Text = "...";
-            this.btnLocateLogFileLocation.UseVisualStyleBackColor = false;
-            this.btnLocateLogFileLocation.Click += new System.EventHandler(this.btnLocateLogFileLocation_Click);
+            this.label12.AutoSize = true;
+            this.label12.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.label12.Location = new System.Drawing.Point(14, 132);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(162, 20);
+            this.label12.TabIndex = 48;
+            this.label12.Text = "Is Folder Monitoring:";
             // 
             // SysSettings
             // 
@@ -428,12 +452,12 @@
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.tabSettings.ResumeLayout(false);
-            this.tabPage1.ResumeLayout(false);
-            this.tabPage1.PerformLayout();
-            this.tabPage2.ResumeLayout(false);
-            this.tabPage2.PerformLayout();
-            this.tabPage3.ResumeLayout(false);
-            this.tabPage3.PerformLayout();
+            this.tabPagePOSSettings.ResumeLayout(false);
+            this.tabPagePOSSettings.PerformLayout();
+            this.tabPageSystem.ResumeLayout(false);
+            this.tabPageSystem.PerformLayout();
+            this.tabPageConnection.ResumeLayout(false);
+            this.tabPageConnection.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -443,8 +467,8 @@
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TabControl tabSettings;
-        private System.Windows.Forms.TabPage tabPage1;
-        private System.Windows.Forms.TabPage tabPage2;
+        private System.Windows.Forms.TabPage tabPagePOSSettings;
+        private System.Windows.Forms.TabPage tabPageSystem;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.TextBox txtUserCode;
         private System.Windows.Forms.Label label7;
@@ -460,7 +484,7 @@
         private System.Windows.Forms.TextBox txtDomain;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.TextBox txtLogFileLocation;
-        private System.Windows.Forms.TabPage tabPage3;
+        private System.Windows.Forms.TabPage tabPageConnection;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox txtConnectionString;
         private System.Windows.Forms.Label label6;
@@ -472,5 +496,7 @@
         private System.Windows.Forms.Button btnLocateLogFileLocation;
         private System.Windows.Forms.FolderBrowserDialog fbdLogFileLocation;
         private System.Windows.Forms.FolderBrowserDialog fbdFolderToMonitor;
+        private System.Windows.Forms.CheckBox cbxIsFolderMonitoring;
+        private System.Windows.Forms.Label label12;
     }
 }
