@@ -1,6 +1,6 @@
 ﻿namespace EasyfisIntegrator.Forms
 {
-    partial class TrnInnosoftPOSIntegrationForm
+    partial class TrnIntegrationForm
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TrnInnosoftPOSIntegrationForm));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TrnIntegrationForm));
             this.panel2 = new System.Windows.Forms.Panel();
             this.label6 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
@@ -57,9 +57,12 @@
             this.btnClearLogs = new System.Windows.Forms.Button();
             this.btnSettings = new System.Windows.Forms.Button();
             this.btnStartIntegration = new System.Windows.Forms.Button();
-            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabIntegration = new System.Windows.Forms.TabControl();
             this.tabPOSIntegration = new System.Windows.Forms.TabPage();
             this.tabFolderMonitoring = new System.Windows.Forms.TabPage();
+            this.panel4 = new System.Windows.Forms.Panel();
+            this.txtFolderMonitoringDomain = new System.Windows.Forms.TextBox();
+            this.label14 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.textBox1 = new System.Windows.Forms.TextBox();
@@ -68,9 +71,10 @@
             this.panel1.SuspendLayout();
             this.panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
-            this.tabControl1.SuspendLayout();
+            this.tabIntegration.SuspendLayout();
             this.tabPOSIntegration.SuspendLayout();
             this.tabFolderMonitoring.SuspendLayout();
+            this.panel4.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel2
@@ -156,9 +160,9 @@
             this.label1.ForeColor = System.Drawing.Color.White;
             this.label1.Location = new System.Drawing.Point(12, 9);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(287, 29);
+            this.label1.Size = new System.Drawing.Size(131, 29);
             this.label1.TabIndex = 0;
-            this.label1.Text = "Innosoft POS Integration";
+            this.label1.Text = "Integration";
             // 
             // btnStopIntegration
             // 
@@ -201,12 +205,12 @@
             this.txtLogs.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtLogs.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.txtLogs.ForeColor = System.Drawing.Color.White;
-            this.txtLogs.Location = new System.Drawing.Point(1, 228);
+            this.txtLogs.Location = new System.Drawing.Point(1, 227);
             this.txtLogs.MaxLength = 0;
             this.txtLogs.Multiline = true;
             this.txtLogs.Name = "txtLogs";
             this.txtLogs.ReadOnly = true;
-            this.txtLogs.Size = new System.Drawing.Size(833, 386);
+            this.txtLogs.Size = new System.Drawing.Size(833, 387);
             this.txtLogs.TabIndex = 14;
             // 
             // label7
@@ -399,15 +403,15 @@
             this.btnStartIntegration.UseVisualStyleBackColor = false;
             this.btnStartIntegration.Click += new System.EventHandler(this.btnStartIntegration_Click);
             // 
-            // tabControl1
+            // tabIntegration
             // 
-            this.tabControl1.Controls.Add(this.tabPOSIntegration);
-            this.tabControl1.Controls.Add(this.tabFolderMonitoring);
-            this.tabControl1.Location = new System.Drawing.Point(13, 57);
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(849, 649);
-            this.tabControl1.TabIndex = 25;
+            this.tabIntegration.Controls.Add(this.tabPOSIntegration);
+            this.tabIntegration.Controls.Add(this.tabFolderMonitoring);
+            this.tabIntegration.Location = new System.Drawing.Point(13, 57);
+            this.tabIntegration.Name = "tabIntegration";
+            this.tabIntegration.SelectedIndex = 0;
+            this.tabIntegration.Size = new System.Drawing.Size(849, 649);
+            this.tabIntegration.TabIndex = 25;
             // 
             // tabPOSIntegration
             // 
@@ -427,6 +431,7 @@
             // 
             // tabFolderMonitoring
             // 
+            this.tabFolderMonitoring.Controls.Add(this.panel4);
             this.tabFolderMonitoring.Controls.Add(this.button1);
             this.tabFolderMonitoring.Controls.Add(this.button2);
             this.tabFolderMonitoring.Controls.Add(this.textBox1);
@@ -438,6 +443,38 @@
             this.tabFolderMonitoring.Text = "Folder Monitoring";
             this.tabFolderMonitoring.UseVisualStyleBackColor = true;
             // 
+            // panel4
+            // 
+            this.panel4.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel4.BackColor = System.Drawing.SystemColors.Control;
+            this.panel4.Controls.Add(this.txtFolderMonitoringDomain);
+            this.panel4.Controls.Add(this.label14);
+            this.panel4.Location = new System.Drawing.Point(2, 4);
+            this.panel4.Name = "panel4";
+            this.panel4.Size = new System.Drawing.Size(834, 57);
+            this.panel4.TabIndex = 22;
+            // 
+            // txtFolderMonitoringDomain
+            // 
+            this.txtFolderMonitoringDomain.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.txtFolderMonitoringDomain.Location = new System.Drawing.Point(167, 12);
+            this.txtFolderMonitoringDomain.Name = "txtFolderMonitoringDomain";
+            this.txtFolderMonitoringDomain.ReadOnly = true;
+            this.txtFolderMonitoringDomain.Size = new System.Drawing.Size(432, 26);
+            this.txtFolderMonitoringDomain.TabIndex = 20;
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.label14.Location = new System.Drawing.Point(71, 16);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(72, 20);
+            this.label14.TabIndex = 19;
+            this.label14.Text = "Domain:";
+            // 
             // button1
             // 
             this.button1.BackColor = System.Drawing.Color.SeaGreen;
@@ -445,7 +482,7 @@
             this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.button1.ForeColor = System.Drawing.Color.White;
-            this.button1.Location = new System.Drawing.Point(642, 4);
+            this.button1.Location = new System.Drawing.Point(642, 63);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(93, 37);
             this.button1.TabIndex = 16;
@@ -459,7 +496,7 @@
             this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.button2.ForeColor = System.Drawing.Color.White;
-            this.button2.Location = new System.Drawing.Point(741, 4);
+            this.button2.Location = new System.Drawing.Point(741, 63);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(93, 37);
             this.button2.TabIndex = 15;
@@ -472,21 +509,21 @@
             this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.textBox1.ForeColor = System.Drawing.Color.White;
-            this.textBox1.Location = new System.Drawing.Point(1, 46);
+            this.textBox1.Location = new System.Drawing.Point(1, 105);
             this.textBox1.MaxLength = 0;
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(833, 567);
+            this.textBox1.Size = new System.Drawing.Size(833, 508);
             this.textBox1.TabIndex = 17;
             // 
-            // TrnInnosoftPOSIntegrationForm
+            // TrnIntegrationForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(120F, 120F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(872, 840);
-            this.Controls.Add(this.tabControl1);
+            this.Controls.Add(this.tabIntegration);
             this.Controls.Add(this.btnSaveLogs);
             this.Controls.Add(this.btnClearLogs);
             this.Controls.Add(this.btnSettings);
@@ -495,9 +532,9 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.Name = "TrnInnosoftPOSIntegrationForm";
+            this.Name = "TrnIntegrationForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Innosoft POS Integration";
+            this.Text = "Integration";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.TrnInnosoftPOSIntegrationForm_FormClosing);
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
@@ -507,11 +544,13 @@
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
-            this.tabControl1.ResumeLayout(false);
+            this.tabIntegration.ResumeLayout(false);
             this.tabPOSIntegration.ResumeLayout(false);
             this.tabPOSIntegration.PerformLayout();
             this.tabFolderMonitoring.ResumeLayout(false);
             this.tabFolderMonitoring.PerformLayout();
+            this.panel4.ResumeLayout(false);
+            this.panel4.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -546,11 +585,14 @@
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.CheckBox cbxUseItemPrice;
         private System.Windows.Forms.Button btnStartIntegration;
-        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabControl tabIntegration;
         private System.Windows.Forms.TabPage tabPOSIntegration;
         private System.Windows.Forms.TabPage tabFolderMonitoring;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Panel panel4;
+        private System.Windows.Forms.TextBox txtFolderMonitoringDomain;
+        private System.Windows.Forms.Label label14;
     }
 }

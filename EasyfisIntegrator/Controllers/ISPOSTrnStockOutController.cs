@@ -15,15 +15,15 @@ namespace EasyfisIntegrator.Controllers
         // ====
         private InnosoftPOSData.InnosoftPOSDataDataContext posdb = new InnosoftPOSData.InnosoftPOSDataDataContext(SysGlobalSettings.getConnectionString());
 
-        public Forms.TrnInnosoftPOSIntegrationForm trnInnosoftPOSIntegrationForm;
+        public Forms.TrnIntegrationForm trnIntegrationForm;
         public String activityDate;
 
         // ===========
         // Constructor
         // ===========
-        public ISPOSTrnStockOutController(Forms.TrnInnosoftPOSIntegrationForm form, String actDate)
+        public ISPOSTrnStockOutController(Forms.TrnIntegrationForm form, String actDate)
         {
-            trnInnosoftPOSIntegrationForm = form;
+            trnIntegrationForm = form;
             activityDate = actDate;
         }
 
@@ -77,7 +77,7 @@ namespace EasyfisIntegrator.Controllers
                             var currentStockOut = from d in posdb.TrnStockOuts where d.Remarks.Equals("OT-" + stockOut.BranchCode + "-" + stockOut.OTNumber) && d.TrnStockOutLines.Count() > 0 && d.IsLocked == true select d;
                             if (!currentStockOut.Any())
                             {
-                                trnInnosoftPOSIntegrationForm.logMessages("Saving Stock Out: OT-" + stockOut.BranchCode + "-" + stockOut.OTNumber + "\r\n\n");
+                                trnIntegrationForm.logMessages("Saving Stock Out: OT-" + stockOut.BranchCode + "-" + stockOut.OTNumber + "\r\n\n");
 
                                 var defaultPeriod = from d in posdb.MstPeriods select d;
                                 var defaultSettings = from d in posdb.SysSettings select d;
@@ -145,22 +145,22 @@ namespace EasyfisIntegrator.Controllers
 
                                                     posdb.SubmitChanges();
 
-                                                    trnInnosoftPOSIntegrationForm.logMessages(" > " + currentItem.FirstOrDefault().ItemDescription + " * " + item.Quantity.ToString("#,##0.00") + "\r\n\n");
+                                                    trnIntegrationForm.logMessages(" > " + currentItem.FirstOrDefault().ItemDescription + " * " + item.Quantity.ToString("#,##0.00") + "\r\n\n");
                                                 }
                                             }
                                         }
                                     }
 
-                                    trnInnosoftPOSIntegrationForm.logMessages("Save Successful!" + "\r\n\n");
-                                    trnInnosoftPOSIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                    trnInnosoftPOSIntegrationForm.logMessages("\r\n\n");
+                                    trnIntegrationForm.logMessages("Save Successful!" + "\r\n\n");
+                                    trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                    trnIntegrationForm.logMessages("\r\n\n");
                                 }
                                 else
                                 {
-                                    trnInnosoftPOSIntegrationForm.logMessages("Cannot Save Stock Out: OT - " + stockOut.BranchCode + " - " + stockOut.OTNumber + "\r\n\n");
-                                    trnInnosoftPOSIntegrationForm.logMessages("Empty Accounts!" + "\r\n\n");
-                                    trnInnosoftPOSIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                    trnInnosoftPOSIntegrationForm.logMessages("\r\n\n");
+                                    trnIntegrationForm.logMessages("Cannot Save Stock Out: OT - " + stockOut.BranchCode + " - " + stockOut.OTNumber + "\r\n\n");
+                                    trnIntegrationForm.logMessages("Empty Accounts!" + "\r\n\n");
+                                    trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                    trnIntegrationForm.logMessages("\r\n\n");
                                 }
                             }
                         }
@@ -169,12 +169,12 @@ namespace EasyfisIntegrator.Controllers
             }
             catch (Exception e)
             {
-                trnInnosoftPOSIntegrationForm.logMessages("Stock-Out Error: " + e.Message + "\r\n\n");
-                trnInnosoftPOSIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                trnInnosoftPOSIntegrationForm.logMessages("\r\n\n");
+                trnIntegrationForm.logMessages("Stock-Out Error: " + e.Message + "\r\n\n");
+                trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                trnIntegrationForm.logMessages("\r\n\n");
             }
 
-            trnInnosoftPOSIntegrationForm.logMessages("StockOut Integration Done.");
+            trnIntegrationForm.logMessages("StockOut Integration Done.");
         }
     }
 }

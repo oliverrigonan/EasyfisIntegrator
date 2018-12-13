@@ -3,6 +3,5 @@
   "Domain": "www.easyfis.com",
   "LogFileLocation": "D:\\Easyfis\\Logs",
   "FolderToMonitor": "D:\\Easyfis\\Modules\\",
-  "IsAutoStartIntegration": false,
-  "IsFolderMonitoringOnly":  false
+  "IsFolderMonitoringOnly": true
 }

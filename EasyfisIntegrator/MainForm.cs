@@ -4,9 +4,12 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 using System.Windows.Forms;
 
 namespace EasyfisIntegrator
@@ -129,12 +132,32 @@ namespace EasyfisIntegrator
 
         private void btnIntegrateFiles_Click(object sender, EventArgs e)
         {
+            String settingsPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Settings.json");
+
+            String json;
+            using (StreamReader trmRead = new StreamReader(settingsPath)) { json = trmRead.ReadToEnd(); }
+
+            JavaScriptSerializer javaScriptSerializer = new JavaScriptSerializer();
+            Entities.SysSettings sysSettings = javaScriptSerializer.Deserialize<Entities.SysSettings>(json);
+
+            Entities.SysSettings newSysSettings = new Entities.SysSettings()
+            {
+                ConnectionString = sysSettings.ConnectionString,
+                Domain = sysSettings.Domain,
+                LogFileLocation = sysSettings.LogFileLocation,
+                FolderToMonitor = sysSettings.FolderToMonitor,
+                IsFolderMonitoringOnly = true
+            };
+
+            String newJson = new JavaScriptSerializer().Serialize(newSysSettings);
+            File.WriteAllText(settingsPath, newJson);
+
             btnMainIntegrate.Enabled = false;
             btnIntegrateFiles.Enabled = false;
 
-            Forms.TrnFolderMonitoringIntegrationForm trnFilesIntegrationForm = new Forms.TrnFolderMonitoringIntegrationForm();
-            trnFilesIntegrationForm.Show();
-            
+            Forms.TrnIntegrationForm trnInnosoftPOSIntegrationForm = new Forms.TrnIntegrationForm();
+            trnInnosoftPOSIntegrationForm.Show();
+
             Hide();
         }
     }

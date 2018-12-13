@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 using System.Windows.Forms;
 
 namespace EasyfisIntegrator.Forms
@@ -45,7 +48,28 @@ namespace EasyfisIntegrator.Forms
                 {
                     currentUser = user.FirstOrDefault().FullName;
 
-                    TrnInnosoftPOSIntegrationForm trnInnosoftPOSIntegrationForm = new TrnInnosoftPOSIntegrationForm(this);
+                    String settingsPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Settings.json");
+
+                    String json;
+                    using (StreamReader trmRead = new StreamReader(settingsPath)) { json = trmRead.ReadToEnd(); }
+
+                    JavaScriptSerializer javaScriptSerializer = new JavaScriptSerializer();
+                    Entities.SysSettings sysSettings = javaScriptSerializer.Deserialize<Entities.SysSettings>(json);
+
+                    Entities.SysSettings newSysSettings = new Entities.SysSettings()
+                    {
+                        ConnectionString = sysSettings.ConnectionString,
+                        Domain = sysSettings.Domain,
+                        LogFileLocation = sysSettings.LogFileLocation,
+                        FolderToMonitor = sysSettings.FolderToMonitor,
+                        IsFolderMonitoringOnly = false
+                    };
+
+                    String newJson = new JavaScriptSerializer().Serialize(newSysSettings);
+                    File.WriteAllText(settingsPath, newJson);
+
+                    TrnIntegrationForm trnInnosoftPOSIntegrationForm = new TrnIntegrationForm();
+                    trnInnosoftPOSIntegrationForm.getLoginDetails(this);
                     trnInnosoftPOSIntegrationForm.Show();
 
                     Hide();

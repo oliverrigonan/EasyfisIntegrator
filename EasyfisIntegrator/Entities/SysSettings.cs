@@ -12,7 +12,6 @@ namespace EasyfisIntegrator.Entities
         public String Domain { get; set; }
         public String LogFileLocation { get; set; }
         public String FolderToMonitor { get; set; }
-        public Boolean IsAutoStartIntegration { get; set; }
         public Boolean IsFolderMonitoringOnly { get; set; }
     }
 }

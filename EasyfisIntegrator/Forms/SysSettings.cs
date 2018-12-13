@@ -17,9 +17,10 @@ namespace EasyfisIntegrator.Forms
     {
         private InnosoftPOSData.InnosoftPOSDataDataContext posdb = new InnosoftPOSData.InnosoftPOSDataDataContext(Controllers.SysGlobalSettings.getConnectionString());
 
-        public TrnInnosoftPOSIntegrationForm trnInnosoftPOSIntegrationForm;
+        public TrnIntegrationForm trnInnosoftPOSIntegrationForm;
+        public Boolean isFolderMonitoringOnly = false;
 
-        public SysSettings(TrnInnosoftPOSIntegrationForm form)
+        public SysSettings(TrnIntegrationForm form)
         {
             InitializeComponent();
             trnInnosoftPOSIntegrationForm = form;
@@ -43,20 +44,27 @@ namespace EasyfisIntegrator.Forms
             Entities.SysSettings sysSettings = javaScriptSerializer.Deserialize<Entities.SysSettings>(json);
 
             txtDomain.Text = sysSettings.Domain;
-            txtConnectionString.Text = sysSettings.ConnectionString;
             txtLogFileLocation.Text = sysSettings.LogFileLocation;
             txtFolderToMonitor.Text = sysSettings.FolderToMonitor;
-            cbxIsAutoStartIntegration.Checked = sysSettings.IsAutoStartIntegration;
-            cbxIsFolderMonitoring.Checked = sysSettings.IsFolderMonitoringOnly;
+            isFolderMonitoringOnly = sysSettings.IsFolderMonitoringOnly;
 
-            if (sysSettings.IsFolderMonitoringOnly)
+            if (isFolderMonitoringOnly)
             {
+                txtConnectionString.Text = "";
+
                 tabPagePOSSettings.Enabled = false;
+                tabPageConnection.Enabled = false;
                 tabSettings.SelectedTab = tabPageSystem;
+
+                tabSettings.TabPages.Remove(tabPagePOSSettings);
+                tabSettings.TabPages.Remove(tabPageConnection);
             }
             else
             {
+                txtConnectionString.Text = sysSettings.ConnectionString;
+
                 tabPagePOSSettings.Enabled = true;
+                tabPageConnection.Enabled = true;
                 tabSettings.SelectedTab = tabPagePOSSettings;
 
                 cboPostUser.DataSource = from d in posdb.MstUsers where d.IsLocked == true select d;
@@ -84,15 +92,7 @@ namespace EasyfisIntegrator.Forms
             DialogResult dialogResult = MessageBox.Show("Save changes?", "Save Settings", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (dialogResult == DialogResult.Yes)
             {
-                String settingsPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Settings.json");
-
-                String json;
-                using (StreamReader trmRead = new StreamReader(settingsPath)) { json = trmRead.ReadToEnd(); }
-
-                JavaScriptSerializer javaScriptSerializer = new JavaScriptSerializer();
-                Entities.SysSettings sysSettings = javaScriptSerializer.Deserialize<Entities.SysSettings>(json);
-
-                if (!sysSettings.IsFolderMonitoringOnly)
+                if (!isFolderMonitoringOnly)
                 {
                     var settings = from d in posdb.SysSettings select d;
                     if (settings.Any())
@@ -113,11 +113,12 @@ namespace EasyfisIntegrator.Forms
                     Domain = txtDomain.Text,
                     LogFileLocation = txtLogFileLocation.Text,
                     FolderToMonitor = txtFolderToMonitor.Text,
-                    IsAutoStartIntegration = cbxIsAutoStartIntegration.Checked,
-                    IsFolderMonitoringOnly = cbxIsFolderMonitoring.Checked
+                    IsFolderMonitoringOnly = isFolderMonitoringOnly
                 };
 
+                String settingsPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Settings.json");
                 String newJson = new JavaScriptSerializer().Serialize(newSysSettings);
+
                 File.WriteAllText(settingsPath, newJson);
 
                 trnInnosoftPOSIntegrationForm.getPOSSettings();

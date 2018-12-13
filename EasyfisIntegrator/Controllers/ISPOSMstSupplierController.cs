@@ -15,15 +15,15 @@ namespace EasyfisIntegrator.Controllers
         // ====
         private InnosoftPOSData.InnosoftPOSDataDataContext posdb = new InnosoftPOSData.InnosoftPOSDataDataContext(SysGlobalSettings.getConnectionString());
 
-        public Forms.TrnInnosoftPOSIntegrationForm trnInnosoftPOSIntegrationForm;
+        public Forms.TrnIntegrationForm trnIntegrationForm;
         public String activityDate;
 
         // ===========
         // Constructor
         // ===========
-        public ISPOSMstSupplierController(Forms.TrnInnosoftPOSIntegrationForm form, String actDate)
+        public ISPOSMstSupplierController(Forms.TrnIntegrationForm form, String actDate)
         {
-            trnInnosoftPOSIntegrationForm = form;
+            trnIntegrationForm = form;
             activityDate = actDate;
         }
 
@@ -110,8 +110,8 @@ namespace EasyfisIntegrator.Controllers
 
                                     if (foundChanges)
                                     {
-                                        trnInnosoftPOSIntegrationForm.logMessages("Updating Supplier: " + currentSupplier.FirstOrDefault().Supplier + "\r\n\n");
-                                        trnInnosoftPOSIntegrationForm.logMessages("Contact No.: " + currentSupplier.FirstOrDefault().CellphoneNumber + "\r\n\n");
+                                        trnIntegrationForm.logMessages("Updating Supplier: " + currentSupplier.FirstOrDefault().Supplier + "\r\n\n");
+                                        trnIntegrationForm.logMessages("Contact No.: " + currentSupplier.FirstOrDefault().CellphoneNumber + "\r\n\n");
 
                                         var updateSupplier = currentSupplier.FirstOrDefault();
                                         updateSupplier.Supplier = supplier.Article;
@@ -123,15 +123,15 @@ namespace EasyfisIntegrator.Controllers
                                         updateSupplier.UpdateDateTime = DateTime.Now;
                                         posdb.SubmitChanges();
 
-                                        trnInnosoftPOSIntegrationForm.logMessages("Update Successful!" + "\r\n\n");
-                                        trnInnosoftPOSIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                        trnInnosoftPOSIntegrationForm.logMessages("\r\n\n");
+                                        trnIntegrationForm.logMessages("Update Successful!" + "\r\n\n");
+                                        trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                        trnIntegrationForm.logMessages("\r\n\n");
                                     }
                                 }
                                 else
                                 {
-                                    trnInnosoftPOSIntegrationForm.logMessages("Saving Supplier: " + supplier.Article + "\r\n\n");
-                                    trnInnosoftPOSIntegrationForm.logMessages("Contact No.: " + supplier.ContactNumber + "\r\n\n");
+                                    trnIntegrationForm.logMessages("Saving Supplier: " + supplier.Article + "\r\n\n");
+                                    trnIntegrationForm.logMessages("Contact No.: " + supplier.ContactNumber + "\r\n\n");
 
                                     InnosoftPOSData.MstSupplier newSupplier = new InnosoftPOSData.MstSupplier
                                     {
@@ -153,18 +153,18 @@ namespace EasyfisIntegrator.Controllers
                                     posdb.MstSuppliers.InsertOnSubmit(newSupplier);
                                     posdb.SubmitChanges();
 
-                                    trnInnosoftPOSIntegrationForm.logMessages("Save Successful!" + "\r\n\n");
-                                    trnInnosoftPOSIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                    trnInnosoftPOSIntegrationForm.logMessages("\r\n\n");
+                                    trnIntegrationForm.logMessages("Save Successful!" + "\r\n\n");
+                                    trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                    trnIntegrationForm.logMessages("\r\n\n");
                                 }
                             }
                             else
                             {
-                                trnInnosoftPOSIntegrationForm.logMessages("Cannot Save Supplier: " + supplier.Article + "\r\n\n");
-                                trnInnosoftPOSIntegrationForm.logMessages("Term Mismatch!" + "\r\n\n");
-                                trnInnosoftPOSIntegrationForm.logMessages("Save Failed!" + "\r\n\n");
-                                trnInnosoftPOSIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                trnInnosoftPOSIntegrationForm.logMessages("\r\n\n");
+                                trnIntegrationForm.logMessages("Cannot Save Supplier: " + supplier.Article + "\r\n\n");
+                                trnIntegrationForm.logMessages("Term Mismatch!" + "\r\n\n");
+                                trnIntegrationForm.logMessages("Save Failed!" + "\r\n\n");
+                                trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                trnIntegrationForm.logMessages("\r\n\n");
                             }
                         }
                     }
@@ -172,12 +172,12 @@ namespace EasyfisIntegrator.Controllers
             }
             catch (Exception e)
             {
-                trnInnosoftPOSIntegrationForm.logMessages("Supplier Error: " + e.Message + "\r\n\n");
-                trnInnosoftPOSIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                trnInnosoftPOSIntegrationForm.logMessages("\r\n\n");
+                trnIntegrationForm.logMessages("Supplier Error: " + e.Message + "\r\n\n");
+                trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                trnIntegrationForm.logMessages("\r\n\n");
             }
 
-            trnInnosoftPOSIntegrationForm.logMessages("Supplier Integration Done.");
+            trnIntegrationForm.logMessages("Supplier Integration Done.");
         }
     }
 }

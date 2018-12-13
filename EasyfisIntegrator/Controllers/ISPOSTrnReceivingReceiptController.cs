@@ -15,15 +15,15 @@ namespace EasyfisIntegrator.Controllers
         // ====
         private InnosoftPOSData.InnosoftPOSDataDataContext posdb = new InnosoftPOSData.InnosoftPOSDataDataContext(SysGlobalSettings.getConnectionString());
 
-        public Forms.TrnInnosoftPOSIntegrationForm trnInnosoftPOSIntegrationForm;
+        public Forms.TrnIntegrationForm trnIntegrationForm;
         public String activityDate;
 
         // ===========
         // Constructor
         // ===========
-        public ISPOSTrnReceivingReceiptController(Forms.TrnInnosoftPOSIntegrationForm form, String actDate)
+        public ISPOSTrnReceivingReceiptController(Forms.TrnIntegrationForm form, String actDate)
         {
-            trnInnosoftPOSIntegrationForm = form;
+            trnIntegrationForm = form;
             activityDate = actDate;
         }
 
@@ -79,7 +79,7 @@ namespace EasyfisIntegrator.Controllers
                                 var currentStockIn = from d in posdb.TrnStockIns where d.Remarks.Equals("RR-" + receivingReceipt.BranchCode + "-" + receivingReceipt.RRNumber) && d.TrnStockInLines.Count() > 0 && d.IsLocked == true select d;
                                 if (!currentStockIn.Any())
                                 {
-                                    trnInnosoftPOSIntegrationForm.logMessages("Saving Stock In: RR-" + receivingReceipt.BranchCode + "-" + receivingReceipt.RRNumber + "\r\n\n");
+                                    trnIntegrationForm.logMessages("Saving Stock In: RR-" + receivingReceipt.BranchCode + "-" + receivingReceipt.RRNumber + "\r\n\n");
 
                                     var defaultPeriod = from d in posdb.MstPeriods select d;
                                     var defaultSettings = from d in posdb.SysSettings select d;
@@ -148,15 +148,15 @@ namespace EasyfisIntegrator.Controllers
 
                                                     posdb.SubmitChanges();
 
-                                                    trnInnosoftPOSIntegrationForm.logMessages(" > " + currentItem.FirstOrDefault().ItemDescription + " * " + item.Quantity.ToString("#,##0.00") + "\r\n\n");
+                                                    trnIntegrationForm.logMessages(" > " + currentItem.FirstOrDefault().ItemDescription + " * " + item.Quantity.ToString("#,##0.00") + "\r\n\n");
                                                 }
                                             }
                                         }
                                     }
 
-                                    trnInnosoftPOSIntegrationForm.logMessages("Save Successful!" + "\r\n\n");
-                                    trnInnosoftPOSIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                    trnInnosoftPOSIntegrationForm.logMessages("\r\n\n");
+                                    trnIntegrationForm.logMessages("Save Successful!" + "\r\n\n");
+                                    trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                    trnIntegrationForm.logMessages("\r\n\n");
                                 }
                             }
                         }
@@ -165,12 +165,12 @@ namespace EasyfisIntegrator.Controllers
             }
             catch (Exception e)
             {
-                trnInnosoftPOSIntegrationForm.logMessages("Receiving Receipt Error: " + e.Message + "\r\n\n");
-                trnInnosoftPOSIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                trnInnosoftPOSIntegrationForm.logMessages("\r\n\n");
+                trnIntegrationForm.logMessages("Receiving Receipt Error: " + e.Message + "\r\n\n");
+                trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                trnIntegrationForm.logMessages("\r\n\n");
             }
 
-            trnInnosoftPOSIntegrationForm.logMessages("Receiving Receipt Integration Done.");
+            trnIntegrationForm.logMessages("Receiving Receipt Integration Done.");
         }
     }
 }

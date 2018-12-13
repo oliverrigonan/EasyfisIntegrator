@@ -14,7 +14,7 @@ using System.Windows.Forms;
 
 namespace EasyfisIntegrator.Forms
 {
-    public partial class TrnInnosoftPOSIntegrationForm : Form
+    public partial class TrnIntegrationForm : Form
     {
         private InnosoftPOSData.InnosoftPOSDataDataContext posdb = new InnosoftPOSData.InnosoftPOSDataDataContext(Controllers.SysGlobalSettings.getConnectionString());
 
@@ -23,29 +23,36 @@ namespace EasyfisIntegrator.Forms
         public Boolean isSettingsClicked = false;
         private Timer integrationTimer = new Timer();
 
-        public static Boolean isIntegrating = false;
-        public static Boolean isIntegratingCustomer = false;
-        public static Boolean isIntegratingItem = false;
-        public static Boolean isIntegratingSupplier = false;
-        public static Boolean isIntegratingCollection = false;
-        public static Boolean isIntegratingItemPrice = false;
-        public static Boolean isIntegratingReceivingReceipt = false;
-        public static Boolean isIntegratingSalesReturn = false;
-        public static Boolean isIntegratingStockIn = false;
-        public static Boolean isIntegratingStockOut = false;
-        public static Boolean isIntegratingTransferIn = false;
-        public static Boolean isIntegratingTransferOut = false;
-
+        public Boolean isIntegrating = false;
+        public Boolean isIntegratingCustomer = false;
+        public Boolean isIntegratingItem = false;
+        public Boolean isIntegratingSupplier = false;
+        public Boolean isIntegratingCollection = false;
+        public Boolean isIntegratingItemPrice = false;
+        public Boolean isIntegratingReceivingReceipt = false;
+        public Boolean isIntegratingSalesReturn = false;
+        public Boolean isIntegratingStockIn = false;
+        public Boolean isIntegratingStockOut = false;
+        public Boolean isIntegratingTransferIn = false;
+        public Boolean isIntegratingTransferOut = false;
         public Int32 logMessageCount = 0;
 
-        public TrnInnosoftPOSIntegrationForm(SysLoginForm form)
+        public Boolean isFolderMonitoringOnly = false;
+
+        public TrnIntegrationForm()
         {
             InitializeComponent();
-            sysLoginForm = form;
 
             isSettingsClicked = false;
 
+            logMessages("Press start button to integrate. \r\n\n" + "\r\n\n");
             getPOSSettings();
+        }
+
+        public void getLoginDetails(SysLoginForm form)
+        {
+            sysLoginForm = form;
+            lblCurrentUser.Text = sysLoginForm.currentUser;
         }
 
         private void btnLogout_Click(object sender, EventArgs e)
@@ -65,17 +72,7 @@ namespace EasyfisIntegrator.Forms
 
         public void getPOSSettings()
         {
-            lblCurrentUser.Text = sysLoginForm.currentUser;
-
-            var settings = from d in posdb.SysSettings select d;
-            if (settings.Any())
-            {
-                posdb.Refresh(RefreshMode.OverwriteCurrentValues, settings);
-
-                txtBranchCode.Text = settings.FirstOrDefault().BranchCode;
-                txtUserCode.Text = settings.FirstOrDefault().UserCode;
-                cbxUseItemPrice.Checked = settings.FirstOrDefault().UseItemPrice;
-            }
+            stopIntegration();
 
             String settingsPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Settings.json");
 
@@ -86,42 +83,67 @@ namespace EasyfisIntegrator.Forms
             Entities.SysSettings sysSettings = javaScriptSerializer.Deserialize<Entities.SysSettings>(json);
 
             txtDomain.Text = sysSettings.Domain;
+            txtFolderMonitoringDomain.Text = sysSettings.Domain;
+            isFolderMonitoringOnly = sysSettings.IsFolderMonitoringOnly;
 
-            if (!isSettingsClicked)
+            if (isFolderMonitoringOnly)
             {
-                if (sysSettings.IsAutoStartIntegration)
+                tabPOSIntegration.Enabled = false;
+                tabFolderMonitoring.Enabled = true;
+                tabIntegration.SelectedTab = tabFolderMonitoring;
+                tabIntegration.TabPages.Remove(tabPOSIntegration);
+
+                btnLogout.Visible = false;
+            }
+            else
+            {
+                tabPOSIntegration.Enabled = true;
+                tabFolderMonitoring.Enabled = true;
+                tabIntegration.SelectedTab = tabPOSIntegration;
+
+                btnLogout.Visible = true;
+
+                var settings = from d in posdb.SysSettings select d;
+                if (settings.Any())
                 {
-                    startIntegration();
-                }
-                else
-                {
-                    logMessages("Press start button to integrate. \r\n\n" + "\r\n\n");
-                    stopIntegration();
+                    posdb.Refresh(RefreshMode.OverwriteCurrentValues, settings);
+
+                    txtBranchCode.Text = settings.FirstOrDefault().BranchCode;
+                    txtUserCode.Text = settings.FirstOrDefault().UserCode;
+                    cbxUseItemPrice.Checked = settings.FirstOrDefault().UseItemPrice;
                 }
             }
         }
 
         private void TrnInnosoftPOSIntegrationForm_FormClosing(object sender, FormClosingEventArgs e)
         {
+            e.Cancel = true;
+            Activate();
+
             DialogResult dialogResult = MessageBox.Show("Are you sure you want to close this application?", "Close Integrator", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (dialogResult == DialogResult.Yes)
             {
-                if (isIntegrationStarted)
+                if (isFolderMonitoringOnly)
                 {
-                    MessageBox.Show("Please stop the integration first.", "Close Integrator", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Hide();
 
-                    e.Cancel = true;
-                    Activate();
+                    MainForm mainForm = new MainForm();
+                    mainForm.Show();
                 }
                 else
                 {
-                    Environment.Exit(0);
+                    if (isIntegrationStarted)
+                    {
+                        MessageBox.Show("Please stop the integration first.", "Close Integrator", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    else
+                    {
+                        Hide();
+
+                        MainForm mainForm = new MainForm();
+                        mainForm.Show();
+                    }
                 }
-            }
-            else
-            {
-                e.Cancel = true;
-                Activate();
             }
         }
 
@@ -162,12 +184,6 @@ namespace EasyfisIntegrator.Forms
             {
                 MessageBox.Show(drex.Message, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-        }
-
-        private void btnOpenFolderMonitoring_Click(object sender, EventArgs e)
-        {
-            TrnFolderMonitoringIntegrationForm trnFilesIntegrationForm = new TrnFolderMonitoringIntegrationForm();
-            trnFilesIntegrationForm.Show();
         }
 
         private void btnStartIntegration_Click(object sender, EventArgs e)

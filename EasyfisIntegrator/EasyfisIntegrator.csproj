@@ -87,17 +87,11 @@
     <Compile Include="Forms\SysSettings.Designer.cs">
       <DependentUpon>SysSettings.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\TrnFolderMonitoringIntegrationForm.cs">
+    <Compile Include="Forms\TrnIntegrationForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\TrnFolderMonitoringIntegrationForm.Designer.cs">
-      <DependentUpon>TrnFolderMonitoringIntegrationForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\TrnInnosoftPOSIntegrationForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\TrnInnosoftPOSIntegrationForm.Designer.cs">
-      <DependentUpon>TrnInnosoftPOSIntegrationForm.cs</DependentUpon>
+    <Compile Include="Forms\TrnIntegrationForm.Designer.cs">
+      <DependentUpon>TrnIntegrationForm.cs</DependentUpon>
     </Compile>
     <Compile Include="InnosoftPOSData\InnosoftPOSData.designer.cs">
       <AutoGen>True</AutoGen>
@@ -121,11 +115,8 @@
     <EmbeddedResource Include="Forms\SysSettings.resx">
       <DependentUpon>SysSettings.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\TrnFolderMonitoringIntegrationForm.resx">
-      <DependentUpon>TrnFolderMonitoringIntegrationForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\TrnInnosoftPOSIntegrationForm.resx">
-      <DependentUpon>TrnInnosoftPOSIntegrationForm.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\TrnIntegrationForm.resx">
+      <DependentUpon>TrnIntegrationForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>

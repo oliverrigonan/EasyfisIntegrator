@@ -14,14 +14,14 @@ namespace EasyfisIntegrator.Controllers
         // Data
         // ====
         private InnosoftPOSData.InnosoftPOSDataDataContext posdb = new InnosoftPOSData.InnosoftPOSDataDataContext(SysGlobalSettings.getConnectionString());
-        public Forms.TrnInnosoftPOSIntegrationForm trnInnosoftPOSIntegrationForm;
+        public Forms.TrnIntegrationForm trnIntegrationForm;
 
         // ===========
         // Constructor
         // ===========
-        public ISPOSTrnCollectionController(Forms.TrnInnosoftPOSIntegrationForm form)
+        public ISPOSTrnCollectionController(Forms.TrnIntegrationForm form)
         {
-            trnInnosoftPOSIntegrationForm = form;
+            trnIntegrationForm = form;
         }
 
         // ==============
@@ -86,20 +86,20 @@ namespace EasyfisIntegrator.Controllers
 
                         String json = new JavaScriptSerializer().Serialize(collectionData);
 
-                        trnInnosoftPOSIntegrationForm.logMessages("Sending Collection: " + collectionData.DocumentReference + "\r\n\n");
-                        trnInnosoftPOSIntegrationForm.logMessages("Amount: " + collectionData.ListPOSIntegrationTrnSalesInvoiceItem.Sum(d => d.Amount).ToString("#,##0.00") + "\r\n\n");
+                        trnIntegrationForm.logMessages("Sending Collection: " + collectionData.DocumentReference + "\r\n\n");
+                        trnIntegrationForm.logMessages("Amount: " + collectionData.ListPOSIntegrationTrnSalesInvoiceItem.Sum(d => d.Amount).ToString("#,##0.00") + "\r\n\n");
                         SendCollection(apiUrlHost, json);
                     }
                 }
             }
             catch (Exception e)
             {
-                trnInnosoftPOSIntegrationForm.logMessages("Collection Error: " + e.Message + "\r\n\n");
-                trnInnosoftPOSIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                trnInnosoftPOSIntegrationForm.logMessages("\r\n\n");
+                trnIntegrationForm.logMessages("Collection Error: " + e.Message + "\r\n\n");
+                trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                trnIntegrationForm.logMessages("\r\n\n");
             }
 
-            trnInnosoftPOSIntegrationForm.logMessages("Collection Integration Done.");
+            trnIntegrationForm.logMessages("Collection Integration Done.");
         }
 
         // ===============
@@ -143,18 +143,18 @@ namespace EasyfisIntegrator.Controllers
                             posdb.SubmitChanges();
                         }
 
-                        trnInnosoftPOSIntegrationForm.logMessages("Send Succesful!" + "\r\n\n");
-                        trnInnosoftPOSIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                        trnInnosoftPOSIntegrationForm.logMessages("\r\n\n");
+                        trnIntegrationForm.logMessages("Send Succesful!" + "\r\n\n");
+                        trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                        trnIntegrationForm.logMessages("\r\n\n");
                     }
                 }
             }
             catch (WebException we)
             {
                 var resp = new StreamReader(we.Response.GetResponseStream()).ReadToEnd();
-                trnInnosoftPOSIntegrationForm.logMessages(resp.Replace("\"", "") + "\r\n\n");
-                trnInnosoftPOSIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                trnInnosoftPOSIntegrationForm.logMessages("\r\n\n");
+                trnIntegrationForm.logMessages(resp.Replace("\"", "") + "\r\n\n");
+                trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                trnIntegrationForm.logMessages("\r\n\n");
             }
         }
     }
