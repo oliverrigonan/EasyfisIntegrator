@@ -38,6 +38,7 @@ namespace EasyfisIntegrator.Forms
         public Int32 logMessageCount = 0;
 
         public Boolean isFolderMonitoringOnly = false;
+        public Boolean isFolderMonitoringIntegrationStarted = false;
 
         public TrnIntegrationForm()
         {
@@ -113,6 +114,8 @@ namespace EasyfisIntegrator.Forms
                     cbxUseItemPrice.Checked = settings.FirstOrDefault().UseItemPrice;
                 }
             }
+
+            integrateFolderMonitoring();
         }
 
         private void TrnInnosoftPOSIntegrationForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -368,6 +371,52 @@ namespace EasyfisIntegrator.Forms
             txtLogs.Focus();
             txtLogs.SelectionStart = txtLogs.Text.Length;
             txtLogs.ScrollToCaret();
+        }
+
+        public void integrateFolderMonitoring()
+        {
+            String fileWatcherPath = "";
+
+            FileSystemWatcher watcher = new FileSystemWatcher
+            {
+                Path = fileWatcherPath,
+                IncludeSubdirectories = true,
+                NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName,
+                Filter = "*.csv"
+            };
+
+            watcher.Changed += new FileSystemEventHandler(integrateFolderMonitoringOnChanged);
+            watcher.Created += new FileSystemEventHandler(integrateFolderMonitoringOnChanged);
+            watcher.Deleted += new FileSystemEventHandler(integrateFolderMonitoringOnChanged);
+            watcher.Renamed += new RenamedEventHandler(integrateFolderMonitoringOnRenamed);
+
+            watcher.EnableRaisingEvents = true;
+        }
+
+        private void integrateFolderMonitoringOnChanged(object source, FileSystemEventArgs e)
+        {
+            if (isFolderMonitoringIntegrationStarted)
+            {
+
+            }
+        }
+
+        private void integrateFolderMonitoringOnRenamed(object source, RenamedEventArgs e)
+        {
+            if (isFolderMonitoringIntegrationStarted)
+            {
+
+            }
+        }
+
+        private void btnStartFolderMonitoringIntegration_Click(object sender, EventArgs e)
+        {
+            isFolderMonitoringIntegrationStarted = true;
+        }
+
+        private void btnStopFolderMonitoringIntegration_Click(object sender, EventArgs e)
+        {
+            isFolderMonitoringIntegrationStarted = false;
         }
     }
 }

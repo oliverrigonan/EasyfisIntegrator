@@ -63,8 +63,8 @@
             this.panel4 = new System.Windows.Forms.Panel();
             this.txtFolderMonitoringDomain = new System.Windows.Forms.TextBox();
             this.label14 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
+            this.btnStartFolderMonitoringIntegration = new System.Windows.Forms.Button();
+            this.btnStopFolderMonitoringIntegration = new System.Windows.Forms.Button();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -432,8 +432,8 @@
             // tabFolderMonitoring
             // 
             this.tabFolderMonitoring.Controls.Add(this.panel4);
-            this.tabFolderMonitoring.Controls.Add(this.button1);
-            this.tabFolderMonitoring.Controls.Add(this.button2);
+            this.tabFolderMonitoring.Controls.Add(this.btnStartFolderMonitoringIntegration);
+            this.tabFolderMonitoring.Controls.Add(this.btnStopFolderMonitoringIntegration);
             this.tabFolderMonitoring.Controls.Add(this.textBox1);
             this.tabFolderMonitoring.Location = new System.Drawing.Point(4, 25);
             this.tabFolderMonitoring.Name = "tabFolderMonitoring";
@@ -475,33 +475,35 @@
             this.label14.TabIndex = 19;
             this.label14.Text = "Domain:";
             // 
-            // button1
+            // btnStartFolderMonitoringIntegration
             // 
-            this.button1.BackColor = System.Drawing.Color.SeaGreen;
-            this.button1.FlatAppearance.BorderSize = 0;
-            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.button1.ForeColor = System.Drawing.Color.White;
-            this.button1.Location = new System.Drawing.Point(642, 63);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(93, 37);
-            this.button1.TabIndex = 16;
-            this.button1.Text = "Start";
-            this.button1.UseVisualStyleBackColor = false;
+            this.btnStartFolderMonitoringIntegration.BackColor = System.Drawing.Color.SeaGreen;
+            this.btnStartFolderMonitoringIntegration.FlatAppearance.BorderSize = 0;
+            this.btnStartFolderMonitoringIntegration.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnStartFolderMonitoringIntegration.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.btnStartFolderMonitoringIntegration.ForeColor = System.Drawing.Color.White;
+            this.btnStartFolderMonitoringIntegration.Location = new System.Drawing.Point(642, 63);
+            this.btnStartFolderMonitoringIntegration.Name = "btnStartFolderMonitoringIntegration";
+            this.btnStartFolderMonitoringIntegration.Size = new System.Drawing.Size(93, 37);
+            this.btnStartFolderMonitoringIntegration.TabIndex = 16;
+            this.btnStartFolderMonitoringIntegration.Text = "Start";
+            this.btnStartFolderMonitoringIntegration.UseVisualStyleBackColor = false;
+            this.btnStartFolderMonitoringIntegration.Click += new System.EventHandler(this.btnStartFolderMonitoringIntegration_Click);
             // 
-            // button2
+            // btnStopFolderMonitoringIntegration
             // 
-            this.button2.BackColor = System.Drawing.Color.IndianRed;
-            this.button2.FlatAppearance.BorderSize = 0;
-            this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.button2.ForeColor = System.Drawing.Color.White;
-            this.button2.Location = new System.Drawing.Point(741, 63);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(93, 37);
-            this.button2.TabIndex = 15;
-            this.button2.Text = "Stop";
-            this.button2.UseVisualStyleBackColor = false;
+            this.btnStopFolderMonitoringIntegration.BackColor = System.Drawing.Color.IndianRed;
+            this.btnStopFolderMonitoringIntegration.FlatAppearance.BorderSize = 0;
+            this.btnStopFolderMonitoringIntegration.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnStopFolderMonitoringIntegration.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.btnStopFolderMonitoringIntegration.ForeColor = System.Drawing.Color.White;
+            this.btnStopFolderMonitoringIntegration.Location = new System.Drawing.Point(741, 63);
+            this.btnStopFolderMonitoringIntegration.Name = "btnStopFolderMonitoringIntegration";
+            this.btnStopFolderMonitoringIntegration.Size = new System.Drawing.Size(93, 37);
+            this.btnStopFolderMonitoringIntegration.TabIndex = 15;
+            this.btnStopFolderMonitoringIntegration.Text = "Stop";
+            this.btnStopFolderMonitoringIntegration.UseVisualStyleBackColor = false;
+            this.btnStopFolderMonitoringIntegration.Click += new System.EventHandler(this.btnStopFolderMonitoringIntegration_Click);
             // 
             // textBox1
             // 
@@ -588,8 +590,8 @@
         private System.Windows.Forms.TabControl tabIntegration;
         private System.Windows.Forms.TabPage tabPOSIntegration;
         private System.Windows.Forms.TabPage tabFolderMonitoring;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button btnStartFolderMonitoringIntegration;
+        private System.Windows.Forms.Button btnStopFolderMonitoringIntegration;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Panel panel4;
         private System.Windows.Forms.TextBox txtFolderMonitoringDomain;
