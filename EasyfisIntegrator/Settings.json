@@ -1,7 +1,7 @@
 ﻿{
   "ConnectionString": "Data Source=localhost;Initial Catalog=pos13;Persist Security Info=True;User ID=sa;Password=innosoft",
-  "Domain": "www.easyfis.com",
+  "Domain": "localhost:2651",
   "LogFileLocation": "D:\\Easyfis\\Logs",
-  "FolderToMonitor": "D:\\Easyfis\\Modules\\",
-  "IsFolderMonitoringOnly": true
+  "FolderToMonitor": "D:\\Easyfis\\Folders",
+  "IsFolderMonitoringOnly": false
 }

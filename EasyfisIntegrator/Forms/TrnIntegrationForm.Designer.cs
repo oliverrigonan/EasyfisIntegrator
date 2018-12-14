@@ -65,7 +65,7 @@
             this.label14 = new System.Windows.Forms.Label();
             this.btnStartFolderMonitoringIntegration = new System.Windows.Forms.Button();
             this.btnStopFolderMonitoringIntegration = new System.Windows.Forms.Button();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.txtFolderMonitoringLogs = new System.Windows.Forms.TextBox();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel1.SuspendLayout();
@@ -434,7 +434,7 @@
             this.tabFolderMonitoring.Controls.Add(this.panel4);
             this.tabFolderMonitoring.Controls.Add(this.btnStartFolderMonitoringIntegration);
             this.tabFolderMonitoring.Controls.Add(this.btnStopFolderMonitoringIntegration);
-            this.tabFolderMonitoring.Controls.Add(this.textBox1);
+            this.tabFolderMonitoring.Controls.Add(this.txtFolderMonitoringLogs);
             this.tabFolderMonitoring.Location = new System.Drawing.Point(4, 25);
             this.tabFolderMonitoring.Name = "tabFolderMonitoring";
             this.tabFolderMonitoring.Padding = new System.Windows.Forms.Padding(3);
@@ -482,7 +482,7 @@
             this.btnStartFolderMonitoringIntegration.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnStartFolderMonitoringIntegration.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.btnStartFolderMonitoringIntegration.ForeColor = System.Drawing.Color.White;
-            this.btnStartFolderMonitoringIntegration.Location = new System.Drawing.Point(642, 63);
+            this.btnStartFolderMonitoringIntegration.Location = new System.Drawing.Point(642, 64);
             this.btnStartFolderMonitoringIntegration.Name = "btnStartFolderMonitoringIntegration";
             this.btnStartFolderMonitoringIntegration.Size = new System.Drawing.Size(93, 37);
             this.btnStartFolderMonitoringIntegration.TabIndex = 16;
@@ -497,7 +497,7 @@
             this.btnStopFolderMonitoringIntegration.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnStopFolderMonitoringIntegration.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.btnStopFolderMonitoringIntegration.ForeColor = System.Drawing.Color.White;
-            this.btnStopFolderMonitoringIntegration.Location = new System.Drawing.Point(741, 63);
+            this.btnStopFolderMonitoringIntegration.Location = new System.Drawing.Point(741, 64);
             this.btnStopFolderMonitoringIntegration.Name = "btnStopFolderMonitoringIntegration";
             this.btnStopFolderMonitoringIntegration.Size = new System.Drawing.Size(93, 37);
             this.btnStopFolderMonitoringIntegration.TabIndex = 15;
@@ -505,19 +505,19 @@
             this.btnStopFolderMonitoringIntegration.UseVisualStyleBackColor = false;
             this.btnStopFolderMonitoringIntegration.Click += new System.EventHandler(this.btnStopFolderMonitoringIntegration_Click);
             // 
-            // textBox1
+            // txtFolderMonitoringLogs
             // 
-            this.textBox1.BackColor = System.Drawing.Color.Black;
-            this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.textBox1.ForeColor = System.Drawing.Color.White;
-            this.textBox1.Location = new System.Drawing.Point(1, 105);
-            this.textBox1.MaxLength = 0;
-            this.textBox1.Multiline = true;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(833, 508);
-            this.textBox1.TabIndex = 17;
+            this.txtFolderMonitoringLogs.BackColor = System.Drawing.Color.Black;
+            this.txtFolderMonitoringLogs.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtFolderMonitoringLogs.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.txtFolderMonitoringLogs.ForeColor = System.Drawing.Color.White;
+            this.txtFolderMonitoringLogs.Location = new System.Drawing.Point(1, 106);
+            this.txtFolderMonitoringLogs.MaxLength = 0;
+            this.txtFolderMonitoringLogs.Multiline = true;
+            this.txtFolderMonitoringLogs.Name = "txtFolderMonitoringLogs";
+            this.txtFolderMonitoringLogs.ReadOnly = true;
+            this.txtFolderMonitoringLogs.Size = new System.Drawing.Size(833, 508);
+            this.txtFolderMonitoringLogs.TabIndex = 17;
             // 
             // TrnIntegrationForm
             // 
@@ -592,7 +592,7 @@
         private System.Windows.Forms.TabPage tabFolderMonitoring;
         private System.Windows.Forms.Button btnStartFolderMonitoringIntegration;
         private System.Windows.Forms.Button btnStopFolderMonitoringIntegration;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox txtFolderMonitoringLogs;
         private System.Windows.Forms.Panel panel4;
         private System.Windows.Forms.TextBox txtFolderMonitoringDomain;
         private System.Windows.Forms.Label label14;

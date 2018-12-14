@@ -38,6 +38,8 @@ namespace EasyfisIntegrator.Forms
         public Int32 logMessageCount = 0;
 
         public Boolean isFolderMonitoringOnly = false;
+        public String folderToMonitor = "";
+        public String domain = "";
         public Boolean isFolderMonitoringIntegrationStarted = false;
 
         public TrnIntegrationForm()
@@ -48,6 +50,9 @@ namespace EasyfisIntegrator.Forms
 
             logMessages("Press start button to integrate. \r\n\n" + "\r\n\n");
             getPOSSettings();
+
+            logFolderMonitoringMessage("Press start button to integrate. \r\n\n" + "\r\n\n");
+            integrateFolderMonitoring();
         }
 
         public void getLoginDetails(SysLoginForm form)
@@ -86,6 +91,8 @@ namespace EasyfisIntegrator.Forms
             txtDomain.Text = sysSettings.Domain;
             txtFolderMonitoringDomain.Text = sysSettings.Domain;
             isFolderMonitoringOnly = sysSettings.IsFolderMonitoringOnly;
+            folderToMonitor = sysSettings.FolderToMonitor;
+            domain = sysSettings.Domain;
 
             if (isFolderMonitoringOnly)
             {
@@ -115,7 +122,8 @@ namespace EasyfisIntegrator.Forms
                 }
             }
 
-            integrateFolderMonitoring();
+            btnStartFolderMonitoringIntegration.Enabled = true;
+            btnStopFolderMonitoringIntegration.Enabled = false;
         }
 
         private void TrnInnosoftPOSIntegrationForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -164,6 +172,7 @@ namespace EasyfisIntegrator.Forms
             if (dialogResult == DialogResult.Yes)
             {
                 txtLogs.Text = "Press start button to integrate. \r\n\n" + "\r\n\n";
+                txtFolderMonitoringLogs.Text = "Press start button to integrate. \r\n\n" + "\r\n\n";
             }
         }
 
@@ -179,7 +188,8 @@ namespace EasyfisIntegrator.Forms
                 JavaScriptSerializer javaScriptSerializer = new JavaScriptSerializer();
                 Entities.SysSettings sysSettings = javaScriptSerializer.Deserialize<Entities.SysSettings>(json);
 
-                File.WriteAllText(sysSettings.LogFileLocation + "\\" + DateTime.Now.ToString("yyyyMMdd_hhmmss") + ".txt", txtLogs.Text);
+                File.WriteAllText(sysSettings.LogFileLocation + "\\ISPOS_" + DateTime.Now.ToString("yyyyMMdd_hhmmss") + ".txt", txtLogs.Text);
+                File.WriteAllText(sysSettings.LogFileLocation + "\\FM_" + DateTime.Now.ToString("yyyyMMdd_hhmmss") + ".txt", txtFolderMonitoringLogs.Text);
 
                 MessageBox.Show("Save Log Successful!", "Save Logs", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
@@ -375,11 +385,9 @@ namespace EasyfisIntegrator.Forms
 
         public void integrateFolderMonitoring()
         {
-            String fileWatcherPath = "";
-
             FileSystemWatcher watcher = new FileSystemWatcher
             {
-                Path = fileWatcherPath,
+                Path = folderToMonitor,
                 IncludeSubdirectories = true,
                 NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName,
                 Filter = "*.csv"
@@ -395,28 +403,70 @@ namespace EasyfisIntegrator.Forms
 
         private void integrateFolderMonitoringOnChanged(object source, FileSystemEventArgs e)
         {
-            if (isFolderMonitoringIntegrationStarted)
-            {
-
-            }
+            monitorControllers();
         }
 
         private void integrateFolderMonitoringOnRenamed(object source, RenamedEventArgs e)
         {
+            monitorControllers();
+        }
+
+        public void monitorControllers()
+        {
             if (isFolderMonitoringIntegrationStarted)
             {
-
+                Controllers.FolderMonitoringTrnCollectionController monitorCollection = new Controllers.FolderMonitoringTrnCollectionController(this, folderToMonitor, domain);
+                Controllers.FolderMonitoringTrnDisbursementController monitorDisbursement = new Controllers.FolderMonitoringTrnDisbursementController(this, folderToMonitor, domain);
+                Controllers.FolderMonitoringTrnJournalVoucherController monitorJournalVoucher = new Controllers.FolderMonitoringTrnJournalVoucherController(this, folderToMonitor, domain);
+                Controllers.FolderMonitoringTrnReceivingReceiptController monitorReceivingReceipt = new Controllers.FolderMonitoringTrnReceivingReceiptController(this, folderToMonitor, domain);
+                Controllers.FolderMonitoringTrnSalesInvoiceController monitorSalesInvoice = new Controllers.FolderMonitoringTrnSalesInvoiceController(this, folderToMonitor, domain);
+                Controllers.FolderMonitoringTrnStockInController monitorStockIn = new Controllers.FolderMonitoringTrnStockInController(this, folderToMonitor, domain);
+                Controllers.FolderMonitoringTrnStockOutController monitorStockOut = new Controllers.FolderMonitoringTrnStockOutController(this, folderToMonitor, domain);
+                Controllers.FolderMonitoringTrnStockTransferController monitorStockTransfer = new Controllers.FolderMonitoringTrnStockTransferController(this, folderToMonitor, domain);
             }
         }
 
         private void btnStartFolderMonitoringIntegration_Click(object sender, EventArgs e)
         {
+            btnSettings.Enabled = false;
+
+            btnClearLogs.Enabled = false;
+            btnSaveLogs.Enabled = false;
+
+            btnLogout.Enabled = false;
+
+            btnStartFolderMonitoringIntegration.Enabled = false;
+            btnStopFolderMonitoringIntegration.Enabled = true;
+
+            logFolderMonitoringMessage("Started! \r\n\nTime Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n\r\n\n");
+
             isFolderMonitoringIntegrationStarted = true;
         }
 
         private void btnStopFolderMonitoringIntegration_Click(object sender, EventArgs e)
         {
+            btnSettings.Enabled = true;
+
+            btnClearLogs.Enabled = true;
+            btnSaveLogs.Enabled = true;
+
+            btnLogout.Enabled = true;
+
+            btnStartFolderMonitoringIntegration.Enabled = true;
+            btnStopFolderMonitoringIntegration.Enabled = false;
+
+            logFolderMonitoringMessage("Stopped! \r\n\nTime Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n\r\n\n");
+
             isFolderMonitoringIntegrationStarted = false;
+        }
+
+        public void logFolderMonitoringMessage(String message)
+        {
+            txtFolderMonitoringLogs.Text += message;
+
+            txtFolderMonitoringLogs.Focus();
+            txtFolderMonitoringLogs.SelectionStart = txtFolderMonitoringLogs.Text.Length;
+            txtFolderMonitoringLogs.ScrollToCaret();
         }
     }
 }

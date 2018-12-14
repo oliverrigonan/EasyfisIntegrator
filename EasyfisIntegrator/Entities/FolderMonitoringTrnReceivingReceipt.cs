@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace easyfis.Integration.FolderMonitoring.Entities
+namespace EasyfisIntegrator.Entities
 {
     public class FolderMonitoringTrnReceivingReceipt
     {
