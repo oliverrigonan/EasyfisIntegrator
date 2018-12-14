@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.Linq;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.AccessControl;
+using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
@@ -467,6 +470,61 @@ namespace EasyfisIntegrator.Forms
             txtFolderMonitoringLogs.Focus();
             txtFolderMonitoringLogs.SelectionStart = txtFolderMonitoringLogs.Text.Length;
             txtFolderMonitoringLogs.ScrollToCaret();
+        }
+
+        private void btnGetCSVTemplate_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                DialogResult dialogResult = fbdGetCSVTemplate.ShowDialog();
+                if (dialogResult == DialogResult.OK)
+                {
+                    String ORSourcePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"CSVTemplate\OR.csv");
+                    String CVSourcePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"CSVTemplate\CV.csv");
+                    String JVSourcePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"CSVTemplate\JV.csv");
+                    String RRSourcePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"CSVTemplate\RR.csv");
+                    String SISourcePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"CSVTemplate\SI.csv");
+                    String INSourcePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"CSVTemplate\IN.csv");
+                    String OTSourcePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"CSVTemplate\OT.csv");
+                    String STSourcePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"CSVTemplate\ST.csv");
+
+                    DialogResult getTemplateDialogResult = MessageBox.Show("This will overwrite all existing csv template files. Are you sure you want to continue?", "Download CSV Templates", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    if (getTemplateDialogResult == DialogResult.Yes)
+                    {
+                        if (Directory.Exists(fbdGetCSVTemplate.SelectedPath + "\\CSVTemplate_" + DateTime.Now.ToString("yyyyMMdd_hhmmss") + "\\")) { Directory.Delete(fbdGetCSVTemplate.SelectedPath + "\\CSVTemplate_" + DateTime.Now.ToString("yyyyMMdd_hhmmss") + "\\", true); }
+
+                        String executingUser = WindowsIdentity.GetCurrent().Name;
+
+                        DirectorySecurity securityRules = new DirectorySecurity();
+                        securityRules.AddAccessRule(new FileSystemAccessRule(executingUser, FileSystemRights.Read, AccessControlType.Allow));
+                        securityRules.AddAccessRule(new FileSystemAccessRule(executingUser, FileSystemRights.FullControl, AccessControlType.Allow));
+
+                        DirectoryInfo createDirectoryORCSV = Directory.CreateDirectory(fbdGetCSVTemplate.SelectedPath + "\\CSVTemplate_" + DateTime.Now.ToString("yyyyMMdd_hhmmss") + "\\", securityRules);
+                        DirectoryInfo createDirectoryCVCSV = Directory.CreateDirectory(fbdGetCSVTemplate.SelectedPath + "\\CSVTemplate_" + DateTime.Now.ToString("yyyyMMdd_hhmmss") + "\\", securityRules);
+                        DirectoryInfo createDirectoryJVCSV = Directory.CreateDirectory(fbdGetCSVTemplate.SelectedPath + "\\CSVTemplate_" + DateTime.Now.ToString("yyyyMMdd_hhmmss") + "\\", securityRules);
+                        DirectoryInfo createDirectoryRRCSV = Directory.CreateDirectory(fbdGetCSVTemplate.SelectedPath + "\\CSVTemplate_" + DateTime.Now.ToString("yyyyMMdd_hhmmss") + "\\", securityRules);
+                        DirectoryInfo createDirectorySICSV = Directory.CreateDirectory(fbdGetCSVTemplate.SelectedPath + "\\CSVTemplate_" + DateTime.Now.ToString("yyyyMMdd_hhmmss") + "\\", securityRules);
+                        DirectoryInfo createDirectoryINCSV = Directory.CreateDirectory(fbdGetCSVTemplate.SelectedPath + "\\CSVTemplate_" + DateTime.Now.ToString("yyyyMMdd_hhmmss") + "\\", securityRules);
+                        DirectoryInfo createDirectoryOTCSV = Directory.CreateDirectory(fbdGetCSVTemplate.SelectedPath + "\\CSVTemplate_" + DateTime.Now.ToString("yyyyMMdd_hhmmss") + "\\", securityRules);
+                        DirectoryInfo createDirectorySTCSV = Directory.CreateDirectory(fbdGetCSVTemplate.SelectedPath + "\\CSVTemplate_" + DateTime.Now.ToString("yyyyMMdd_hhmmss") + "\\", securityRules);
+
+                        File.Copy(ORSourcePath, createDirectoryORCSV.FullName + "\\OR.csv", true);
+                        File.Copy(CVSourcePath, createDirectoryCVCSV.FullName + "\\CV.csv", true);
+                        File.Copy(JVSourcePath, createDirectoryJVCSV.FullName + "\\JV.csv", true);
+                        File.Copy(RRSourcePath, createDirectoryRRCSV.FullName + "\\RR.csv", true);
+                        File.Copy(SISourcePath, createDirectorySICSV.FullName + "\\SI.csv", true);
+                        File.Copy(INSourcePath, createDirectoryINCSV.FullName + "\\IN.csv", true);
+                        File.Copy(OTSourcePath, createDirectoryOTCSV.FullName + "\\OT.csv", true);
+                        File.Copy(STSourcePath, createDirectorySTCSV.FullName + "\\ST.csv", true);
+
+                        MessageBox.Show("CSV Templates are successfully saved!", "Save CSV Templates", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }

@@ -66,6 +66,8 @@
             this.btnStartFolderMonitoringIntegration = new System.Windows.Forms.Button();
             this.btnStopFolderMonitoringIntegration = new System.Windows.Forms.Button();
             this.txtFolderMonitoringLogs = new System.Windows.Forms.TextBox();
+            this.btnGetCSVTemplate = new System.Windows.Forms.Button();
+            this.fbdGetCSVTemplate = new System.Windows.Forms.FolderBrowserDialog();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel1.SuspendLayout();
@@ -431,6 +433,7 @@
             // 
             // tabFolderMonitoring
             // 
+            this.tabFolderMonitoring.Controls.Add(this.btnGetCSVTemplate);
             this.tabFolderMonitoring.Controls.Add(this.panel4);
             this.tabFolderMonitoring.Controls.Add(this.btnStartFolderMonitoringIntegration);
             this.tabFolderMonitoring.Controls.Add(this.btnStopFolderMonitoringIntegration);
@@ -519,6 +522,21 @@
             this.txtFolderMonitoringLogs.Size = new System.Drawing.Size(833, 508);
             this.txtFolderMonitoringLogs.TabIndex = 17;
             // 
+            // btnGetCSVTemplate
+            // 
+            this.btnGetCSVTemplate.BackColor = System.Drawing.Color.MediumSeaGreen;
+            this.btnGetCSVTemplate.FlatAppearance.BorderSize = 0;
+            this.btnGetCSVTemplate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnGetCSVTemplate.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.btnGetCSVTemplate.ForeColor = System.Drawing.Color.White;
+            this.btnGetCSVTemplate.Location = new System.Drawing.Point(1, 64);
+            this.btnGetCSVTemplate.Name = "btnGetCSVTemplate";
+            this.btnGetCSVTemplate.Size = new System.Drawing.Size(220, 37);
+            this.btnGetCSVTemplate.TabIndex = 23;
+            this.btnGetCSVTemplate.Text = "Get CSV Template";
+            this.btnGetCSVTemplate.UseVisualStyleBackColor = false;
+            this.btnGetCSVTemplate.Click += new System.EventHandler(this.btnGetCSVTemplate_Click);
+            // 
             // TrnIntegrationForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(120F, 120F);
@@ -596,5 +614,7 @@
         private System.Windows.Forms.Panel panel4;
         private System.Windows.Forms.TextBox txtFolderMonitoringDomain;
         private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Button btnGetCSVTemplate;
+        private System.Windows.Forms.FolderBrowserDialog fbdGetCSVTemplate;
     }
 }

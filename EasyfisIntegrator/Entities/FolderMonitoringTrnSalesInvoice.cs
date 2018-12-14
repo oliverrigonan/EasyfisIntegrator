@@ -7,7 +7,6 @@ namespace EasyfisIntegrator.Entities
 {
     public class FolderMonitoringTrnSalesInvoice
     {
-        public Int32 Id { get; set; }
         public String BranchCode { get; set; }
         public String SIDate { get; set; }
         public String CustomerCode { get; set; }

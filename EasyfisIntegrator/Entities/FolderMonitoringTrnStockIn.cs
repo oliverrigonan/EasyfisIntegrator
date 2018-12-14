@@ -7,7 +7,6 @@ namespace EasyfisIntegrator.Entities
 {
     public class FolderMonitoringTrnStockIn
     {
-        public Int32 Id { get; set; }
         public String BranchCode { get; set; }
         public String INDate { get; set; }
         public String AccountCode { get; set; }

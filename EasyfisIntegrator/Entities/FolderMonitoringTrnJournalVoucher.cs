@@ -7,7 +7,6 @@ namespace EasyfisIntegrator.Entities
 {
     public class FolderMonitoringTrnJournalVoucher
     {
-        public Int32 Id { get; set; }
         public String BranchCode { get; set; }
         public String JVDate { get; set; }
         public String Remarks { get; set; }
