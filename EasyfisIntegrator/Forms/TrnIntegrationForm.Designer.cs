@@ -60,14 +60,15 @@
             this.tabIntegration = new System.Windows.Forms.TabControl();
             this.tabPOSIntegration = new System.Windows.Forms.TabPage();
             this.tabFolderMonitoring = new System.Windows.Forms.TabPage();
+            this.btnGetCSVTemplate = new System.Windows.Forms.Button();
             this.panel4 = new System.Windows.Forms.Panel();
             this.txtFolderMonitoringDomain = new System.Windows.Forms.TextBox();
             this.label14 = new System.Windows.Forms.Label();
             this.btnStartFolderMonitoringIntegration = new System.Windows.Forms.Button();
             this.btnStopFolderMonitoringIntegration = new System.Windows.Forms.Button();
             this.txtFolderMonitoringLogs = new System.Windows.Forms.TextBox();
-            this.btnGetCSVTemplate = new System.Windows.Forms.Button();
             this.fbdGetCSVTemplate = new System.Windows.Forms.FolderBrowserDialog();
+            this.fileSystemWatcherCSVFiles = new System.IO.FileSystemWatcher();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel1.SuspendLayout();
@@ -77,6 +78,7 @@
             this.tabPOSIntegration.SuspendLayout();
             this.tabFolderMonitoring.SuspendLayout();
             this.panel4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.fileSystemWatcherCSVFiles)).BeginInit();
             this.SuspendLayout();
             // 
             // panel2
@@ -446,6 +448,21 @@
             this.tabFolderMonitoring.Text = "Folder Monitoring";
             this.tabFolderMonitoring.UseVisualStyleBackColor = true;
             // 
+            // btnGetCSVTemplate
+            // 
+            this.btnGetCSVTemplate.BackColor = System.Drawing.Color.MediumSeaGreen;
+            this.btnGetCSVTemplate.FlatAppearance.BorderSize = 0;
+            this.btnGetCSVTemplate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnGetCSVTemplate.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.btnGetCSVTemplate.ForeColor = System.Drawing.Color.White;
+            this.btnGetCSVTemplate.Location = new System.Drawing.Point(1, 64);
+            this.btnGetCSVTemplate.Name = "btnGetCSVTemplate";
+            this.btnGetCSVTemplate.Size = new System.Drawing.Size(220, 37);
+            this.btnGetCSVTemplate.TabIndex = 23;
+            this.btnGetCSVTemplate.Text = "Get CSV Template";
+            this.btnGetCSVTemplate.UseVisualStyleBackColor = false;
+            this.btnGetCSVTemplate.Click += new System.EventHandler(this.btnGetCSVTemplate_Click);
+            // 
             // panel4
             // 
             this.panel4.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -522,20 +539,19 @@
             this.txtFolderMonitoringLogs.Size = new System.Drawing.Size(833, 508);
             this.txtFolderMonitoringLogs.TabIndex = 17;
             // 
-            // btnGetCSVTemplate
+            // fileSystemWatcherCSVFiles
             // 
-            this.btnGetCSVTemplate.BackColor = System.Drawing.Color.MediumSeaGreen;
-            this.btnGetCSVTemplate.FlatAppearance.BorderSize = 0;
-            this.btnGetCSVTemplate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnGetCSVTemplate.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.btnGetCSVTemplate.ForeColor = System.Drawing.Color.White;
-            this.btnGetCSVTemplate.Location = new System.Drawing.Point(1, 64);
-            this.btnGetCSVTemplate.Name = "btnGetCSVTemplate";
-            this.btnGetCSVTemplate.Size = new System.Drawing.Size(220, 37);
-            this.btnGetCSVTemplate.TabIndex = 23;
-            this.btnGetCSVTemplate.Text = "Get CSV Template";
-            this.btnGetCSVTemplate.UseVisualStyleBackColor = false;
-            this.btnGetCSVTemplate.Click += new System.EventHandler(this.btnGetCSVTemplate_Click);
+            this.fileSystemWatcherCSVFiles.EnableRaisingEvents = true;
+            this.fileSystemWatcherCSVFiles.Filter = "*.csv";
+            this.fileSystemWatcherCSVFiles.IncludeSubdirectories = true;
+            this.fileSystemWatcherCSVFiles.NotifyFilter = ((System.IO.NotifyFilters)((((System.IO.NotifyFilters.FileName | System.IO.NotifyFilters.DirectoryName) 
+            | System.IO.NotifyFilters.LastWrite) 
+            | System.IO.NotifyFilters.LastAccess)));
+            this.fileSystemWatcherCSVFiles.SynchronizingObject = this;
+            this.fileSystemWatcherCSVFiles.Changed += new System.IO.FileSystemEventHandler(this.fileSystemWatcherCSVFiles_Changed);
+            this.fileSystemWatcherCSVFiles.Created += new System.IO.FileSystemEventHandler(this.fileSystemWatcherCSVFiles_Created);
+            this.fileSystemWatcherCSVFiles.Deleted += new System.IO.FileSystemEventHandler(this.fileSystemWatcherCSVFiles_Deleted);
+            this.fileSystemWatcherCSVFiles.Renamed += new System.IO.RenamedEventHandler(this.fileSystemWatcherCSVFiles_Renamed);
             // 
             // TrnIntegrationForm
             // 
@@ -571,6 +587,7 @@
             this.tabFolderMonitoring.PerformLayout();
             this.panel4.ResumeLayout(false);
             this.panel4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.fileSystemWatcherCSVFiles)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -616,5 +633,6 @@
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Button btnGetCSVTemplate;
         private System.Windows.Forms.FolderBrowserDialog fbdGetCSVTemplate;
+        private System.IO.FileSystemWatcher fileSystemWatcherCSVFiles;
     }
 }

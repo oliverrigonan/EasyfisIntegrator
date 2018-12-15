@@ -55,7 +55,8 @@ namespace EasyfisIntegrator.Forms
             getPOSSettings();
 
             logFolderMonitoringMessage("Press start button to integrate. \r\n\n" + "\r\n\n");
-            integrateFolderMonitoring();
+
+            fileSystemWatcherCSVFiles.Path = folderToMonitor;
         }
 
         public void getLoginDetails(SysLoginForm form)
@@ -96,7 +97,7 @@ namespace EasyfisIntegrator.Forms
             isFolderMonitoringOnly = sysSettings.IsFolderMonitoringOnly;
             folderToMonitor = sysSettings.FolderToMonitor;
             domain = sysSettings.Domain;
-
+            
             if (isFolderMonitoringOnly)
             {
                 tabPOSIntegration.Enabled = false;
@@ -386,30 +387,22 @@ namespace EasyfisIntegrator.Forms
             txtLogs.ScrollToCaret();
         }
 
-        public void integrateFolderMonitoring()
-        {
-            FileSystemWatcher watcher = new FileSystemWatcher
-            {
-                Path = folderToMonitor,
-                IncludeSubdirectories = true,
-                NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName,
-                Filter = "*.csv"
-            };
-
-            watcher.Changed += new FileSystemEventHandler(integrateFolderMonitoringOnChanged);
-            watcher.Created += new FileSystemEventHandler(integrateFolderMonitoringOnChanged);
-            watcher.Deleted += new FileSystemEventHandler(integrateFolderMonitoringOnChanged);
-            watcher.Renamed += new RenamedEventHandler(integrateFolderMonitoringOnRenamed);
-
-            watcher.EnableRaisingEvents = true;
-        }
-
-        private void integrateFolderMonitoringOnChanged(object source, FileSystemEventArgs e)
+        private void fileSystemWatcherCSVFiles_Changed(object sender, FileSystemEventArgs e)
         {
             monitorControllers();
         }
 
-        private void integrateFolderMonitoringOnRenamed(object source, RenamedEventArgs e)
+        private void fileSystemWatcherCSVFiles_Created(object sender, FileSystemEventArgs e)
+        {
+            monitorControllers();
+        }
+
+        private void fileSystemWatcherCSVFiles_Deleted(object sender, FileSystemEventArgs e)
+        {
+            monitorControllers();
+        }
+
+        private void fileSystemWatcherCSVFiles_Renamed(object sender, RenamedEventArgs e)
         {
             monitorControllers();
         }
@@ -418,14 +411,14 @@ namespace EasyfisIntegrator.Forms
         {
             if (isFolderMonitoringIntegrationStarted)
             {
-                Controllers.FolderMonitoringTrnCollectionController monitorCollection = new Controllers.FolderMonitoringTrnCollectionController(this, folderToMonitor, domain);
-                Controllers.FolderMonitoringTrnDisbursementController monitorDisbursement = new Controllers.FolderMonitoringTrnDisbursementController(this, folderToMonitor, domain);
-                Controllers.FolderMonitoringTrnJournalVoucherController monitorJournalVoucher = new Controllers.FolderMonitoringTrnJournalVoucherController(this, folderToMonitor, domain);
-                Controllers.FolderMonitoringTrnReceivingReceiptController monitorReceivingReceipt = new Controllers.FolderMonitoringTrnReceivingReceiptController(this, folderToMonitor, domain);
-                Controllers.FolderMonitoringTrnSalesInvoiceController monitorSalesInvoice = new Controllers.FolderMonitoringTrnSalesInvoiceController(this, folderToMonitor, domain);
-                Controllers.FolderMonitoringTrnStockInController monitorStockIn = new Controllers.FolderMonitoringTrnStockInController(this, folderToMonitor, domain);
-                Controllers.FolderMonitoringTrnStockOutController monitorStockOut = new Controllers.FolderMonitoringTrnStockOutController(this, folderToMonitor, domain);
-                Controllers.FolderMonitoringTrnStockTransferController monitorStockTransfer = new Controllers.FolderMonitoringTrnStockTransferController(this, folderToMonitor, domain);
+                Controllers.FolderMonitoringTrnCollectionController monitorCollection = new Controllers.FolderMonitoringTrnCollectionController(this, folderToMonitor + "\\OR\\", domain);
+                //Controllers.FolderMonitoringTrnDisbursementController monitorDisbursement = new Controllers.FolderMonitoringTrnDisbursementController(this, folderToMonitor + "\\CV\\", domain);
+                //Controllers.FolderMonitoringTrnJournalVoucherController monitorJournalVoucher = new Controllers.FolderMonitoringTrnJournalVoucherController(this, folderToMonitor + "\\JV\\", domain);
+                //Controllers.FolderMonitoringTrnReceivingReceiptController monitorReceivingReceipt = new Controllers.FolderMonitoringTrnReceivingReceiptController(this, folderToMonitor + "\\RR\\", domain);
+                //Controllers.FolderMonitoringTrnSalesInvoiceController monitorSalesInvoice = new Controllers.FolderMonitoringTrnSalesInvoiceController(this, folderToMonitor + "\\SI\\", domain);
+                //Controllers.FolderMonitoringTrnStockInController monitorStockIn = new Controllers.FolderMonitoringTrnStockInController(this, folderToMonitor + "\\IN\\", domain);
+                //Controllers.FolderMonitoringTrnStockOutController monitorStockOut = new Controllers.FolderMonitoringTrnStockOutController(this, folderToMonitor + "\\OT\\", domain);
+                //Controllers.FolderMonitoringTrnStockTransferController monitorStockTransfer = new Controllers.FolderMonitoringTrnStockTransferController(this, folderToMonitor + "\\ST\\", domain);
             }
         }
 
@@ -499,14 +492,14 @@ namespace EasyfisIntegrator.Forms
                         securityRules.AddAccessRule(new FileSystemAccessRule(executingUser, FileSystemRights.Read, AccessControlType.Allow));
                         securityRules.AddAccessRule(new FileSystemAccessRule(executingUser, FileSystemRights.FullControl, AccessControlType.Allow));
 
-                        DirectoryInfo createDirectoryORCSV = Directory.CreateDirectory(fbdGetCSVTemplate.SelectedPath + "\\CSVTemplate_" + DateTime.Now.ToString("yyyyMMdd_hhmmss") + "\\", securityRules);
-                        DirectoryInfo createDirectoryCVCSV = Directory.CreateDirectory(fbdGetCSVTemplate.SelectedPath + "\\CSVTemplate_" + DateTime.Now.ToString("yyyyMMdd_hhmmss") + "\\", securityRules);
-                        DirectoryInfo createDirectoryJVCSV = Directory.CreateDirectory(fbdGetCSVTemplate.SelectedPath + "\\CSVTemplate_" + DateTime.Now.ToString("yyyyMMdd_hhmmss") + "\\", securityRules);
-                        DirectoryInfo createDirectoryRRCSV = Directory.CreateDirectory(fbdGetCSVTemplate.SelectedPath + "\\CSVTemplate_" + DateTime.Now.ToString("yyyyMMdd_hhmmss") + "\\", securityRules);
-                        DirectoryInfo createDirectorySICSV = Directory.CreateDirectory(fbdGetCSVTemplate.SelectedPath + "\\CSVTemplate_" + DateTime.Now.ToString("yyyyMMdd_hhmmss") + "\\", securityRules);
-                        DirectoryInfo createDirectoryINCSV = Directory.CreateDirectory(fbdGetCSVTemplate.SelectedPath + "\\CSVTemplate_" + DateTime.Now.ToString("yyyyMMdd_hhmmss") + "\\", securityRules);
-                        DirectoryInfo createDirectoryOTCSV = Directory.CreateDirectory(fbdGetCSVTemplate.SelectedPath + "\\CSVTemplate_" + DateTime.Now.ToString("yyyyMMdd_hhmmss") + "\\", securityRules);
-                        DirectoryInfo createDirectorySTCSV = Directory.CreateDirectory(fbdGetCSVTemplate.SelectedPath + "\\CSVTemplate_" + DateTime.Now.ToString("yyyyMMdd_hhmmss") + "\\", securityRules);
+                        DirectoryInfo createDirectoryORCSV = Directory.CreateDirectory(fbdGetCSVTemplate.SelectedPath + "\\CSVTemplate_" + DateTime.Now.ToString("yyyyMMdd_hhmmss") + "\\OR\\", securityRules);
+                        DirectoryInfo createDirectoryCVCSV = Directory.CreateDirectory(fbdGetCSVTemplate.SelectedPath + "\\CSVTemplate_" + DateTime.Now.ToString("yyyyMMdd_hhmmss") + "\\CV\\", securityRules);
+                        DirectoryInfo createDirectoryJVCSV = Directory.CreateDirectory(fbdGetCSVTemplate.SelectedPath + "\\CSVTemplate_" + DateTime.Now.ToString("yyyyMMdd_hhmmss") + "\\JV\\", securityRules);
+                        DirectoryInfo createDirectoryRRCSV = Directory.CreateDirectory(fbdGetCSVTemplate.SelectedPath + "\\CSVTemplate_" + DateTime.Now.ToString("yyyyMMdd_hhmmss") + "\\RR\\", securityRules);
+                        DirectoryInfo createDirectorySICSV = Directory.CreateDirectory(fbdGetCSVTemplate.SelectedPath + "\\CSVTemplate_" + DateTime.Now.ToString("yyyyMMdd_hhmmss") + "\\SI\\", securityRules);
+                        DirectoryInfo createDirectoryINCSV = Directory.CreateDirectory(fbdGetCSVTemplate.SelectedPath + "\\CSVTemplate_" + DateTime.Now.ToString("yyyyMMdd_hhmmss") + "\\IN\\", securityRules);
+                        DirectoryInfo createDirectoryOTCSV = Directory.CreateDirectory(fbdGetCSVTemplate.SelectedPath + "\\CSVTemplate_" + DateTime.Now.ToString("yyyyMMdd_hhmmss") + "\\OT\\", securityRules);
+                        DirectoryInfo createDirectorySTCSV = Directory.CreateDirectory(fbdGetCSVTemplate.SelectedPath + "\\CSVTemplate_" + DateTime.Now.ToString("yyyyMMdd_hhmmss") + "\\ST\\", securityRules);
 
                         File.Copy(ORSourcePath, createDirectoryORCSV.FullName + "\\OR.csv", true);
                         File.Copy(CVSourcePath, createDirectoryCVCSV.FullName + "\\CV.csv", true);
