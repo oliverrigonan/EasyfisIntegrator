@@ -419,8 +419,8 @@ namespace EasyfisIntegrator.Forms
             {
                 Controllers.FolderMonitoringTrnCollectionController monitorCollection = new Controllers.FolderMonitoringTrnCollectionController(this, txtFolderMonitoringUserCode.Text, folderToMonitor + "\\OR\\", domain);
                 Controllers.FolderMonitoringTrnDisbursementController monitorDisbursement = new Controllers.FolderMonitoringTrnDisbursementController(this, txtFolderMonitoringUserCode.Text, folderToMonitor + "\\CV\\", domain);
+                Controllers.FolderMonitoringTrnJournalVoucherController monitorJournalVoucher = new Controllers.FolderMonitoringTrnJournalVoucherController(this, txtFolderMonitoringUserCode.Text, folderToMonitor + "\\JV\\", domain);
 
-                //Controllers.FolderMonitoringTrnJournalVoucherController monitorJournalVoucher = new Controllers.FolderMonitoringTrnJournalVoucherController(this, folderToMonitor + "\\JV\\", domain);
                 //Controllers.FolderMonitoringTrnReceivingReceiptController monitorReceivingReceipt = new Controllers.FolderMonitoringTrnReceivingReceiptController(this, folderToMonitor + "\\RR\\", domain);
                 //Controllers.FolderMonitoringTrnSalesInvoiceController monitorSalesInvoice = new Controllers.FolderMonitoringTrnSalesInvoiceController(this, folderToMonitor + "\\SI\\", domain);
                 //Controllers.FolderMonitoringTrnStockInController monitorStockIn = new Controllers.FolderMonitoringTrnStockInController(this, folderToMonitor + "\\IN\\", domain);
