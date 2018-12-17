@@ -69,6 +69,8 @@
             this.txtFolderMonitoringLogs = new System.Windows.Forms.TextBox();
             this.fbdGetCSVTemplate = new System.Windows.Forms.FolderBrowserDialog();
             this.fileSystemWatcherCSVFiles = new System.IO.FileSystemWatcher();
+            this.label3 = new System.Windows.Forms.Label();
+            this.txtFolderMonitoringUserCode = new System.Windows.Forms.TextBox();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel1.SuspendLayout();
@@ -455,7 +457,7 @@
             this.btnGetCSVTemplate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnGetCSVTemplate.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.btnGetCSVTemplate.ForeColor = System.Drawing.Color.White;
-            this.btnGetCSVTemplate.Location = new System.Drawing.Point(1, 64);
+            this.btnGetCSVTemplate.Location = new System.Drawing.Point(1, 96);
             this.btnGetCSVTemplate.Name = "btnGetCSVTemplate";
             this.btnGetCSVTemplate.Size = new System.Drawing.Size(220, 37);
             this.btnGetCSVTemplate.TabIndex = 23;
@@ -469,11 +471,13 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel4.BackColor = System.Drawing.SystemColors.Control;
+            this.panel4.Controls.Add(this.label3);
+            this.panel4.Controls.Add(this.txtFolderMonitoringUserCode);
             this.panel4.Controls.Add(this.txtFolderMonitoringDomain);
             this.panel4.Controls.Add(this.label14);
             this.panel4.Location = new System.Drawing.Point(2, 4);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(834, 57);
+            this.panel4.Size = new System.Drawing.Size(834, 91);
             this.panel4.TabIndex = 22;
             // 
             // txtFolderMonitoringDomain
@@ -502,7 +506,7 @@
             this.btnStartFolderMonitoringIntegration.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnStartFolderMonitoringIntegration.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.btnStartFolderMonitoringIntegration.ForeColor = System.Drawing.Color.White;
-            this.btnStartFolderMonitoringIntegration.Location = new System.Drawing.Point(642, 64);
+            this.btnStartFolderMonitoringIntegration.Location = new System.Drawing.Point(642, 96);
             this.btnStartFolderMonitoringIntegration.Name = "btnStartFolderMonitoringIntegration";
             this.btnStartFolderMonitoringIntegration.Size = new System.Drawing.Size(93, 37);
             this.btnStartFolderMonitoringIntegration.TabIndex = 16;
@@ -517,7 +521,7 @@
             this.btnStopFolderMonitoringIntegration.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnStopFolderMonitoringIntegration.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.btnStopFolderMonitoringIntegration.ForeColor = System.Drawing.Color.White;
-            this.btnStopFolderMonitoringIntegration.Location = new System.Drawing.Point(741, 64);
+            this.btnStopFolderMonitoringIntegration.Location = new System.Drawing.Point(741, 96);
             this.btnStopFolderMonitoringIntegration.Name = "btnStopFolderMonitoringIntegration";
             this.btnStopFolderMonitoringIntegration.Size = new System.Drawing.Size(93, 37);
             this.btnStopFolderMonitoringIntegration.TabIndex = 15;
@@ -531,12 +535,12 @@
             this.txtFolderMonitoringLogs.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtFolderMonitoringLogs.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.txtFolderMonitoringLogs.ForeColor = System.Drawing.Color.White;
-            this.txtFolderMonitoringLogs.Location = new System.Drawing.Point(1, 106);
+            this.txtFolderMonitoringLogs.Location = new System.Drawing.Point(1, 140);
             this.txtFolderMonitoringLogs.MaxLength = 0;
             this.txtFolderMonitoringLogs.Multiline = true;
             this.txtFolderMonitoringLogs.Name = "txtFolderMonitoringLogs";
             this.txtFolderMonitoringLogs.ReadOnly = true;
-            this.txtFolderMonitoringLogs.Size = new System.Drawing.Size(833, 508);
+            this.txtFolderMonitoringLogs.Size = new System.Drawing.Size(833, 474);
             this.txtFolderMonitoringLogs.TabIndex = 17;
             // 
             // fileSystemWatcherCSVFiles
@@ -552,6 +556,25 @@
             this.fileSystemWatcherCSVFiles.Created += new System.IO.FileSystemEventHandler(this.fileSystemWatcherCSVFiles_Created);
             this.fileSystemWatcherCSVFiles.Deleted += new System.IO.FileSystemEventHandler(this.fileSystemWatcherCSVFiles_Deleted);
             this.fileSystemWatcherCSVFiles.Renamed += new System.IO.RenamedEventHandler(this.fileSystemWatcherCSVFiles_Renamed);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.label3.Location = new System.Drawing.Point(49, 47);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(94, 20);
+            this.label3.TabIndex = 24;
+            this.label3.Text = "User Code:";
+            // 
+            // txtFolderMonitoringUserCode
+            // 
+            this.txtFolderMonitoringUserCode.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.txtFolderMonitoringUserCode.Location = new System.Drawing.Point(167, 44);
+            this.txtFolderMonitoringUserCode.Name = "txtFolderMonitoringUserCode";
+            this.txtFolderMonitoringUserCode.ReadOnly = true;
+            this.txtFolderMonitoringUserCode.Size = new System.Drawing.Size(266, 26);
+            this.txtFolderMonitoringUserCode.TabIndex = 25;
             // 
             // TrnIntegrationForm
             // 
@@ -634,5 +657,7 @@
         private System.Windows.Forms.Button btnGetCSVTemplate;
         private System.Windows.Forms.FolderBrowserDialog fbdGetCSVTemplate;
         private System.IO.FileSystemWatcher fileSystemWatcherCSVFiles;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox txtFolderMonitoringUserCode;
     }
 }

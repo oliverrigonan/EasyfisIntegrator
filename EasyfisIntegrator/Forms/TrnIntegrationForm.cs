@@ -52,7 +52,7 @@ namespace EasyfisIntegrator.Forms
             isSettingsClicked = false;
 
             logMessages("Press start button to integrate. \r\n\n" + "\r\n\n");
-            getPOSSettings();
+            getSettings();
 
             logFolderMonitoringMessage("Press start button to integrate. \r\n\n" + "\r\n\n");
 
@@ -80,7 +80,7 @@ namespace EasyfisIntegrator.Forms
             }
         }
 
-        public void getPOSSettings()
+        public void getSettings()
         {
             stopIntegration();
 
@@ -94,10 +94,11 @@ namespace EasyfisIntegrator.Forms
 
             txtDomain.Text = sysSettings.Domain;
             txtFolderMonitoringDomain.Text = sysSettings.Domain;
+            txtFolderMonitoringUserCode.Text = sysSettings.FolderMonitoringUserCode;
             isFolderMonitoringOnly = sysSettings.IsFolderMonitoringOnly;
             folderToMonitor = sysSettings.FolderToMonitor;
             domain = sysSettings.Domain;
-            
+
             if (isFolderMonitoringOnly)
             {
                 tabPOSIntegration.Enabled = false;
@@ -134,6 +135,11 @@ namespace EasyfisIntegrator.Forms
         {
             e.Cancel = true;
             Activate();
+
+            isFolderMonitoringIntegrationStarted = false;
+
+            btnStartFolderMonitoringIntegration.Enabled = true;
+            btnStopFolderMonitoringIntegration.Enabled = false;
 
             DialogResult dialogResult = MessageBox.Show("Are you sure you want to close this application?", "Close Integrator", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (dialogResult == DialogResult.Yes)
@@ -411,8 +417,9 @@ namespace EasyfisIntegrator.Forms
         {
             if (isFolderMonitoringIntegrationStarted)
             {
-                Controllers.FolderMonitoringTrnCollectionController monitorCollection = new Controllers.FolderMonitoringTrnCollectionController(this, folderToMonitor + "\\OR\\", domain);
-                //Controllers.FolderMonitoringTrnDisbursementController monitorDisbursement = new Controllers.FolderMonitoringTrnDisbursementController(this, folderToMonitor + "\\CV\\", domain);
+                Controllers.FolderMonitoringTrnCollectionController monitorCollection = new Controllers.FolderMonitoringTrnCollectionController(this, txtFolderMonitoringUserCode.Text, folderToMonitor + "\\OR\\", domain);
+                Controllers.FolderMonitoringTrnDisbursementController monitorDisbursement = new Controllers.FolderMonitoringTrnDisbursementController(this, txtFolderMonitoringUserCode.Text, folderToMonitor + "\\CV\\", domain);
+
                 //Controllers.FolderMonitoringTrnJournalVoucherController monitorJournalVoucher = new Controllers.FolderMonitoringTrnJournalVoucherController(this, folderToMonitor + "\\JV\\", domain);
                 //Controllers.FolderMonitoringTrnReceivingReceiptController monitorReceivingReceipt = new Controllers.FolderMonitoringTrnReceivingReceiptController(this, folderToMonitor + "\\RR\\", domain);
                 //Controllers.FolderMonitoringTrnSalesInvoiceController monitorSalesInvoice = new Controllers.FolderMonitoringTrnSalesInvoiceController(this, folderToMonitor + "\\SI\\", domain);

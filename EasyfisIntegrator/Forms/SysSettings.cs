@@ -46,6 +46,7 @@ namespace EasyfisIntegrator.Forms
             txtDomain.Text = sysSettings.Domain;
             txtLogFileLocation.Text = sysSettings.LogFileLocation;
             txtFolderToMonitor.Text = sysSettings.FolderToMonitor;
+            txtFMUserCode.Text = sysSettings.FolderMonitoringUserCode;
             isFolderMonitoringOnly = sysSettings.IsFolderMonitoringOnly;
 
             if (isFolderMonitoringOnly)
@@ -113,7 +114,8 @@ namespace EasyfisIntegrator.Forms
                     Domain = txtDomain.Text,
                     LogFileLocation = txtLogFileLocation.Text,
                     FolderToMonitor = txtFolderToMonitor.Text,
-                    IsFolderMonitoringOnly = isFolderMonitoringOnly
+                    IsFolderMonitoringOnly = isFolderMonitoringOnly,
+                    FolderMonitoringUserCode = txtFMUserCode.Text
                 };
 
                 String settingsPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Settings.json");
@@ -121,7 +123,7 @@ namespace EasyfisIntegrator.Forms
 
                 File.WriteAllText(settingsPath, newJson);
 
-                trnInnosoftPOSIntegrationForm.getPOSSettings();
+                trnInnosoftPOSIntegrationForm.getSettings();
 
                 Close();
             }

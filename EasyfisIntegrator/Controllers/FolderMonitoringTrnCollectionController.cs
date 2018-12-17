@@ -14,15 +14,15 @@ namespace EasyfisIntegrator.Controllers
     {
         public Forms.TrnIntegrationForm trnIntegrationForm;
 
-        public FolderMonitoringTrnCollectionController(Forms.TrnIntegrationForm form, String directory, String domain)
+        public FolderMonitoringTrnCollectionController(Forms.TrnIntegrationForm form, String userCode, String directory, String domain)
         {
             trnIntegrationForm = form;
 
             List<String> files = Directory.GetFiles(directory).ToList();
-            if (files.Any()) { foreach (var file in files) { SendCollectionData(file, domain); } }
+            if (files.Any()) { foreach (var file in files) { SendCollectionData(userCode, file, domain); } }
         }
 
-        public void SendCollectionData(String file, String domain)
+        public void SendCollectionData(String userCode, String file, String domain)
         {
             try
             {
@@ -44,7 +44,7 @@ namespace EasyfisIntegrator.Controllers
                             CustomerCode = data[2],
                             Remarks = data[3],
                             ManualORNumber = data[4],
-                            UserCode = "easyfis",
+                            UserCode = userCode,
                             CreatedDateTime = data[5],
                             AccountCode = data[6],
                             ArticleCode = data[7],

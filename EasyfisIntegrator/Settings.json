@@ -3,5 +3,6 @@
   "Domain": "localhost:2651",
   "LogFileLocation": "D:\\Easyfis\\Logs",
   "FolderToMonitor": "D:\\Easyfis\\Folders",
-  "IsFolderMonitoringOnly": false
+  "IsFolderMonitoringOnly": "false",
+  "FolderMonitoringUserCode": "easyfis"
 }

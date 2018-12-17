@@ -59,6 +59,8 @@
             this.btnSaveSettings = new System.Windows.Forms.Button();
             this.fbdLogFileLocation = new System.Windows.Forms.FolderBrowserDialog();
             this.fbdFolderToMonitor = new System.Windows.Forms.FolderBrowserDialog();
+            this.label8 = new System.Windows.Forms.Label();
+            this.txtFMUserCode = new System.Windows.Forms.TextBox();
             this.panel1.SuspendLayout();
             this.tabSettings.SuspendLayout();
             this.tabPagePOSSettings.SuspendLayout();
@@ -217,6 +219,8 @@
             // 
             // tabPageSystem
             // 
+            this.tabPageSystem.Controls.Add(this.label8);
+            this.tabPageSystem.Controls.Add(this.txtFMUserCode);
             this.tabPageSystem.Controls.Add(this.btnLocateLogFileLocation);
             this.tabPageSystem.Controls.Add(this.btnLocateFolderToMonitor);
             this.tabPageSystem.Controls.Add(this.label6);
@@ -385,6 +389,24 @@
             this.btnSaveSettings.UseVisualStyleBackColor = false;
             this.btnSaveSettings.Click += new System.EventHandler(this.btnSaveSettings_Click);
             // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.label8.Location = new System.Drawing.Point(82, 115);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(94, 20);
+            this.label8.TabIndex = 49;
+            this.label8.Text = "User Code:";
+            // 
+            // txtFMUserCode
+            // 
+            this.txtFMUserCode.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.txtFMUserCode.Location = new System.Drawing.Point(199, 112);
+            this.txtFMUserCode.Name = "txtFMUserCode";
+            this.txtFMUserCode.Size = new System.Drawing.Size(310, 26);
+            this.txtFMUserCode.TabIndex = 48;
+            // 
             // SysSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -446,5 +468,7 @@
         private System.Windows.Forms.Button btnLocateLogFileLocation;
         private System.Windows.Forms.FolderBrowserDialog fbdLogFileLocation;
         private System.Windows.Forms.FolderBrowserDialog fbdFolderToMonitor;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.TextBox txtFMUserCode;
     }
 }
