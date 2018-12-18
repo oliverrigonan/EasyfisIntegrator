@@ -13,60 +13,59 @@ namespace EasyfisIntegrator.Controllers
     {
         public Forms.TrnIntegrationForm trnIntegrationForm;
 
-        public FolderMonitoringTrnSalesInvoiceController(Forms.TrnIntegrationForm form, String textFile, String domain)
+        public FolderMonitoringTrnSalesInvoiceController(Forms.TrnIntegrationForm form, String userCode, String directory, String domain)
         {
             trnIntegrationForm = form;
-            SendSalesInvoiceData(textFile, domain);
+
+            List<String> files = Directory.GetFiles(directory).ToList();
+            if (files.Any()) { foreach (var file in files) { SendSalesInvoiceData(userCode, file, domain); } }
         }
 
-        public String GetSalesInvoiceData(String textFile)
-        {
-            String json = "";
-            String[] lines = File.ReadAllLines(textFile);
-
-            if (lines.Length > 0)
-            {
-                List<Entities.FolderMonitoringTrnSalesInvoice> newSalesInvoices = new List<Entities.FolderMonitoringTrnSalesInvoice>();
-
-                for (int r = 1; r < lines.Length; r++)
-                {
-                    String[] data = lines[r].Split(',');
-
-                    newSalesInvoices.Add(new Entities.FolderMonitoringTrnSalesInvoice
-                    {
-                        BranchCode = data[0],
-                        SIDate = data[1],
-                        CustomerCode = data[2],
-                        Term = data[3],
-                        DocumentReference = data[4],
-                        ManualSINumber = data[5],
-                        Remarks = data[6],
-                        UserCode = data[7],
-                        CreatedDateTime = data[8],
-                        ItemCode = data[9],
-                        Particulars = data[10],
-                        Unit = data[11],
-                        Quantity = Convert.ToDecimal(data[12]),
-                        Price = Convert.ToDecimal(data[13]),
-                        Discount = data[14],
-                        DiscountRate = Convert.ToDecimal(data[15]),
-                        DiscountAmount = Convert.ToDecimal(data[16]),
-                        NetPrice = Convert.ToDecimal(data[17]),
-                        Amount = Convert.ToDecimal(data[18])
-                    });
-                }
-
-                JavaScriptSerializer serializer = new JavaScriptSerializer();
-                json = serializer.Serialize(newSalesInvoices);
-            }
-
-            return json;
-        }
-
-        public void SendSalesInvoiceData(String textFile, String domain)
+        public void SendSalesInvoiceData(String userCode, String file, String domain)
         {
             try
             {
+                String json = "";
+                String[] lines = File.ReadAllLines(file);
+
+                if (lines.Length > 0)
+                {
+                    List<Entities.FolderMonitoringTrnSalesInvoice> newSalesInvoices = new List<Entities.FolderMonitoringTrnSalesInvoice>();
+
+                    for (int r = 1; r < lines.Length; r++)
+                    {
+                        String[] data = lines[r].Split(',');
+
+                        newSalesInvoices.Add(new Entities.FolderMonitoringTrnSalesInvoice
+                        {
+                            BranchCode = data[0],
+                            SIDate = data[1],
+                            CustomerCode = data[2],
+                            Term = data[3],
+                            DocumentReference = data[4],
+                            ManualSINumber = data[5],
+                            Remarks = data[6],
+                            UserCode = userCode,
+                            CreatedDateTime = data[7],
+                            ItemCode = data[8],
+                            Particulars = data[9],
+                            Unit = data[10],
+                            Quantity = Convert.ToDecimal(data[11]),
+                            Price = Convert.ToDecimal(data[12]),
+                            Discount = data[13],
+                            DiscountRate = Convert.ToDecimal(data[14]),
+                            DiscountAmount = Convert.ToDecimal(data[15]),
+                            NetPrice = Convert.ToDecimal(data[16]),
+                            Amount = Convert.ToDecimal(data[17])
+                        });
+                    }
+
+                    JavaScriptSerializer serializer = new JavaScriptSerializer();
+                    json = serializer.Serialize(newSalesInvoices);
+                }
+
+                trnIntegrationForm.logFolderMonitoringMessage("Sending Sales..." + "\r\n\n");
+
                 String apiURL = "http://" + domain + "/api/folderMonitoring/salesInvoice/add";
 
                 HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(apiURL);
@@ -75,10 +74,7 @@ namespace EasyfisIntegrator.Controllers
 
                 using (StreamWriter streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
                 {
-                    JavaScriptSerializer serializer = new JavaScriptSerializer();
-                    Entities.FolderMonitoringTrnSalesInvoice salesInvoice = serializer.Deserialize<Entities.FolderMonitoringTrnSalesInvoice>(GetSalesInvoiceData(textFile));
-
-                    streamWriter.Write(new JavaScriptSerializer().Serialize(salesInvoice));
+                    streamWriter.Write(json);
                 }
 
                 HttpWebResponse httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
@@ -89,6 +85,8 @@ namespace EasyfisIntegrator.Controllers
                     trnIntegrationForm.logFolderMonitoringMessage("Send Successful!" + "\r\n\n");
                     trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                     trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+
+                    File.Delete(file);
                 }
             }
             catch (WebException we)
@@ -97,10 +95,16 @@ namespace EasyfisIntegrator.Controllers
                 {
                     String resp = streamReader.ReadToEnd().Replace("\"", "");
 
-                    trnIntegrationForm.logFolderMonitoringMessage("Sales Invoice Error: " + resp + "\r\n\n");
+                    trnIntegrationForm.logFolderMonitoringMessage("Web Exception Error: " + resp + "\r\n\n");
                     trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                     trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
                 }
+            }
+            catch (Exception ex)
+            {
+                trnIntegrationForm.logFolderMonitoringMessage("Exception Error: " + ex.Message + "\r\n\n");
+                trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
             }
         }
     }
