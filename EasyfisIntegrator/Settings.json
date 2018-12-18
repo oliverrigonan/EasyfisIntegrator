@@ -4,5 +4,6 @@
   "LogFileLocation": "D:\\Easyfis\\Logs",
   "FolderToMonitor": "D:\\Easyfis\\Folders",
   "IsFolderMonitoringOnly": "false",
-  "FolderMonitoringUserCode": "easyfis"
+  "FolderMonitoringUserCode": "easyfis",
+  "FolderForSentFiles": "D:\\Easyfis\\Sent"
 }

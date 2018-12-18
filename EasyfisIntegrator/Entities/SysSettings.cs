@@ -14,5 +14,6 @@ namespace EasyfisIntegrator.Entities
         public String FolderToMonitor { get; set; }
         public Boolean IsFolderMonitoringOnly { get; set; }
         public String FolderMonitoringUserCode { get; set; }
+        public String FolderForSentFiles { get; set; }
     }
 }

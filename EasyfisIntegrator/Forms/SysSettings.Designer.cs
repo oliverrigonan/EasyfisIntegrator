@@ -44,6 +44,11 @@
             this.label7 = new System.Windows.Forms.Label();
             this.txtBranchCode = new System.Windows.Forms.TextBox();
             this.tabPageSystem = new System.Windows.Forms.TabPage();
+            this.btnLocateFolderForSentFiles = new System.Windows.Forms.Button();
+            this.txtFolderForSentFiles = new System.Windows.Forms.TextBox();
+            this.label12 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.txtFMUserCode = new System.Windows.Forms.TextBox();
             this.btnLocateLogFileLocation = new System.Windows.Forms.Button();
             this.btnLocateFolderToMonitor = new System.Windows.Forms.Button();
             this.label6 = new System.Windows.Forms.Label();
@@ -59,8 +64,7 @@
             this.btnSaveSettings = new System.Windows.Forms.Button();
             this.fbdLogFileLocation = new System.Windows.Forms.FolderBrowserDialog();
             this.fbdFolderToMonitor = new System.Windows.Forms.FolderBrowserDialog();
-            this.label8 = new System.Windows.Forms.Label();
-            this.txtFMUserCode = new System.Windows.Forms.TextBox();
+            this.fbdFolderForSentFiles = new System.Windows.Forms.FolderBrowserDialog();
             this.panel1.SuspendLayout();
             this.tabSettings.SuspendLayout();
             this.tabPagePOSSettings.SuspendLayout();
@@ -219,6 +223,9 @@
             // 
             // tabPageSystem
             // 
+            this.tabPageSystem.Controls.Add(this.btnLocateFolderForSentFiles);
+            this.tabPageSystem.Controls.Add(this.txtFolderForSentFiles);
+            this.tabPageSystem.Controls.Add(this.label12);
             this.tabPageSystem.Controls.Add(this.label8);
             this.tabPageSystem.Controls.Add(this.txtFMUserCode);
             this.tabPageSystem.Controls.Add(this.btnLocateLogFileLocation);
@@ -236,6 +243,59 @@
             this.tabPageSystem.TabIndex = 1;
             this.tabPageSystem.Text = "System";
             this.tabPageSystem.UseVisualStyleBackColor = true;
+            // 
+            // btnLocateFolderForSentFiles
+            // 
+            this.btnLocateFolderForSentFiles.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnLocateFolderForSentFiles.BackColor = System.Drawing.SystemColors.Control;
+            this.btnLocateFolderForSentFiles.FlatAppearance.BorderSize = 0;
+            this.btnLocateFolderForSentFiles.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.btnLocateFolderForSentFiles.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.btnLocateFolderForSentFiles.ForeColor = System.Drawing.Color.Black;
+            this.btnLocateFolderForSentFiles.Location = new System.Drawing.Point(515, 147);
+            this.btnLocateFolderForSentFiles.Name = "btnLocateFolderForSentFiles";
+            this.btnLocateFolderForSentFiles.Size = new System.Drawing.Size(54, 30);
+            this.btnLocateFolderForSentFiles.TabIndex = 52;
+            this.btnLocateFolderForSentFiles.Text = "...";
+            this.btnLocateFolderForSentFiles.UseVisualStyleBackColor = false;
+            this.btnLocateFolderForSentFiles.Click += new System.EventHandler(this.btnLocateFolderForSentFiles_Click);
+            // 
+            // txtFolderForSentFiles
+            // 
+            this.txtFolderForSentFiles.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.txtFolderForSentFiles.Location = new System.Drawing.Point(199, 144);
+            this.txtFolderForSentFiles.Name = "txtFolderForSentFiles";
+            this.txtFolderForSentFiles.ReadOnly = true;
+            this.txtFolderForSentFiles.Size = new System.Drawing.Size(310, 26);
+            this.txtFolderForSentFiles.TabIndex = 53;
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.label12.Location = new System.Drawing.Point(10, 147);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(166, 20);
+            this.label12.TabIndex = 51;
+            this.label12.Text = "Folder for Sent Files:";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.label8.Location = new System.Drawing.Point(82, 115);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(94, 20);
+            this.label8.TabIndex = 49;
+            this.label8.Text = "User Code:";
+            // 
+            // txtFMUserCode
+            // 
+            this.txtFMUserCode.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.txtFMUserCode.Location = new System.Drawing.Point(199, 112);
+            this.txtFMUserCode.Name = "txtFMUserCode";
+            this.txtFMUserCode.Size = new System.Drawing.Size(310, 26);
+            this.txtFMUserCode.TabIndex = 48;
             // 
             // btnLocateLogFileLocation
             // 
@@ -389,24 +449,6 @@
             this.btnSaveSettings.UseVisualStyleBackColor = false;
             this.btnSaveSettings.Click += new System.EventHandler(this.btnSaveSettings_Click);
             // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.label8.Location = new System.Drawing.Point(82, 115);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(94, 20);
-            this.label8.TabIndex = 49;
-            this.label8.Text = "User Code:";
-            // 
-            // txtFMUserCode
-            // 
-            this.txtFMUserCode.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.txtFMUserCode.Location = new System.Drawing.Point(199, 112);
-            this.txtFMUserCode.Name = "txtFMUserCode";
-            this.txtFMUserCode.Size = new System.Drawing.Size(310, 26);
-            this.txtFMUserCode.TabIndex = 48;
-            // 
             // SysSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -470,5 +512,9 @@
         private System.Windows.Forms.FolderBrowserDialog fbdFolderToMonitor;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.TextBox txtFMUserCode;
+        private System.Windows.Forms.Button btnLocateFolderForSentFiles;
+        private System.Windows.Forms.TextBox txtFolderForSentFiles;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.FolderBrowserDialog fbdFolderForSentFiles;
     }
 }

@@ -48,6 +48,7 @@ namespace EasyfisIntegrator.Forms
             txtFolderToMonitor.Text = sysSettings.FolderToMonitor;
             txtFMUserCode.Text = sysSettings.FolderMonitoringUserCode;
             isFolderMonitoringOnly = sysSettings.IsFolderMonitoringOnly;
+            txtFolderForSentFiles.Text = sysSettings.FolderForSentFiles;
 
             if (isFolderMonitoringOnly)
             {
@@ -115,7 +116,8 @@ namespace EasyfisIntegrator.Forms
                     LogFileLocation = txtLogFileLocation.Text,
                     FolderToMonitor = txtFolderToMonitor.Text,
                     IsFolderMonitoringOnly = isFolderMonitoringOnly,
-                    FolderMonitoringUserCode = txtFMUserCode.Text
+                    FolderMonitoringUserCode = txtFMUserCode.Text,
+                    FolderForSentFiles = txtFolderForSentFiles.Text
                 };
 
                 String settingsPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Settings.json");
@@ -139,6 +141,12 @@ namespace EasyfisIntegrator.Forms
         {
             fbdFolderToMonitor.ShowDialog();
             txtFolderToMonitor.Text = fbdFolderToMonitor.SelectedPath;
+        }
+
+        private void btnLocateFolderForSentFiles_Click(object sender, EventArgs e)
+        {
+            fbdFolderForSentFiles.ShowDialog();
+            txtFolderForSentFiles.Text = fbdFolderForSentFiles.SelectedPath;
         }
     }
 }

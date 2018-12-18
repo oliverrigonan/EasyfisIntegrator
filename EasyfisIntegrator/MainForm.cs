@@ -147,7 +147,8 @@ namespace EasyfisIntegrator
                 LogFileLocation = sysSettings.LogFileLocation,
                 FolderToMonitor = sysSettings.FolderToMonitor,
                 IsFolderMonitoringOnly = true,
-                FolderMonitoringUserCode = sysSettings.FolderMonitoringUserCode
+                FolderMonitoringUserCode = sysSettings.FolderMonitoringUserCode,
+                FolderForSentFiles = sysSettings.FolderForSentFiles
             };
 
             String newJson = new JavaScriptSerializer().Serialize(newSysSettings);
