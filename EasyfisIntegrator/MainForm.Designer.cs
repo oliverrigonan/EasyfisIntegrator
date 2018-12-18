@@ -85,7 +85,7 @@
             this.btnMainIntegrate.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnMainIntegrate.BackColor = System.Drawing.Color.RoyalBlue;
+            this.btnMainIntegrate.BackColor = System.Drawing.Color.Brown;
             this.btnMainIntegrate.FlatAppearance.BorderSize = 0;
             this.btnMainIntegrate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnMainIntegrate.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
@@ -125,7 +125,7 @@
             this.btnIntegrateFiles.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnIntegrateFiles.BackColor = System.Drawing.Color.Teal;
+            this.btnIntegrateFiles.BackColor = System.Drawing.Color.DarkGoldenrod;
             this.btnIntegrateFiles.FlatAppearance.BorderSize = 0;
             this.btnIntegrateFiles.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnIntegrateFiles.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
@@ -169,9 +169,9 @@
             // pictureBox3
             // 
             this.pictureBox3.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox3.Image")));
-            this.pictureBox3.Location = new System.Drawing.Point(3, 10);
+            this.pictureBox3.Location = new System.Drawing.Point(3, 4);
             this.pictureBox3.Name = "pictureBox3";
-            this.pictureBox3.Size = new System.Drawing.Size(248, 78);
+            this.pictureBox3.Size = new System.Drawing.Size(248, 91);
             this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox3.TabIndex = 1;
             this.pictureBox3.TabStop = false;
