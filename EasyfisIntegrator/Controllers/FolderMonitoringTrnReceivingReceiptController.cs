@@ -21,7 +21,8 @@ namespace EasyfisIntegrator.Controllers
         {
             trnIntegrationForm = form;
 
-            List<String> files = Directory.GetFiles(directory).ToList();
+            List<String> ext = new List<String> { ".csv" };
+            List<String> files = Directory.GetFiles(directory, "*.*", SearchOption.AllDirectories).Where(s => ext.Contains(Path.GetExtension(s))).ToList();
             if (files.Any()) { foreach (var file in files) { SendReceivingReceiptData(userCode, file, domain); } }
         }
 
