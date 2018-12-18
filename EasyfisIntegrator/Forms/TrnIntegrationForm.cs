@@ -73,6 +73,8 @@ namespace EasyfisIntegrator.Forms
             }
             else
             {
+                isFolderMonitoringIntegrationStarted = false;
+
                 Hide();
 
                 SysLoginForm sysLoginForm = new SysLoginForm();
@@ -136,8 +138,6 @@ namespace EasyfisIntegrator.Forms
             e.Cancel = true;
             Activate();
 
-            isFolderMonitoringIntegrationStarted = false;
-
             btnStartFolderMonitoringIntegration.Enabled = true;
             btnStopFolderMonitoringIntegration.Enabled = false;
 
@@ -146,6 +146,8 @@ namespace EasyfisIntegrator.Forms
             {
                 if (isFolderMonitoringOnly)
                 {
+                    isFolderMonitoringIntegrationStarted = false;
+
                     Hide();
 
                     MainForm mainForm = new MainForm();
@@ -307,7 +309,11 @@ namespace EasyfisIntegrator.Forms
             btnStopIntegration.Enabled = false;
 
             dtpIntegrationDate.Enabled = true;
-            btnSettings.Enabled = true;
+
+            if (!isFolderMonitoringIntegrationStarted)
+            {
+                btnSettings.Enabled = true;
+            }
 
             btnClearLogs.Enabled = true;
             btnSaveLogs.Enabled = true;
@@ -432,11 +438,6 @@ namespace EasyfisIntegrator.Forms
         {
             btnSettings.Enabled = false;
 
-            btnClearLogs.Enabled = false;
-            btnSaveLogs.Enabled = false;
-
-            btnLogout.Enabled = false;
-
             btnStartFolderMonitoringIntegration.Enabled = false;
             btnStopFolderMonitoringIntegration.Enabled = true;
 
@@ -447,12 +448,10 @@ namespace EasyfisIntegrator.Forms
 
         private void btnStopFolderMonitoringIntegration_Click(object sender, EventArgs e)
         {
-            btnSettings.Enabled = true;
-
-            btnClearLogs.Enabled = true;
-            btnSaveLogs.Enabled = true;
-
-            btnLogout.Enabled = true;
+            if (!isIntegrationStarted)
+            {
+                btnSettings.Enabled = true;
+            }
 
             btnStartFolderMonitoringIntegration.Enabled = true;
             btnStopFolderMonitoringIntegration.Enabled = false;
