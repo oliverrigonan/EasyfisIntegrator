@@ -29,6 +29,11 @@ namespace EasyfisIntegrator
 
         private void btnMainIntegrate_Click(object sender, EventArgs e)
         {
+            connectInnosoftPOSIntegration();
+        }
+
+        public void connectInnosoftPOSIntegration()
+        {
             lblLoading.Text = "Loading... Please wait...";
 
             btnMainIntegrate.Enabled = false;
@@ -98,6 +103,9 @@ namespace EasyfisIntegrator
                     pgbMainLoading.Visible = false;
 
                     lblLoading.Visible = false;
+
+                    Forms.SysConnectionString sysConnectionString = new Forms.SysConnectionString(this);
+                    sysConnectionString.ShowDialog();
                 }
             }
             catch (Exception ex)

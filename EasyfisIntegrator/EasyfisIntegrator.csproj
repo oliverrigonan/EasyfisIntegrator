@@ -91,6 +91,12 @@
     <Compile Include="Entities\ISPOSTrnStockOutItem.cs" />
     <Compile Include="Entities\ISPOSTrnStockTransfer.cs" />
     <Compile Include="Entities\ISPOSTrnStockTransferItem.cs" />
+    <Compile Include="Forms\SysConnectionString.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\SysConnectionString.Designer.cs">
+      <DependentUpon>SysConnectionString.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\SysLoginForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -149,6 +155,9 @@
     <None Include="InnosoftPOSData\InnosoftPOSData.dbml.layout">
       <DependentUpon>InnosoftPOSData.dbml</DependentUpon>
     </None>
+    <EmbeddedResource Include="Forms\SysConnectionString.resx">
+      <DependentUpon>SysConnectionString.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\SysLoginForm.resx">
       <DependentUpon>SysLoginForm.cs</DependentUpon>
     </EmbeddedResource>
