@@ -22,7 +22,7 @@ namespace EasyfisIntegrator.Controllers
             trnIntegrationForm = form;
 
             List<String> ext = new List<String> { ".csv" };
-            List<String> files = Directory.GetFiles(directory, "*.*", SearchOption.AllDirectories).Where(s => ext.Contains(Path.GetExtension(s))).ToList();
+            List<String> files = new List<String>(Directory.EnumerateFiles(directory, "*.*", SearchOption.AllDirectories));
             if (files.Any()) { foreach (var file in files) { SendCollectionData(userCode, file, domain); } }
         }
 
@@ -31,16 +31,14 @@ namespace EasyfisIntegrator.Controllers
             try
             {
                 String json = "";
-                String[] lines = File.ReadAllLines(file);
+                List<Entities.FolderMonitoringTrnCollection> newCollections = new List<Entities.FolderMonitoringTrnCollection>();
 
-                if (lines.Length > 0)
+                using (StreamReader streamReader = new StreamReader(File.OpenRead(file)))
                 {
-                    List<Entities.FolderMonitoringTrnCollection> newCollections = new List<Entities.FolderMonitoringTrnCollection>();
-
-                    for (int r = 1; r < lines.Length; r++)
+                    streamReader.ReadLine();
+                    while (streamReader.Peek() != -1)
                     {
-                        String[] data = lines[r].Split(',');
-
+                        String[] data = streamReader.ReadLine().Split(',');
                         newCollections.Add(new Entities.FolderMonitoringTrnCollection
                         {
                             BranchCode = data[0],
@@ -66,6 +64,9 @@ namespace EasyfisIntegrator.Controllers
 
                     JavaScriptSerializer serializer = new JavaScriptSerializer();
                     json = serializer.Serialize(newCollections);
+
+                    streamReader.Close();
+                    streamReader.Dispose();
                 }
 
                 trnIntegrationForm.logFolderMonitoringMessage("Sending Collection..." + "\r\n\n");
@@ -85,31 +86,39 @@ namespace EasyfisIntegrator.Controllers
                 using (StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream()))
                 {
                     String resp = streamReader.ReadToEnd().Replace("\"", "");
-
-                    trnIntegrationForm.logFolderMonitoringMessage("Send Successful!" + "\r\n\n");
-                    trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-
-                    String settingsPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Settings.json");
-
-                    using (StreamReader trmRead = new StreamReader(settingsPath))
+                    if (resp.Equals(""))
                     {
-                        JavaScriptSerializer javaScriptSerializer = new JavaScriptSerializer();
-                        Entities.SysSettings sysSettings = javaScriptSerializer.Deserialize<Entities.SysSettings>(trmRead.ReadToEnd());
+                        trnIntegrationForm.logFolderMonitoringMessage("Send Successful!" + "\r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
 
-                        String executingUser = WindowsIdentity.GetCurrent().Name;
+                        String settingsPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Settings.json");
 
-                        DirectorySecurity securityRules = new DirectorySecurity();
-                        securityRules.AddAccessRule(new FileSystemAccessRule(executingUser, FileSystemRights.Read, AccessControlType.Allow));
-                        securityRules.AddAccessRule(new FileSystemAccessRule(executingUser, FileSystemRights.FullControl, AccessControlType.Allow));
-
-                        if (!Directory.Exists(sysSettings.FolderForSentFiles + "\\OR_" + DateTime.Now.ToString("yyyyMMdd") + "\\"))
+                        using (StreamReader trmRead = new StreamReader(settingsPath))
                         {
-                            DirectoryInfo createDirectoryORCSV = Directory.CreateDirectory(sysSettings.FolderForSentFiles + "\\OR_" + DateTime.Now.ToString("yyyyMMdd") + "\\", securityRules);
-                        }
+                            JavaScriptSerializer javaScriptSerializer = new JavaScriptSerializer();
+                            Entities.SysSettings sysSettings = javaScriptSerializer.Deserialize<Entities.SysSettings>(trmRead.ReadToEnd());
 
-                        String folderForSentFiles = sysSettings.FolderForSentFiles + "\\OR_" + DateTime.Now.ToString("yyyyMMdd") + "\\";
-                        File.Move(file, folderForSentFiles + "OR_" + DateTime.Now.ToString("yyyyMMdd_hhmmss") + ".csv");
+                            String executingUser = WindowsIdentity.GetCurrent().Name;
+
+                            DirectorySecurity securityRules = new DirectorySecurity();
+                            securityRules.AddAccessRule(new FileSystemAccessRule(executingUser, FileSystemRights.Read, AccessControlType.Allow));
+                            securityRules.AddAccessRule(new FileSystemAccessRule(executingUser, FileSystemRights.FullControl, AccessControlType.Allow));
+
+                            if (!Directory.Exists(sysSettings.FolderForSentFiles + "\\OR_" + DateTime.Now.ToString("yyyyMMdd") + "\\"))
+                            {
+                                DirectoryInfo createDirectoryORCSV = Directory.CreateDirectory(sysSettings.FolderForSentFiles + "\\OR_" + DateTime.Now.ToString("yyyyMMdd") + "\\", securityRules);
+                            }
+
+                            String folderForSentFiles = sysSettings.FolderForSentFiles + "\\OR_" + DateTime.Now.ToString("yyyyMMdd") + "\\";
+                            File.Move(file, folderForSentFiles + "OR_" + DateTime.Now.ToString("yyyyMMdd_hhmmss") + ".csv");
+                        }
+                    }
+                    else
+                    {
+                        trnIntegrationForm.logFolderMonitoringMessage("Send Failed! " + resp + "\r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
                     }
                 }
             }

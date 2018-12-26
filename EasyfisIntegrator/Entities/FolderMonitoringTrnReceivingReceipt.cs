@@ -16,7 +16,7 @@ namespace EasyfisIntegrator.Entities
         public String Remarks { get; set; }
         public String UserCode { get; set; }
         public String CreatedDateTime { get; set; }
-        public String PONumber { get; set; }
+        public String ManualPONumber { get; set; }
         public String PODate { get; set; }
         public String PODateNeeded { get; set; }
         public String ItemCode { get; set; }

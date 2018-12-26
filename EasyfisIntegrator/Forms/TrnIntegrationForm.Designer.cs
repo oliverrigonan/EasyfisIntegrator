@@ -62,6 +62,8 @@
             this.tabFolderMonitoring = new System.Windows.Forms.TabPage();
             this.btnGetCSVTemplate = new System.Windows.Forms.Button();
             this.panel4 = new System.Windows.Forms.Panel();
+            this.label3 = new System.Windows.Forms.Label();
+            this.txtFolderMonitoringUserCode = new System.Windows.Forms.TextBox();
             this.txtFolderMonitoringDomain = new System.Windows.Forms.TextBox();
             this.label14 = new System.Windows.Forms.Label();
             this.btnStartFolderMonitoringIntegration = new System.Windows.Forms.Button();
@@ -69,8 +71,6 @@
             this.txtFolderMonitoringLogs = new System.Windows.Forms.TextBox();
             this.fbdGetCSVTemplate = new System.Windows.Forms.FolderBrowserDialog();
             this.fileSystemWatcherCSVFiles = new System.IO.FileSystemWatcher();
-            this.label3 = new System.Windows.Forms.Label();
-            this.txtFolderMonitoringUserCode = new System.Windows.Forms.TextBox();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel1.SuspendLayout();
@@ -480,6 +480,25 @@
             this.panel4.Size = new System.Drawing.Size(834, 91);
             this.panel4.TabIndex = 22;
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.label3.Location = new System.Drawing.Point(49, 47);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(94, 20);
+            this.label3.TabIndex = 24;
+            this.label3.Text = "User Code:";
+            // 
+            // txtFolderMonitoringUserCode
+            // 
+            this.txtFolderMonitoringUserCode.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.txtFolderMonitoringUserCode.Location = new System.Drawing.Point(167, 44);
+            this.txtFolderMonitoringUserCode.Name = "txtFolderMonitoringUserCode";
+            this.txtFolderMonitoringUserCode.ReadOnly = true;
+            this.txtFolderMonitoringUserCode.Size = new System.Drawing.Size(266, 26);
+            this.txtFolderMonitoringUserCode.TabIndex = 25;
+            // 
             // txtFolderMonitoringDomain
             // 
             this.txtFolderMonitoringDomain.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
@@ -552,29 +571,7 @@
             | System.IO.NotifyFilters.LastWrite) 
             | System.IO.NotifyFilters.LastAccess)));
             this.fileSystemWatcherCSVFiles.SynchronizingObject = this;
-            this.fileSystemWatcherCSVFiles.Changed += new System.IO.FileSystemEventHandler(this.fileSystemWatcherCSVFiles_Changed);
             this.fileSystemWatcherCSVFiles.Created += new System.IO.FileSystemEventHandler(this.fileSystemWatcherCSVFiles_Created);
-            this.fileSystemWatcherCSVFiles.Deleted += new System.IO.FileSystemEventHandler(this.fileSystemWatcherCSVFiles_Deleted);
-            this.fileSystemWatcherCSVFiles.Renamed += new System.IO.RenamedEventHandler(this.fileSystemWatcherCSVFiles_Renamed);
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.label3.Location = new System.Drawing.Point(49, 47);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(94, 20);
-            this.label3.TabIndex = 24;
-            this.label3.Text = "User Code:";
-            // 
-            // txtFolderMonitoringUserCode
-            // 
-            this.txtFolderMonitoringUserCode.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.txtFolderMonitoringUserCode.Location = new System.Drawing.Point(167, 44);
-            this.txtFolderMonitoringUserCode.Name = "txtFolderMonitoringUserCode";
-            this.txtFolderMonitoringUserCode.ReadOnly = true;
-            this.txtFolderMonitoringUserCode.Size = new System.Drawing.Size(266, 26);
-            this.txtFolderMonitoringUserCode.TabIndex = 25;
             // 
             // TrnIntegrationForm
             // 

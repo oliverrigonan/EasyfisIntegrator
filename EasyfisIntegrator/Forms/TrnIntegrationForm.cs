@@ -399,38 +399,45 @@ namespace EasyfisIntegrator.Forms
             txtLogs.ScrollToCaret();
         }
 
-        private void fileSystemWatcherCSVFiles_Changed(object sender, FileSystemEventArgs e)
-        {
-            monitorControllers();
-        }
-
         private void fileSystemWatcherCSVFiles_Created(object sender, FileSystemEventArgs e)
         {
-            monitorControllers();
+            String[] documentPrefix = e.FullPath.Split('\\');
+            monitorControllers(documentPrefix[documentPrefix.Length - 2]);
         }
 
-        private void fileSystemWatcherCSVFiles_Deleted(object sender, FileSystemEventArgs e)
-        {
-            monitorControllers();
-        }
-
-        private void fileSystemWatcherCSVFiles_Renamed(object sender, RenamedEventArgs e)
-        {
-            monitorControllers();
-        }
-
-        public void monitorControllers()
+        public void monitorControllers(String documentPrefix)
         {
             if (isFolderMonitoringIntegrationStarted)
             {
-                Controllers.FolderMonitoringTrnCollectionController monitorCollection = new Controllers.FolderMonitoringTrnCollectionController(this, txtFolderMonitoringUserCode.Text, folderToMonitor + "\\OR\\", domain);
-                Controllers.FolderMonitoringTrnDisbursementController monitorDisbursement = new Controllers.FolderMonitoringTrnDisbursementController(this, txtFolderMonitoringUserCode.Text, folderToMonitor + "\\CV\\", domain);
-                Controllers.FolderMonitoringTrnJournalVoucherController monitorJournalVoucher = new Controllers.FolderMonitoringTrnJournalVoucherController(this, txtFolderMonitoringUserCode.Text, folderToMonitor + "\\JV\\", domain);
-                Controllers.FolderMonitoringTrnReceivingReceiptController monitorReceivingReceipt = new Controllers.FolderMonitoringTrnReceivingReceiptController(this, txtFolderMonitoringUserCode.Text, folderToMonitor + "\\RR\\", domain);
-                Controllers.FolderMonitoringTrnSalesInvoiceController monitorSalesInvoice = new Controllers.FolderMonitoringTrnSalesInvoiceController(this, txtFolderMonitoringUserCode.Text, folderToMonitor + "\\SI\\", domain);
-                Controllers.FolderMonitoringTrnStockInController monitorStockIn = new Controllers.FolderMonitoringTrnStockInController(this, txtFolderMonitoringUserCode.Text, folderToMonitor + "\\IN\\", domain);
-                Controllers.FolderMonitoringTrnStockOutController monitorStockOut = new Controllers.FolderMonitoringTrnStockOutController(this, txtFolderMonitoringUserCode.Text, folderToMonitor + "\\OT\\", domain);
-                Controllers.FolderMonitoringTrnStockTransferController monitorStockTransfer = new Controllers.FolderMonitoringTrnStockTransferController(this, txtFolderMonitoringUserCode.Text, folderToMonitor + "\\ST\\", domain);
+                switch (documentPrefix)
+                {
+                    case "OR":
+                        new Controllers.FolderMonitoringTrnCollectionController(this, txtFolderMonitoringUserCode.Text, folderToMonitor + "\\OR\\", domain);
+                        break;
+                    case "CV":
+                        new Controllers.FolderMonitoringTrnDisbursementController(this, txtFolderMonitoringUserCode.Text, folderToMonitor + "\\CV\\", domain);
+                        break;
+                    case "JV":
+                        new Controllers.FolderMonitoringTrnJournalVoucherController(this, txtFolderMonitoringUserCode.Text, folderToMonitor + "\\JV\\", domain);
+                        break;
+                    case "RR":
+                        new Controllers.FolderMonitoringTrnReceivingReceiptController(this, txtFolderMonitoringUserCode.Text, folderToMonitor + "\\RR\\", domain);
+                        break;
+                    case "SI":
+                        new Controllers.FolderMonitoringTrnSalesInvoiceController(this, txtFolderMonitoringUserCode.Text, folderToMonitor + "\\SI\\", domain);
+                        break;
+                    case "IN":
+                        new Controllers.FolderMonitoringTrnStockInController(this, txtFolderMonitoringUserCode.Text, folderToMonitor + "\\IN\\", domain);
+                        break;
+                    case "OT":
+                        new Controllers.FolderMonitoringTrnStockOutController(this, txtFolderMonitoringUserCode.Text, folderToMonitor + "\\OT\\", domain);
+                        break;
+                    case "ST":
+                        new Controllers.FolderMonitoringTrnStockTransferController(this, txtFolderMonitoringUserCode.Text, folderToMonitor + "\\ST\\", domain);
+                        break;
+                    default:
+                        break;
+                }
             }
         }
 
