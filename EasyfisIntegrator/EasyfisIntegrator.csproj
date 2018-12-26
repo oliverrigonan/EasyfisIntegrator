@@ -58,6 +58,7 @@
     <Compile Include="Controllers\ISPOSMstCustomerController.cs" />
     <Compile Include="Controllers\ISPOSMstItemController.cs" />
     <Compile Include="Controllers\ISPOSMstSupplierController.cs" />
+    <Compile Include="Controllers\SysFileControl.cs" />
     <Compile Include="Controllers\SysGlobalSettings.cs" />
     <Compile Include="Controllers\ISPOSTrnCollectionController.cs" />
     <Compile Include="Controllers\ISPOSTrnItemPriceController.cs" />

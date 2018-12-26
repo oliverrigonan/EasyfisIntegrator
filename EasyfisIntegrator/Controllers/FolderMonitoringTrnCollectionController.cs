@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 
@@ -22,7 +23,7 @@ namespace EasyfisIntegrator.Controllers
             trnIntegrationForm = form;
 
             List<String> ext = new List<String> { ".csv" };
-            List<String> files = new List<String>(Directory.EnumerateFiles(directory, "*.*", SearchOption.AllDirectories));
+            List<String> files = new List<String>(Directory.EnumerateFiles(directory, "*.*", SearchOption.AllDirectories).Where(e => ext.Contains(Path.GetExtension(e))));
             if (files.Any()) { foreach (var file in files) { SendCollectionData(userCode, file, domain); } }
         }
 
@@ -32,60 +33,60 @@ namespace EasyfisIntegrator.Controllers
             {
                 String json = "";
                 List<Entities.FolderMonitoringTrnCollection> newCollections = new List<Entities.FolderMonitoringTrnCollection>();
-
-                using (StreamReader streamReader = new StreamReader(File.OpenRead(file)))
+                
+                if (SysFileControl.IsCurrentFileClosed(file))
                 {
-                    streamReader.ReadLine();
-                    while (streamReader.Peek() != -1)
+                    using (StreamReader dataStreamReader = new StreamReader(file))
                     {
-                        String[] data = streamReader.ReadLine().Split(',');
-                        newCollections.Add(new Entities.FolderMonitoringTrnCollection
+                        dataStreamReader.ReadLine();
+                        while (dataStreamReader.Peek() != -1)
                         {
-                            BranchCode = data[0],
-                            ORDate = data[1],
-                            CustomerCode = data[2],
-                            Remarks = data[3],
-                            ManualORNumber = data[4],
-                            UserCode = userCode,
-                            CreatedDateTime = data[5],
-                            AccountCode = data[6],
-                            ArticleCode = data[7],
-                            SINumber = data[8],
-                            Particulars = data[9],
-                            Amount = Convert.ToDecimal(data[10]),
-                            PayType = data[11],
-                            CheckNumber = data[12],
-                            CheckDate = data[13],
-                            CheckBank = data[14],
-                            DepositoryBankCode = data[15],
-                            IsClear = Convert.ToBoolean(data[16])
-                        });
+                            String[] data = dataStreamReader.ReadLine().Split(',');
+                            newCollections.Add(new Entities.FolderMonitoringTrnCollection
+                            {
+                                BranchCode = data[0],
+                                ORDate = data[1],
+                                CustomerCode = data[2],
+                                Remarks = data[3],
+                                ManualORNumber = data[4],
+                                UserCode = userCode,
+                                CreatedDateTime = data[5],
+                                AccountCode = data[6],
+                                ArticleCode = data[7],
+                                SINumber = data[8],
+                                Particulars = data[9],
+                                Amount = Convert.ToDecimal(data[10]),
+                                PayType = data[11],
+                                CheckNumber = data[12],
+                                CheckDate = data[13],
+                                CheckBank = data[14],
+                                DepositoryBankCode = data[15],
+                                IsClear = Convert.ToBoolean(data[16])
+                            });
+                        }
+
+                        JavaScriptSerializer serializer = new JavaScriptSerializer();
+                        json = serializer.Serialize(newCollections);
                     }
-
-                    JavaScriptSerializer serializer = new JavaScriptSerializer();
-                    json = serializer.Serialize(newCollections);
-
-                    streamReader.Close();
-                    streamReader.Dispose();
                 }
 
-                trnIntegrationForm.logFolderMonitoringMessage("Sending Collection..." + "\r\n\n");
+                String[] fileNamePrefix = file.Split('\\');
+                trnIntegrationForm.logFolderMonitoringMessage("Sending Collection: " + fileNamePrefix[fileNamePrefix.Length - 1] + "\r\n\n");
 
                 String apiURL = "http://" + domain + "/api/folderMonitoring/collection/add";
-
                 HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(apiURL);
                 httpWebRequest.ContentType = "application/json";
                 httpWebRequest.Method = "POST";
 
-                using (StreamWriter streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+                using (StreamWriter jsonStreamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
                 {
-                    streamWriter.Write(json);
+                    jsonStreamWriter.Write(json);
                 }
 
                 HttpWebResponse httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-                using (StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream()))
+                using (StreamReader responseStreamReader = new StreamReader(httpResponse.GetResponseStream()))
                 {
-                    String resp = streamReader.ReadToEnd().Replace("\"", "");
+                    String resp = responseStreamReader.ReadToEnd().Replace("\"", "");
                     if (resp.Equals(""))
                     {
                         trnIntegrationForm.logFolderMonitoringMessage("Send Successful!" + "\r\n\n");
@@ -94,10 +95,10 @@ namespace EasyfisIntegrator.Controllers
 
                         String settingsPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Settings.json");
 
-                        using (StreamReader trmRead = new StreamReader(settingsPath))
+                        using (StreamReader settingsStreamReader = new StreamReader(settingsPath))
                         {
                             JavaScriptSerializer javaScriptSerializer = new JavaScriptSerializer();
-                            Entities.SysSettings sysSettings = javaScriptSerializer.Deserialize<Entities.SysSettings>(trmRead.ReadToEnd());
+                            Entities.SysSettings sysSettings = javaScriptSerializer.Deserialize<Entities.SysSettings>(settingsStreamReader.ReadToEnd());
 
                             String executingUser = WindowsIdentity.GetCurrent().Name;
 
@@ -124,9 +125,9 @@ namespace EasyfisIntegrator.Controllers
             }
             catch (WebException we)
             {
-                using (StreamReader streamReader = new StreamReader(we.Response.GetResponseStream()))
+                using (StreamReader webResponseStreamReader = new StreamReader(we.Response.GetResponseStream()))
                 {
-                    String resp = streamReader.ReadToEnd().Replace("\"", "");
+                    String resp = webResponseStreamReader.ReadToEnd().Replace("\"", "");
 
                     trnIntegrationForm.logFolderMonitoringMessage("Web Exception Error: " + resp + "\r\n\n");
                     trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
@@ -135,6 +136,8 @@ namespace EasyfisIntegrator.Controllers
             }
             catch (Exception ex)
             {
+                Debug.WriteLine(ex);
+
                 trnIntegrationForm.logFolderMonitoringMessage("Exception Error: " + ex.Message + "\r\n\n");
                 trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                 trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");

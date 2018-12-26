@@ -21,7 +21,7 @@ namespace EasyfisIntegrator.Controllers
             trnIntegrationForm = form;
 
             List<String> ext = new List<String> { ".csv" };
-            List<String> files = Directory.GetFiles(directory, "*.*", SearchOption.AllDirectories).Where(s => ext.Contains(Path.GetExtension(s))).ToList();
+            List<String> files = new List<String>(Directory.EnumerateFiles(directory, "*.*", SearchOption.AllDirectories).Where(e => ext.Contains(Path.GetExtension(e))));
             if (files.Any()) { foreach (var file in files) { SendSalesInvoiceData(userCode, file, domain); } }
         }
 
@@ -30,45 +30,47 @@ namespace EasyfisIntegrator.Controllers
             try
             {
                 String json = "";
-                String[] lines = File.ReadAllLines(file);
+                List<Entities.FolderMonitoringTrnSalesInvoice> newSalesInvoices = new List<Entities.FolderMonitoringTrnSalesInvoice>();
 
-                if (lines.Length > 0)
+                if (SysFileControl.IsCurrentFileClosed(file))
                 {
-                    List<Entities.FolderMonitoringTrnSalesInvoice> newSalesInvoices = new List<Entities.FolderMonitoringTrnSalesInvoice>();
-
-                    for (int r = 1; r < lines.Length; r++)
+                    using (StreamReader dataStreamReader = new StreamReader(file))
                     {
-                        String[] data = lines[r].Split(',');
-
-                        newSalesInvoices.Add(new Entities.FolderMonitoringTrnSalesInvoice
+                        dataStreamReader.ReadLine();
+                        while (dataStreamReader.Peek() != -1)
                         {
-                            BranchCode = data[0],
-                            SIDate = data[1],
-                            CustomerCode = data[2],
-                            Term = data[3],
-                            DocumentReference = data[4],
-                            ManualSINumber = data[5],
-                            Remarks = data[6],
-                            UserCode = userCode,
-                            CreatedDateTime = data[7],
-                            ItemCode = data[8],
-                            Particulars = data[9],
-                            Unit = data[10],
-                            Quantity = Convert.ToDecimal(data[11]),
-                            Price = Convert.ToDecimal(data[12]),
-                            Discount = data[13],
-                            DiscountRate = Convert.ToDecimal(data[14]),
-                            DiscountAmount = Convert.ToDecimal(data[15]),
-                            NetPrice = Convert.ToDecimal(data[16]),
-                            Amount = Convert.ToDecimal(data[17])
-                        });
-                    }
+                            String[] data = dataStreamReader.ReadLine().Split(',');
+                            newSalesInvoices.Add(new Entities.FolderMonitoringTrnSalesInvoice
+                            {
+                                BranchCode = data[0],
+                                SIDate = data[1],
+                                CustomerCode = data[2],
+                                Term = data[3],
+                                DocumentReference = data[4],
+                                ManualSINumber = data[5],
+                                Remarks = data[6],
+                                UserCode = userCode,
+                                CreatedDateTime = data[7],
+                                ItemCode = data[8],
+                                Particulars = data[9],
+                                Unit = data[10],
+                                Quantity = Convert.ToDecimal(data[11]),
+                                Price = Convert.ToDecimal(data[12]),
+                                Discount = data[13],
+                                DiscountRate = Convert.ToDecimal(data[14]),
+                                DiscountAmount = Convert.ToDecimal(data[15]),
+                                NetPrice = Convert.ToDecimal(data[16]),
+                                Amount = Convert.ToDecimal(data[17])
+                            });
+                        }
 
-                    JavaScriptSerializer serializer = new JavaScriptSerializer();
-                    json = serializer.Serialize(newSalesInvoices);
+                        JavaScriptSerializer serializer = new JavaScriptSerializer();
+                        json = serializer.Serialize(newSalesInvoices);
+                    }
                 }
 
-                trnIntegrationForm.logFolderMonitoringMessage("Sending Sales..." + "\r\n\n");
+                String[] fileNamePrefix = file.Split('\\');
+                trnIntegrationForm.logFolderMonitoringMessage("Sending Sales: " + fileNamePrefix[fileNamePrefix.Length - 1] + "\r\n\n");
 
                 String apiURL = "http://" + domain + "/api/folderMonitoring/salesInvoice/add";
 

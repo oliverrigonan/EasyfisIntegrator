@@ -21,7 +21,7 @@ namespace EasyfisIntegrator.Controllers
             trnIntegrationForm = form;
 
             List<String> ext = new List<String> { ".csv" };
-            List<String> files = Directory.GetFiles(directory, "*.*", SearchOption.AllDirectories).Where(s => ext.Contains(Path.GetExtension(s))).ToList();
+            List<String> files = new List<String>(Directory.EnumerateFiles(directory, "*.*", SearchOption.AllDirectories).Where(e => ext.Contains(Path.GetExtension(e))));
             if (files.Any()) { foreach (var file in files) { SendStockInData(userCode, file, domain); } }
         }
 
@@ -30,41 +30,43 @@ namespace EasyfisIntegrator.Controllers
             try
             {
                 String json = "";
-                String[] lines = File.ReadAllLines(file);
+                List<Entities.FolderMonitoringTrnStockIn> newStockIns = new List<Entities.FolderMonitoringTrnStockIn>();
 
-                if (lines.Length > 0)
+                if (SysFileControl.IsCurrentFileClosed(file))
                 {
-                    List<Entities.FolderMonitoringTrnStockIn> newStockIns = new List<Entities.FolderMonitoringTrnStockIn>();
-
-                    for (int r = 1; r < lines.Length; r++)
+                    using (StreamReader dataStreamReader = new StreamReader(file))
                     {
-                        String[] data = lines[r].Split(',');
-
-                        newStockIns.Add(new Entities.FolderMonitoringTrnStockIn
+                        dataStreamReader.ReadLine();
+                        while (dataStreamReader.Peek() != -1)
                         {
-                            BranchCode = data[0],
-                            INDate = data[1],
-                            AccountCode = data[2],
-                            ArticleCode = data[3],
-                            Remarks = data[4],
-                            ManualINNumber = data[5],
-                            IsProduce = Convert.ToBoolean(data[6]),
-                            UserCode = userCode,
-                            CreatedDateTime = data[7],
-                            ItemCode = data[8],
-                            Particulars = data[9],
-                            Unit = data[10],
-                            Quantity = Convert.ToDecimal(data[11]),
-                            Cost = Convert.ToDecimal(data[12]),
-                            Amount = Convert.ToDecimal(data[13])
-                        });
-                    }
+                            String[] data = dataStreamReader.ReadLine().Split(',');
+                            newStockIns.Add(new Entities.FolderMonitoringTrnStockIn
+                            {
+                                BranchCode = data[0],
+                                INDate = data[1],
+                                AccountCode = data[2],
+                                ArticleCode = data[3],
+                                Remarks = data[4],
+                                ManualINNumber = data[5],
+                                IsProduce = Convert.ToBoolean(data[6]),
+                                UserCode = userCode,
+                                CreatedDateTime = data[7],
+                                ItemCode = data[8],
+                                Particulars = data[9],
+                                Unit = data[10],
+                                Quantity = Convert.ToDecimal(data[11]),
+                                Cost = Convert.ToDecimal(data[12]),
+                                Amount = Convert.ToDecimal(data[13])
+                            });
+                        }
 
-                    JavaScriptSerializer serializer = new JavaScriptSerializer();
-                    json = serializer.Serialize(newStockIns);
+                        JavaScriptSerializer serializer = new JavaScriptSerializer();
+                        json = serializer.Serialize(newStockIns);
+                    }
                 }
 
-                trnIntegrationForm.logFolderMonitoringMessage("Sending Stock In..." + "\r\n\n");
+                String[] fileNamePrefix = file.Split('\\');
+                trnIntegrationForm.logFolderMonitoringMessage("Sending Stock In: " + fileNamePrefix[fileNamePrefix.Length - 1] + "\r\n\n");
 
                 String apiURL = "http://" + domain + "/api/folderMonitoring/stockIn/add";
 

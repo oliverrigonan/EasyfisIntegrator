@@ -21,7 +21,7 @@ namespace EasyfisIntegrator.Controllers
             trnIntegrationForm = form;
 
             List<String> ext = new List<String> { ".csv" };
-            List<String> files = Directory.GetFiles(directory, "*.*", SearchOption.AllDirectories).Where(s => ext.Contains(Path.GetExtension(s))).ToList();
+            List<String> files = new List<String>(Directory.EnumerateFiles(directory, "*.*", SearchOption.AllDirectories).Where(e => ext.Contains(Path.GetExtension(e))));
             if (files.Any()) { foreach (var file in files) { SendStockTransferData(userCode, file, domain); } }
         }
 
@@ -30,40 +30,42 @@ namespace EasyfisIntegrator.Controllers
             try
             {
                 String json = "";
-                String[] lines = File.ReadAllLines(file);
+                List<Entities.FolderMonitoringTrnStockTransfer> newStockTransfers = new List<Entities.FolderMonitoringTrnStockTransfer>();
 
-                if (lines.Length > 0)
+                if (SysFileControl.IsCurrentFileClosed(file))
                 {
-                    List<Entities.FolderMonitoringTrnStockTransfer> newStockTransfers = new List<Entities.FolderMonitoringTrnStockTransfer>();
-
-                    for (int r = 1; r < lines.Length; r++)
+                    using (StreamReader dataStreamReader = new StreamReader(file))
                     {
-                        String[] data = lines[r].Split(',');
-
-                        newStockTransfers.Add(new Entities.FolderMonitoringTrnStockTransfer
+                        dataStreamReader.ReadLine();
+                        while (dataStreamReader.Peek() != -1)
                         {
-                            BranchCode = data[0],
-                            STDate = data[1],
-                            ToBranchCode = data[2],
-                            ArticleCode = data[3],
-                            Remarks = data[4],
-                            ManualSTNumber = data[5],
-                            UserCode = userCode,
-                            CreatedDateTime = data[6],
-                            ItemCode = data[7],
-                            Particulars = data[8],
-                            Unit = data[9],
-                            Quantity = Convert.ToDecimal(data[10]),
-                            Cost = Convert.ToDecimal(data[11]),
-                            Amount = Convert.ToDecimal(data[12])
-                        });
-                    }
+                            String[] data = dataStreamReader.ReadLine().Split(',');
+                            newStockTransfers.Add(new Entities.FolderMonitoringTrnStockTransfer
+                            {
+                                BranchCode = data[0],
+                                STDate = data[1],
+                                ToBranchCode = data[2],
+                                ArticleCode = data[3],
+                                Remarks = data[4],
+                                ManualSTNumber = data[5],
+                                UserCode = userCode,
+                                CreatedDateTime = data[6],
+                                ItemCode = data[7],
+                                Particulars = data[8],
+                                Unit = data[9],
+                                Quantity = Convert.ToDecimal(data[10]),
+                                Cost = Convert.ToDecimal(data[11]),
+                                Amount = Convert.ToDecimal(data[12])
+                            });
+                        }
 
-                    JavaScriptSerializer serializer = new JavaScriptSerializer();
-                    json = serializer.Serialize(newStockTransfers);
+                        JavaScriptSerializer serializer = new JavaScriptSerializer();
+                        json = serializer.Serialize(newStockTransfers);
+                    }
                 }
 
-                trnIntegrationForm.logFolderMonitoringMessage("Sending Stock Transfer..." + "\r\n\n");
+                String[] fileNamePrefix = file.Split('\\');
+                trnIntegrationForm.logFolderMonitoringMessage("Sending Stock Transfer: " + fileNamePrefix[fileNamePrefix.Length - 1] + "\r\n\n");
 
                 String apiURL = "http://" + domain + "/api/folderMonitoring/stockTransfer/add";
 

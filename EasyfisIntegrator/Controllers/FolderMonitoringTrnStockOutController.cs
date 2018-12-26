@@ -21,7 +21,7 @@ namespace EasyfisIntegrator.Controllers
             trnIntegrationForm = form;
 
             List<String> ext = new List<String> { ".csv" };
-            List<String> files = Directory.GetFiles(directory, "*.*", SearchOption.AllDirectories).Where(s => ext.Contains(Path.GetExtension(s))).ToList();
+            List<String> files = new List<String>(Directory.EnumerateFiles(directory, "*.*", SearchOption.AllDirectories).Where(e => ext.Contains(Path.GetExtension(e))));
             if (files.Any()) { foreach (var file in files) { SendStockOutData(userCode, file, domain); } }
         }
 
@@ -30,40 +30,42 @@ namespace EasyfisIntegrator.Controllers
             try
             {
                 String json = "";
-                String[] lines = File.ReadAllLines(file);
+                List<Entities.FolderMonitoringTrnStockOut> newStockOuts = new List<Entities.FolderMonitoringTrnStockOut>();
 
-                if (lines.Length > 0)
+                if (SysFileControl.IsCurrentFileClosed(file))
                 {
-                    List<Entities.FolderMonitoringTrnStockOut> newStockOuts = new List<Entities.FolderMonitoringTrnStockOut>();
-
-                    for (int r = 1; r < lines.Length; r++)
+                    using (StreamReader dataStreamReader = new StreamReader(file))
                     {
-                        String[] data = lines[r].Split(',');
-
-                        newStockOuts.Add(new Entities.FolderMonitoringTrnStockOut
+                        dataStreamReader.ReadLine();
+                        while (dataStreamReader.Peek() != -1)
                         {
-                            BranchCode = data[0],
-                            OTDate = data[1],
-                            AccountCode = data[2],
-                            ArticleCode = data[3],
-                            Remarks = data[4],
-                            ManualOTNumber = data[5],
-                            UserCode = userCode,
-                            CreatedDateTime = data[6],
-                            ItemCode = data[7],
-                            Particulars = data[8],
-                            Unit = data[9],
-                            Quantity = Convert.ToDecimal(data[10]),
-                            Cost = Convert.ToDecimal(data[11]),
-                            Amount = Convert.ToDecimal(data[12])
-                        });
-                    }
+                            String[] data = dataStreamReader.ReadLine().Split(',');
+                            newStockOuts.Add(new Entities.FolderMonitoringTrnStockOut
+                            {
+                                BranchCode = data[0],
+                                OTDate = data[1],
+                                AccountCode = data[2],
+                                ArticleCode = data[3],
+                                Remarks = data[4],
+                                ManualOTNumber = data[5],
+                                UserCode = userCode,
+                                CreatedDateTime = data[6],
+                                ItemCode = data[7],
+                                Particulars = data[8],
+                                Unit = data[9],
+                                Quantity = Convert.ToDecimal(data[10]),
+                                Cost = Convert.ToDecimal(data[11]),
+                                Amount = Convert.ToDecimal(data[12])
+                            });
+                        }
 
-                    JavaScriptSerializer serializer = new JavaScriptSerializer();
-                    json = serializer.Serialize(newStockOuts);
+                        JavaScriptSerializer serializer = new JavaScriptSerializer();
+                        json = serializer.Serialize(newStockOuts);
+                    }
                 }
 
-                trnIntegrationForm.logFolderMonitoringMessage("Sending Stock Out..." + "\r\n\n");
+                String[] fileNamePrefix = file.Split('\\');
+                trnIntegrationForm.logFolderMonitoringMessage("Sending Stock Out: " + fileNamePrefix[fileNamePrefix.Length - 1] + "\r\n\n");
 
                 String apiURL = "http://" + domain + "/api/folderMonitoring/stockOut/add";
 

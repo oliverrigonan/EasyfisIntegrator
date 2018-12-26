@@ -21,7 +21,7 @@ namespace EasyfisIntegrator.Controllers
             trnIntegrationForm = form;
 
             List<String> ext = new List<String> { ".csv" };
-            List<String> files = Directory.GetFiles(directory, "*.*", SearchOption.AllDirectories).Where(s => ext.Contains(Path.GetExtension(s))).ToList();
+            List<String> files = new List<String>(Directory.EnumerateFiles(directory, "*.*", SearchOption.AllDirectories).Where(e => ext.Contains(Path.GetExtension(e))));
             if (files.Any()) { foreach (var file in files) { SendDisbursementData(userCode, file, domain); } }
         }
 
@@ -30,45 +30,47 @@ namespace EasyfisIntegrator.Controllers
             try
             {
                 String json = "";
-                String[] lines = File.ReadAllLines(file);
+                List<Entities.FolderMonitoringTrnDisbursement> newDisbursements = new List<Entities.FolderMonitoringTrnDisbursement>();
 
-                if (lines.Length > 0)
+                if (SysFileControl.IsCurrentFileClosed(file))
                 {
-                    List<Entities.FolderMonitoringTrnDisbursement> newDisbursements = new List<Entities.FolderMonitoringTrnDisbursement>();
-
-                    for (int r = 1; r < lines.Length; r++)
+                    using (StreamReader dataStreamReader = new StreamReader(file))
                     {
-                        String[] data = lines[r].Split(',');
-
-                        newDisbursements.Add(new Entities.FolderMonitoringTrnDisbursement
+                        dataStreamReader.ReadLine();
+                        while (dataStreamReader.Peek() != -1)
                         {
-                            BranchCode = data[0],
-                            CVDate = data[1],
-                            SupplierCode = data[2],
-                            Payee = data[3],
-                            PayType = data[4],
-                            BankCode = data[5],
-                            Remarks = data[6],
-                            ManualCVNumber = data[7],
-                            CheckNumber = data[8],
-                            CheckDate = data[9],
-                            IsCrossCheck = Convert.ToBoolean(data[10]),
-                            IsClear = Convert.ToBoolean(data[11]),
-                            UserCode = userCode,
-                            CreatedDateTime = data[12],
-                            AccountCode = data[13],
-                            ArticleCode = data[14],
-                            RRNumber = data[15],
-                            Particulars = data[16],
-                            Amount = Convert.ToDecimal(data[17]),
-                        });
-                    }
+                            String[] data = dataStreamReader.ReadLine().Split(',');
+                            newDisbursements.Add(new Entities.FolderMonitoringTrnDisbursement
+                            {
+                                BranchCode = data[0],
+                                CVDate = data[1],
+                                SupplierCode = data[2],
+                                Payee = data[3],
+                                PayType = data[4],
+                                BankCode = data[5],
+                                Remarks = data[6],
+                                ManualCVNumber = data[7],
+                                CheckNumber = data[8],
+                                CheckDate = data[9],
+                                IsCrossCheck = Convert.ToBoolean(data[10]),
+                                IsClear = Convert.ToBoolean(data[11]),
+                                UserCode = userCode,
+                                CreatedDateTime = data[12],
+                                AccountCode = data[13],
+                                ArticleCode = data[14],
+                                RRNumber = data[15],
+                                Particulars = data[16],
+                                Amount = Convert.ToDecimal(data[17]),
+                            });
+                        }
 
-                    JavaScriptSerializer serializer = new JavaScriptSerializer();
-                    json = serializer.Serialize(newDisbursements);
+                        JavaScriptSerializer serializer = new JavaScriptSerializer();
+                        json = serializer.Serialize(newDisbursements);
+                    }
                 }
 
-                trnIntegrationForm.logFolderMonitoringMessage("Sending Disbursement..." + "\r\n\n");
+                String[] fileNamePrefix = file.Split('\\');
+                trnIntegrationForm.logFolderMonitoringMessage("Sending Disbursement: " + fileNamePrefix[fileNamePrefix.Length - 1] + "\r\n\n");
 
                 String apiURL = "http://" + domain + "/api/folderMonitoring/disbursement/add";
 

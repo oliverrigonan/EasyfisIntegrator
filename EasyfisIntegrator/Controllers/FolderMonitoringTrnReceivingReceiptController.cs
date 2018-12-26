@@ -22,7 +22,7 @@ namespace EasyfisIntegrator.Controllers
             trnIntegrationForm = form;
 
             List<String> ext = new List<String> { ".csv" };
-            List<String> files = Directory.GetFiles(directory, "*.*", SearchOption.AllDirectories).Where(s => ext.Contains(Path.GetExtension(s))).ToList();
+            List<String> files = new List<String>(Directory.EnumerateFiles(directory, "*.*", SearchOption.AllDirectories).Where(e => ext.Contains(Path.GetExtension(e))));
             if (files.Any()) { foreach (var file in files) { SendReceivingReceiptData(userCode, file, domain); } }
         }
 
@@ -31,47 +31,47 @@ namespace EasyfisIntegrator.Controllers
             try
             {
                 String json = "";
-                String[] lines = File.ReadAllLines(file);
+                List<Entities.FolderMonitoringTrnReceivingReceipt> newReceivingReceipts = new List<Entities.FolderMonitoringTrnReceivingReceipt>();
 
-                if (lines.Length > 0)
+                if (SysFileControl.IsCurrentFileClosed(file))
                 {
-                    List<Entities.FolderMonitoringTrnReceivingReceipt> newReceivingReceipts = new List<Entities.FolderMonitoringTrnReceivingReceipt>();
-
-                    for (int r = 1; r < lines.Length; r++)
+                    using (StreamReader dataStreamReader = new StreamReader(file))
                     {
-                        String[] data = lines[r].Split(',');
-
-                        newReceivingReceipts.Add(new Entities.FolderMonitoringTrnReceivingReceipt
+                        dataStreamReader.ReadLine();
+                        while (dataStreamReader.Peek() != -1)
                         {
-                            BranchCode = data[0],
-                            RRDate = data[1],
-                            SupplierCode = data[2],
-                            Term = data[3],
-                            DocumentReference = data[4],
-                            ManualRRNumber = data[5],
-                            Remarks = data[6],
-                            UserCode = userCode,
-                            CreatedDateTime = data[7],
-                            ManualPONumber = data[8],
-                            PODate = data[9],
-                            PODateNeeded = data[10],
-                            ItemCode = data[11],
-                            Particulars = data[12],
-                            Unit = data[13],
-                            Quantity = Convert.ToDecimal(data[14]),
-                            Cost = Convert.ToDecimal(data[15]),
-                            Amount = Convert.ToDecimal(data[16]),
-                            ReceivedBranchCode = data[17]
-                        });
-                    }
+                            String[] data = dataStreamReader.ReadLine().Split(',');
+                            newReceivingReceipts.Add(new Entities.FolderMonitoringTrnReceivingReceipt
+                            {
+                                BranchCode = data[0],
+                                RRDate = data[1],
+                                SupplierCode = data[2],
+                                Term = data[3],
+                                DocumentReference = data[4],
+                                ManualRRNumber = data[5],
+                                Remarks = data[6],
+                                UserCode = userCode,
+                                CreatedDateTime = data[7],
+                                ManualPONumber = data[8],
+                                PODate = data[9],
+                                PODateNeeded = data[10],
+                                ItemCode = data[11],
+                                Particulars = data[12],
+                                Unit = data[13],
+                                Quantity = Convert.ToDecimal(data[14]),
+                                Cost = Convert.ToDecimal(data[15]),
+                                Amount = Convert.ToDecimal(data[16]),
+                                ReceivedBranchCode = data[17]
+                            });
+                        }
 
-                    JavaScriptSerializer serializer = new JavaScriptSerializer();
-                    json = serializer.Serialize(newReceivingReceipts);
+                        JavaScriptSerializer serializer = new JavaScriptSerializer();
+                        json = serializer.Serialize(newReceivingReceipts);
+                    }
                 }
 
-                Debug.WriteLine(json);
-
-                trnIntegrationForm.logFolderMonitoringMessage("Sending Receiving Receipt..." + "\r\n\n");
+                String[] fileNamePrefix = file.Split('\\');
+                trnIntegrationForm.logFolderMonitoringMessage("Sending Receiving Receipt: " + fileNamePrefix[fileNamePrefix.Length - 1] + "\r\n\n");
 
                 String apiURL = "http://" + domain + "/api/folderMonitoring/receivingReceipt/add";
 
