@@ -29,36 +29,40 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TrnIntegrationForm));
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.label6 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.btnLogout = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
-            this.btnStopIntegration = new System.Windows.Forms.Button();
-            this.lblCurrentUser = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.txtLogs = new System.Windows.Forms.TextBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.txtBranchCode = new System.Windows.Forms.TextBox();
-            this.label8 = new System.Windows.Forms.Label();
-            this.dtpIntegrationDate = new System.Windows.Forms.DateTimePicker();
-            this.label9 = new System.Windows.Forms.Label();
-            this.txtDomain = new System.Windows.Forms.TextBox();
+            this.fbdGetCSVTemplate = new System.Windows.Forms.FolderBrowserDialog();
+            this.fileSystemWatcherCSVFiles = new System.IO.FileSystemWatcher();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.btnSettings = new System.Windows.Forms.Button();
+            this.btnClearLogs = new System.Windows.Forms.Button();
+            this.btnSaveLogs = new System.Windows.Forms.Button();
+            this.panel5 = new System.Windows.Forms.Panel();
+            this.panel6 = new System.Windows.Forms.Panel();
+            this.tabIntegration = new System.Windows.Forms.TabControl();
+            this.tabPOSIntegration = new System.Windows.Forms.TabPage();
             this.panel3 = new System.Windows.Forms.Panel();
             this.label11 = new System.Windows.Forms.Label();
             this.cbxUseItemPrice = new System.Windows.Forms.CheckBox();
             this.label10 = new System.Windows.Forms.Label();
             this.txtUserCode = new System.Windows.Forms.TextBox();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
-            this.btnSaveLogs = new System.Windows.Forms.Button();
-            this.btnClearLogs = new System.Windows.Forms.Button();
-            this.btnSettings = new System.Windows.Forms.Button();
+            this.dtpIntegrationDate = new System.Windows.Forms.DateTimePicker();
+            this.txtDomain = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.txtBranchCode = new System.Windows.Forms.TextBox();
+            this.label8 = new System.Windows.Forms.Label();
             this.btnStartIntegration = new System.Windows.Forms.Button();
-            this.tabIntegration = new System.Windows.Forms.TabControl();
-            this.tabPOSIntegration = new System.Windows.Forms.TabPage();
+            this.btnStopIntegration = new System.Windows.Forms.Button();
+            this.lblCurrentUser = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.txtLogs = new System.Windows.Forms.TextBox();
             this.tabFolderMonitoring = new System.Windows.Forms.TabPage();
             this.btnGetCSVTemplate = new System.Windows.Forms.Button();
             this.panel4 = new System.Windows.Forms.Panel();
@@ -69,69 +73,19 @@
             this.btnStartFolderMonitoringIntegration = new System.Windows.Forms.Button();
             this.btnStopFolderMonitoringIntegration = new System.Windows.Forms.Button();
             this.txtFolderMonitoringLogs = new System.Windows.Forms.TextBox();
-            this.fbdGetCSVTemplate = new System.Windows.Forms.FolderBrowserDialog();
-            this.fileSystemWatcherCSVFiles = new System.IO.FileSystemWatcher();
-            this.panel2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel1.SuspendLayout();
-            this.panel3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.fileSystemWatcherCSVFiles)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.panel2.SuspendLayout();
+            this.panel5.SuspendLayout();
+            this.panel6.SuspendLayout();
             this.tabIntegration.SuspendLayout();
             this.tabPOSIntegration.SuspendLayout();
+            this.panel3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.tabFolderMonitoring.SuspendLayout();
             this.panel4.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.fileSystemWatcherCSVFiles)).BeginInit();
             this.SuspendLayout();
-            // 
-            // panel2
-            // 
-            this.panel2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.panel2.Controls.Add(this.label6);
-            this.panel2.Controls.Add(this.label5);
-            this.panel2.Controls.Add(this.label4);
-            this.panel2.Controls.Add(this.pictureBox1);
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel2.Location = new System.Drawing.Point(0, 758);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(872, 82);
-            this.panel2.TabIndex = 7;
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(88, 55);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(204, 17);
-            this.label6.TabIndex = 3;
-            this.label6.Text = "Developer: Easyfis Corporation";
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(88, 38);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(175, 17);
-            this.label5.TabIndex = 2;
-            this.label5.Text = "Version: 2.20181206.NOR";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(88, 12);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(118, 17);
-            this.label4.TabIndex = 1;
-            this.label4.Text = "Easyfis Integrator";
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(11, 12);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(66, 60);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox1.TabIndex = 0;
-            this.pictureBox1.TabStop = false;
             // 
             // panel1
             // 
@@ -146,6 +100,7 @@
             // 
             // btnLogout
             // 
+            this.btnLogout.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnLogout.BackColor = System.Drawing.Color.IndianRed;
             this.btnLogout.FlatAppearance.BorderSize = 0;
             this.btnLogout.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -170,117 +125,170 @@
             this.label1.TabIndex = 0;
             this.label1.Text = "Integration";
             // 
-            // btnStopIntegration
+            // fileSystemWatcherCSVFiles
             // 
-            this.btnStopIntegration.BackColor = System.Drawing.Color.IndianRed;
-            this.btnStopIntegration.FlatAppearance.BorderSize = 0;
-            this.btnStopIntegration.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnStopIntegration.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.btnStopIntegration.ForeColor = System.Drawing.Color.White;
-            this.btnStopIntegration.Location = new System.Drawing.Point(741, 185);
-            this.btnStopIntegration.Name = "btnStopIntegration";
-            this.btnStopIntegration.Size = new System.Drawing.Size(93, 37);
-            this.btnStopIntegration.TabIndex = 10;
-            this.btnStopIntegration.Text = "Stop";
-            this.btnStopIntegration.UseVisualStyleBackColor = false;
-            this.btnStopIntegration.Click += new System.EventHandler(this.btnStopIntegration_Click);
+            this.fileSystemWatcherCSVFiles.EnableRaisingEvents = true;
+            this.fileSystemWatcherCSVFiles.Filter = "*.csv";
+            this.fileSystemWatcherCSVFiles.IncludeSubdirectories = true;
+            this.fileSystemWatcherCSVFiles.NotifyFilter = ((System.IO.NotifyFilters)((((System.IO.NotifyFilters.FileName | System.IO.NotifyFilters.DirectoryName) 
+            | System.IO.NotifyFilters.LastWrite) 
+            | System.IO.NotifyFilters.LastAccess)));
+            this.fileSystemWatcherCSVFiles.SynchronizingObject = this;
+            this.fileSystemWatcherCSVFiles.Created += new System.IO.FileSystemEventHandler(this.fileSystemWatcherCSVFiles_Created);
             // 
-            // lblCurrentUser
+            // pictureBox1
             // 
-            this.lblCurrentUser.AutoSize = true;
-            this.lblCurrentUser.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.lblCurrentUser.Location = new System.Drawing.Point(93, 190);
-            this.lblCurrentUser.Name = "lblCurrentUser";
-            this.lblCurrentUser.Size = new System.Drawing.Size(110, 20);
-            this.lblCurrentUser.TabIndex = 13;
-            this.lblCurrentUser.Text = "#CurrentUser";
+            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
+            this.pictureBox1.Location = new System.Drawing.Point(11, 10);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(66, 60);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox1.TabIndex = 0;
+            this.pictureBox1.TabStop = false;
             // 
-            // label2
+            // label4
             // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold);
-            this.label2.Location = new System.Drawing.Point(9, 190);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(78, 20);
-            this.label2.TabIndex = 12;
-            this.label2.Text = "Current:";
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(88, 10);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(118, 17);
+            this.label4.TabIndex = 1;
+            this.label4.Text = "Easyfis Integrator";
             // 
-            // txtLogs
+            // label5
             // 
-            this.txtLogs.BackColor = System.Drawing.Color.Black;
-            this.txtLogs.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtLogs.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.txtLogs.ForeColor = System.Drawing.Color.White;
-            this.txtLogs.Location = new System.Drawing.Point(1, 227);
-            this.txtLogs.MaxLength = 0;
-            this.txtLogs.Multiline = true;
-            this.txtLogs.Name = "txtLogs";
-            this.txtLogs.ReadOnly = true;
-            this.txtLogs.Size = new System.Drawing.Size(833, 387);
-            this.txtLogs.TabIndex = 14;
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(88, 36);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(175, 17);
+            this.label5.TabIndex = 2;
+            this.label5.Text = "Version: 2.20181206.NOR";
             // 
-            // label7
+            // label6
             // 
-            this.label7.AutoSize = true;
-            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.label7.Location = new System.Drawing.Point(31, 79);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(112, 20);
-            this.label7.TabIndex = 15;
-            this.label7.Text = "Branch Code:";
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(88, 53);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(204, 17);
+            this.label6.TabIndex = 3;
+            this.label6.Text = "Developer: Easyfis Corporation";
             // 
-            // txtBranchCode
+            // panel2
             // 
-            this.txtBranchCode.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.txtBranchCode.Location = new System.Drawing.Point(167, 76);
-            this.txtBranchCode.Name = "txtBranchCode";
-            this.txtBranchCode.ReadOnly = true;
-            this.txtBranchCode.Size = new System.Drawing.Size(266, 26);
-            this.txtBranchCode.TabIndex = 16;
+            this.panel2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.panel2.Controls.Add(this.label6);
+            this.panel2.Controls.Add(this.label5);
+            this.panel2.Controls.Add(this.label4);
+            this.panel2.Controls.Add(this.pictureBox1);
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panel2.Location = new System.Drawing.Point(0, 760);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(872, 80);
+            this.panel2.TabIndex = 7;
             // 
-            // label8
+            // btnSettings
             // 
-            this.label8.AutoSize = true;
-            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.label8.Location = new System.Drawing.Point(93, 17);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(50, 20);
-            this.label8.TabIndex = 17;
-            this.label8.Text = "Date:";
+            this.btnSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnSettings.BackColor = System.Drawing.SystemColors.Control;
+            this.btnSettings.FlatAppearance.BorderSize = 0;
+            this.btnSettings.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.btnSettings.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
+            this.btnSettings.ForeColor = System.Drawing.Color.Black;
+            this.btnSettings.Location = new System.Drawing.Point(753, 0);
+            this.btnSettings.Name = "btnSettings";
+            this.btnSettings.Size = new System.Drawing.Size(107, 40);
+            this.btnSettings.TabIndex = 24;
+            this.btnSettings.Text = "Settings";
+            this.btnSettings.UseVisualStyleBackColor = false;
+            this.btnSettings.Click += new System.EventHandler(this.btnSettings_Click);
             // 
-            // dtpIntegrationDate
+            // btnClearLogs
             // 
-            this.dtpIntegrationDate.CalendarFont = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.dtpIntegrationDate.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.dtpIntegrationDate.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dtpIntegrationDate.Location = new System.Drawing.Point(167, 12);
-            this.dtpIntegrationDate.Name = "dtpIntegrationDate";
-            this.dtpIntegrationDate.Size = new System.Drawing.Size(152, 26);
-            this.dtpIntegrationDate.TabIndex = 18;
+            this.btnClearLogs.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnClearLogs.BackColor = System.Drawing.SystemColors.Control;
+            this.btnClearLogs.FlatAppearance.BorderSize = 0;
+            this.btnClearLogs.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.btnClearLogs.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
+            this.btnClearLogs.ForeColor = System.Drawing.Color.Black;
+            this.btnClearLogs.Location = new System.Drawing.Point(137, 0);
+            this.btnClearLogs.Name = "btnClearLogs";
+            this.btnClearLogs.Size = new System.Drawing.Size(107, 40);
+            this.btnClearLogs.TabIndex = 23;
+            this.btnClearLogs.Text = "Clear Logs";
+            this.btnClearLogs.UseVisualStyleBackColor = false;
+            this.btnClearLogs.Click += new System.EventHandler(this.btnClearLogs_Click);
             // 
-            // label9
+            // btnSaveLogs
             // 
-            this.label9.AutoSize = true;
-            this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.label9.Location = new System.Drawing.Point(71, 47);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(72, 20);
-            this.label9.TabIndex = 19;
-            this.label9.Text = "Domain:";
+            this.btnSaveLogs.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnSaveLogs.BackColor = System.Drawing.SystemColors.Control;
+            this.btnSaveLogs.FlatAppearance.BorderSize = 0;
+            this.btnSaveLogs.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.btnSaveLogs.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
+            this.btnSaveLogs.ForeColor = System.Drawing.Color.Black;
+            this.btnSaveLogs.Location = new System.Drawing.Point(12, 0);
+            this.btnSaveLogs.Name = "btnSaveLogs";
+            this.btnSaveLogs.Size = new System.Drawing.Size(119, 40);
+            this.btnSaveLogs.TabIndex = 22;
+            this.btnSaveLogs.Text = "Save Logs";
+            this.btnSaveLogs.UseVisualStyleBackColor = false;
+            this.btnSaveLogs.Click += new System.EventHandler(this.btnSaveLogs_Click);
             // 
-            // txtDomain
+            // panel5
             // 
-            this.txtDomain.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.txtDomain.Location = new System.Drawing.Point(167, 44);
-            this.txtDomain.Name = "txtDomain";
-            this.txtDomain.ReadOnly = true;
-            this.txtDomain.Size = new System.Drawing.Size(432, 26);
-            this.txtDomain.TabIndex = 20;
+            this.panel5.BackColor = System.Drawing.Color.White;
+            this.panel5.Controls.Add(this.panel6);
+            this.panel5.Controls.Add(this.tabIntegration);
+            this.panel5.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel5.Location = new System.Drawing.Point(0, 51);
+            this.panel5.Name = "panel5";
+            this.panel5.Size = new System.Drawing.Size(872, 709);
+            this.panel5.TabIndex = 26;
+            // 
+            // panel6
+            // 
+            this.panel6.BackColor = System.Drawing.Color.White;
+            this.panel6.Controls.Add(this.btnSettings);
+            this.panel6.Controls.Add(this.btnSaveLogs);
+            this.panel6.Controls.Add(this.btnClearLogs);
+            this.panel6.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panel6.Location = new System.Drawing.Point(0, 663);
+            this.panel6.Name = "panel6";
+            this.panel6.Size = new System.Drawing.Size(872, 46);
+            this.panel6.TabIndex = 26;
+            // 
+            // tabIntegration
+            // 
+            this.tabIntegration.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tabIntegration.Controls.Add(this.tabPOSIntegration);
+            this.tabIntegration.Controls.Add(this.tabFolderMonitoring);
+            this.tabIntegration.Location = new System.Drawing.Point(0, 0);
+            this.tabIntegration.Name = "tabIntegration";
+            this.tabIntegration.SelectedIndex = 0;
+            this.tabIntegration.Size = new System.Drawing.Size(872, 657);
+            this.tabIntegration.TabIndex = 0;
+            // 
+            // tabPOSIntegration
+            // 
+            this.tabPOSIntegration.Controls.Add(this.panel3);
+            this.tabPOSIntegration.Controls.Add(this.btnStartIntegration);
+            this.tabPOSIntegration.Controls.Add(this.btnStopIntegration);
+            this.tabPOSIntegration.Controls.Add(this.lblCurrentUser);
+            this.tabPOSIntegration.Controls.Add(this.label2);
+            this.tabPOSIntegration.Controls.Add(this.txtLogs);
+            this.tabPOSIntegration.Location = new System.Drawing.Point(4, 25);
+            this.tabPOSIntegration.Name = "tabPOSIntegration";
+            this.tabPOSIntegration.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPOSIntegration.Size = new System.Drawing.Size(864, 628);
+            this.tabPOSIntegration.TabIndex = 0;
+            this.tabPOSIntegration.Text = "POS Integration";
+            this.tabPOSIntegration.UseVisualStyleBackColor = true;
             // 
             // panel3
             // 
-            this.panel3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.panel3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel3.BackColor = System.Drawing.SystemColors.Control;
             this.panel3.Controls.Add(this.label11);
@@ -294,9 +302,9 @@
             this.panel3.Controls.Add(this.label9);
             this.panel3.Controls.Add(this.txtBranchCode);
             this.panel3.Controls.Add(this.label8);
-            this.panel3.Location = new System.Drawing.Point(2, 4);
+            this.panel3.Location = new System.Drawing.Point(8, 6);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(834, 179);
+            this.panel3.Size = new System.Drawing.Size(848, 173);
             this.panel3.TabIndex = 21;
             // 
             // label11
@@ -341,6 +349,7 @@
             // 
             // pictureBox2
             // 
+            this.pictureBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.pictureBox2.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox2.Image")));
             this.pictureBox2.Location = new System.Drawing.Point(694, 27);
             this.pictureBox2.Name = "pictureBox2";
@@ -349,59 +358,73 @@
             this.pictureBox2.TabIndex = 21;
             this.pictureBox2.TabStop = false;
             // 
-            // btnSaveLogs
+            // dtpIntegrationDate
             // 
-            this.btnSaveLogs.BackColor = System.Drawing.SystemColors.Control;
-            this.btnSaveLogs.FlatAppearance.BorderSize = 0;
-            this.btnSaveLogs.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.btnSaveLogs.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
-            this.btnSaveLogs.ForeColor = System.Drawing.Color.Black;
-            this.btnSaveLogs.Location = new System.Drawing.Point(11, 714);
-            this.btnSaveLogs.Name = "btnSaveLogs";
-            this.btnSaveLogs.Size = new System.Drawing.Size(119, 32);
-            this.btnSaveLogs.TabIndex = 22;
-            this.btnSaveLogs.Text = "Save Logs";
-            this.btnSaveLogs.UseVisualStyleBackColor = false;
-            this.btnSaveLogs.Click += new System.EventHandler(this.btnSaveLogs_Click);
+            this.dtpIntegrationDate.CalendarFont = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.dtpIntegrationDate.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.dtpIntegrationDate.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dtpIntegrationDate.Location = new System.Drawing.Point(167, 12);
+            this.dtpIntegrationDate.Name = "dtpIntegrationDate";
+            this.dtpIntegrationDate.Size = new System.Drawing.Size(152, 26);
+            this.dtpIntegrationDate.TabIndex = 18;
             // 
-            // btnClearLogs
+            // txtDomain
             // 
-            this.btnClearLogs.BackColor = System.Drawing.SystemColors.Control;
-            this.btnClearLogs.FlatAppearance.BorderSize = 0;
-            this.btnClearLogs.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.btnClearLogs.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
-            this.btnClearLogs.ForeColor = System.Drawing.Color.Black;
-            this.btnClearLogs.Location = new System.Drawing.Point(136, 714);
-            this.btnClearLogs.Name = "btnClearLogs";
-            this.btnClearLogs.Size = new System.Drawing.Size(107, 32);
-            this.btnClearLogs.TabIndex = 23;
-            this.btnClearLogs.Text = "Clear Logs";
-            this.btnClearLogs.UseVisualStyleBackColor = false;
-            this.btnClearLogs.Click += new System.EventHandler(this.btnClearLogs_Click);
+            this.txtDomain.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.txtDomain.Location = new System.Drawing.Point(167, 44);
+            this.txtDomain.Name = "txtDomain";
+            this.txtDomain.ReadOnly = true;
+            this.txtDomain.Size = new System.Drawing.Size(432, 26);
+            this.txtDomain.TabIndex = 20;
             // 
-            // btnSettings
+            // label7
             // 
-            this.btnSettings.BackColor = System.Drawing.SystemColors.Control;
-            this.btnSettings.FlatAppearance.BorderSize = 0;
-            this.btnSettings.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.btnSettings.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
-            this.btnSettings.ForeColor = System.Drawing.Color.Black;
-            this.btnSettings.Location = new System.Drawing.Point(755, 714);
-            this.btnSettings.Name = "btnSettings";
-            this.btnSettings.Size = new System.Drawing.Size(107, 32);
-            this.btnSettings.TabIndex = 24;
-            this.btnSettings.Text = "Settings";
-            this.btnSettings.UseVisualStyleBackColor = false;
-            this.btnSettings.Click += new System.EventHandler(this.btnSettings_Click);
+            this.label7.AutoSize = true;
+            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.label7.Location = new System.Drawing.Point(31, 79);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(112, 20);
+            this.label7.TabIndex = 15;
+            this.label7.Text = "Branch Code:";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.label9.Location = new System.Drawing.Point(71, 47);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(72, 20);
+            this.label9.TabIndex = 19;
+            this.label9.Text = "Domain:";
+            // 
+            // txtBranchCode
+            // 
+            this.txtBranchCode.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.txtBranchCode.Location = new System.Drawing.Point(167, 76);
+            this.txtBranchCode.Name = "txtBranchCode";
+            this.txtBranchCode.ReadOnly = true;
+            this.txtBranchCode.Size = new System.Drawing.Size(266, 26);
+            this.txtBranchCode.TabIndex = 16;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.label8.Location = new System.Drawing.Point(93, 17);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(50, 20);
+            this.label8.TabIndex = 17;
+            this.label8.Text = "Date:";
             // 
             // btnStartIntegration
             // 
+            this.btnStartIntegration.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnStartIntegration.BackColor = System.Drawing.Color.SeaGreen;
             this.btnStartIntegration.FlatAppearance.BorderSize = 0;
             this.btnStartIntegration.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnStartIntegration.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.btnStartIntegration.ForeColor = System.Drawing.Color.White;
-            this.btnStartIntegration.Location = new System.Drawing.Point(642, 185);
+            this.btnStartIntegration.Location = new System.Drawing.Point(664, 185);
             this.btnStartIntegration.Name = "btnStartIntegration";
             this.btnStartIntegration.Size = new System.Drawing.Size(93, 37);
             this.btnStartIntegration.TabIndex = 11;
@@ -409,31 +432,58 @@
             this.btnStartIntegration.UseVisualStyleBackColor = false;
             this.btnStartIntegration.Click += new System.EventHandler(this.btnStartIntegration_Click);
             // 
-            // tabIntegration
+            // btnStopIntegration
             // 
-            this.tabIntegration.Controls.Add(this.tabPOSIntegration);
-            this.tabIntegration.Controls.Add(this.tabFolderMonitoring);
-            this.tabIntegration.Location = new System.Drawing.Point(13, 57);
-            this.tabIntegration.Name = "tabIntegration";
-            this.tabIntegration.SelectedIndex = 0;
-            this.tabIntegration.Size = new System.Drawing.Size(849, 649);
-            this.tabIntegration.TabIndex = 25;
+            this.btnStopIntegration.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnStopIntegration.BackColor = System.Drawing.Color.IndianRed;
+            this.btnStopIntegration.FlatAppearance.BorderSize = 0;
+            this.btnStopIntegration.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnStopIntegration.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.btnStopIntegration.ForeColor = System.Drawing.Color.White;
+            this.btnStopIntegration.Location = new System.Drawing.Point(763, 185);
+            this.btnStopIntegration.Name = "btnStopIntegration";
+            this.btnStopIntegration.Size = new System.Drawing.Size(93, 37);
+            this.btnStopIntegration.TabIndex = 10;
+            this.btnStopIntegration.Text = "Stop";
+            this.btnStopIntegration.UseVisualStyleBackColor = false;
+            this.btnStopIntegration.Click += new System.EventHandler(this.btnStopIntegration_Click);
             // 
-            // tabPOSIntegration
+            // lblCurrentUser
             // 
-            this.tabPOSIntegration.Controls.Add(this.panel3);
-            this.tabPOSIntegration.Controls.Add(this.btnStartIntegration);
-            this.tabPOSIntegration.Controls.Add(this.btnStopIntegration);
-            this.tabPOSIntegration.Controls.Add(this.lblCurrentUser);
-            this.tabPOSIntegration.Controls.Add(this.label2);
-            this.tabPOSIntegration.Controls.Add(this.txtLogs);
-            this.tabPOSIntegration.Location = new System.Drawing.Point(4, 25);
-            this.tabPOSIntegration.Name = "tabPOSIntegration";
-            this.tabPOSIntegration.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPOSIntegration.Size = new System.Drawing.Size(841, 620);
-            this.tabPOSIntegration.TabIndex = 0;
-            this.tabPOSIntegration.Text = "POS Integration";
-            this.tabPOSIntegration.UseVisualStyleBackColor = true;
+            this.lblCurrentUser.AutoSize = true;
+            this.lblCurrentUser.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.lblCurrentUser.Location = new System.Drawing.Point(93, 193);
+            this.lblCurrentUser.Name = "lblCurrentUser";
+            this.lblCurrentUser.Size = new System.Drawing.Size(110, 20);
+            this.lblCurrentUser.TabIndex = 13;
+            this.lblCurrentUser.Text = "#CurrentUser";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold);
+            this.label2.Location = new System.Drawing.Point(9, 193);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(78, 20);
+            this.label2.TabIndex = 12;
+            this.label2.Text = "Current:";
+            // 
+            // txtLogs
+            // 
+            this.txtLogs.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtLogs.BackColor = System.Drawing.Color.Black;
+            this.txtLogs.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtLogs.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.txtLogs.ForeColor = System.Drawing.Color.White;
+            this.txtLogs.Location = new System.Drawing.Point(8, 228);
+            this.txtLogs.MaxLength = 0;
+            this.txtLogs.Multiline = true;
+            this.txtLogs.Name = "txtLogs";
+            this.txtLogs.ReadOnly = true;
+            this.txtLogs.Size = new System.Drawing.Size(848, 394);
+            this.txtLogs.TabIndex = 14;
             // 
             // tabFolderMonitoring
             // 
@@ -445,7 +495,7 @@
             this.tabFolderMonitoring.Location = new System.Drawing.Point(4, 25);
             this.tabFolderMonitoring.Name = "tabFolderMonitoring";
             this.tabFolderMonitoring.Padding = new System.Windows.Forms.Padding(3);
-            this.tabFolderMonitoring.Size = new System.Drawing.Size(841, 620);
+            this.tabFolderMonitoring.Size = new System.Drawing.Size(864, 628);
             this.tabFolderMonitoring.TabIndex = 1;
             this.tabFolderMonitoring.Text = "Folder Monitoring";
             this.tabFolderMonitoring.UseVisualStyleBackColor = true;
@@ -457,7 +507,7 @@
             this.btnGetCSVTemplate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnGetCSVTemplate.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.btnGetCSVTemplate.ForeColor = System.Drawing.Color.White;
-            this.btnGetCSVTemplate.Location = new System.Drawing.Point(1, 96);
+            this.btnGetCSVTemplate.Location = new System.Drawing.Point(8, 100);
             this.btnGetCSVTemplate.Name = "btnGetCSVTemplate";
             this.btnGetCSVTemplate.Size = new System.Drawing.Size(220, 37);
             this.btnGetCSVTemplate.TabIndex = 23;
@@ -467,17 +517,16 @@
             // 
             // panel4
             // 
-            this.panel4.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.panel4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel4.BackColor = System.Drawing.SystemColors.Control;
             this.panel4.Controls.Add(this.label3);
             this.panel4.Controls.Add(this.txtFolderMonitoringUserCode);
             this.panel4.Controls.Add(this.txtFolderMonitoringDomain);
             this.panel4.Controls.Add(this.label14);
-            this.panel4.Location = new System.Drawing.Point(2, 4);
+            this.panel4.Location = new System.Drawing.Point(8, 6);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(834, 91);
+            this.panel4.Size = new System.Drawing.Size(848, 88);
             this.panel4.TabIndex = 22;
             // 
             // label3
@@ -520,12 +569,13 @@
             // 
             // btnStartFolderMonitoringIntegration
             // 
+            this.btnStartFolderMonitoringIntegration.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnStartFolderMonitoringIntegration.BackColor = System.Drawing.Color.SeaGreen;
             this.btnStartFolderMonitoringIntegration.FlatAppearance.BorderSize = 0;
             this.btnStartFolderMonitoringIntegration.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnStartFolderMonitoringIntegration.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.btnStartFolderMonitoringIntegration.ForeColor = System.Drawing.Color.White;
-            this.btnStartFolderMonitoringIntegration.Location = new System.Drawing.Point(642, 96);
+            this.btnStartFolderMonitoringIntegration.Location = new System.Drawing.Point(664, 100);
             this.btnStartFolderMonitoringIntegration.Name = "btnStartFolderMonitoringIntegration";
             this.btnStartFolderMonitoringIntegration.Size = new System.Drawing.Size(93, 37);
             this.btnStartFolderMonitoringIntegration.TabIndex = 16;
@@ -535,12 +585,13 @@
             // 
             // btnStopFolderMonitoringIntegration
             // 
+            this.btnStopFolderMonitoringIntegration.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnStopFolderMonitoringIntegration.BackColor = System.Drawing.Color.IndianRed;
             this.btnStopFolderMonitoringIntegration.FlatAppearance.BorderSize = 0;
             this.btnStopFolderMonitoringIntegration.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnStopFolderMonitoringIntegration.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.btnStopFolderMonitoringIntegration.ForeColor = System.Drawing.Color.White;
-            this.btnStopFolderMonitoringIntegration.Location = new System.Drawing.Point(741, 96);
+            this.btnStopFolderMonitoringIntegration.Location = new System.Drawing.Point(763, 100);
             this.btnStopFolderMonitoringIntegration.Name = "btnStopFolderMonitoringIntegration";
             this.btnStopFolderMonitoringIntegration.Size = new System.Drawing.Size(93, 37);
             this.btnStopFolderMonitoringIntegration.TabIndex = 15;
@@ -550,28 +601,20 @@
             // 
             // txtFolderMonitoringLogs
             // 
+            this.txtFolderMonitoringLogs.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtFolderMonitoringLogs.BackColor = System.Drawing.Color.Black;
             this.txtFolderMonitoringLogs.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtFolderMonitoringLogs.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.txtFolderMonitoringLogs.ForeColor = System.Drawing.Color.White;
-            this.txtFolderMonitoringLogs.Location = new System.Drawing.Point(1, 140);
+            this.txtFolderMonitoringLogs.Location = new System.Drawing.Point(8, 143);
             this.txtFolderMonitoringLogs.MaxLength = 0;
             this.txtFolderMonitoringLogs.Multiline = true;
             this.txtFolderMonitoringLogs.Name = "txtFolderMonitoringLogs";
             this.txtFolderMonitoringLogs.ReadOnly = true;
-            this.txtFolderMonitoringLogs.Size = new System.Drawing.Size(833, 474);
+            this.txtFolderMonitoringLogs.Size = new System.Drawing.Size(848, 479);
             this.txtFolderMonitoringLogs.TabIndex = 17;
-            // 
-            // fileSystemWatcherCSVFiles
-            // 
-            this.fileSystemWatcherCSVFiles.EnableRaisingEvents = true;
-            this.fileSystemWatcherCSVFiles.Filter = "*.csv";
-            this.fileSystemWatcherCSVFiles.IncludeSubdirectories = true;
-            this.fileSystemWatcherCSVFiles.NotifyFilter = ((System.IO.NotifyFilters)((((System.IO.NotifyFilters.FileName | System.IO.NotifyFilters.DirectoryName) 
-            | System.IO.NotifyFilters.LastWrite) 
-            | System.IO.NotifyFilters.LastAccess)));
-            this.fileSystemWatcherCSVFiles.SynchronizingObject = this;
-            this.fileSystemWatcherCSVFiles.Created += new System.IO.FileSystemEventHandler(this.fileSystemWatcherCSVFiles_Created);
             // 
             // TrnIntegrationForm
             // 
@@ -579,10 +622,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(872, 840);
-            this.Controls.Add(this.tabIntegration);
-            this.Controls.Add(this.btnSaveLogs);
-            this.Controls.Add(this.btnClearLogs);
-            this.Controls.Add(this.btnSettings);
+            this.Controls.Add(this.panel5);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.panel2);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -592,69 +632,72 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Integration";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.TrnInnosoftPOSIntegrationForm_FormClosing);
-            this.panel2.ResumeLayout(false);
-            this.panel2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
-            this.panel3.ResumeLayout(false);
-            this.panel3.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.fileSystemWatcherCSVFiles)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
+            this.panel5.ResumeLayout(false);
+            this.panel6.ResumeLayout(false);
             this.tabIntegration.ResumeLayout(false);
             this.tabPOSIntegration.ResumeLayout(false);
             this.tabPOSIntegration.PerformLayout();
+            this.panel3.ResumeLayout(false);
+            this.panel3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.tabFolderMonitoring.ResumeLayout(false);
             this.tabFolderMonitoring.PerformLayout();
             this.panel4.ResumeLayout(false);
             this.panel4.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.fileSystemWatcherCSVFiles)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
-
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button btnLogout;
+        private System.Windows.Forms.FolderBrowserDialog fbdGetCSVTemplate;
+        private System.IO.FileSystemWatcher fileSystemWatcherCSVFiles;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button btnSaveLogs;
+        private System.Windows.Forms.Button btnClearLogs;
+        private System.Windows.Forms.Button btnSettings;
+        private System.Windows.Forms.Panel panel5;
+        private System.Windows.Forms.TabControl tabIntegration;
+        private System.Windows.Forms.TabPage tabFolderMonitoring;
+        private System.Windows.Forms.Button btnGetCSVTemplate;
+        private System.Windows.Forms.Panel panel4;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox txtFolderMonitoringUserCode;
+        private System.Windows.Forms.TextBox txtFolderMonitoringDomain;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Button btnStartFolderMonitoringIntegration;
+        private System.Windows.Forms.Button btnStopFolderMonitoringIntegration;
+        private System.Windows.Forms.TextBox txtFolderMonitoringLogs;
+        private System.Windows.Forms.TabPage tabPOSIntegration;
+        private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.CheckBox cbxUseItemPrice;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.TextBox txtUserCode;
+        private System.Windows.Forms.PictureBox pictureBox2;
+        private System.Windows.Forms.DateTimePicker dtpIntegrationDate;
+        private System.Windows.Forms.TextBox txtDomain;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.TextBox txtBranchCode;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Button btnStartIntegration;
         private System.Windows.Forms.Button btnStopIntegration;
         private System.Windows.Forms.Label lblCurrentUser;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox txtLogs;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.TextBox txtBranchCode;
-        private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.DateTimePicker dtpIntegrationDate;
-        private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.TextBox txtDomain;
-        private System.Windows.Forms.Panel panel3;
-        private System.Windows.Forms.Button btnLogout;
-        private System.Windows.Forms.PictureBox pictureBox2;
-        private System.Windows.Forms.Button btnSaveLogs;
-        private System.Windows.Forms.Button btnClearLogs;
-        private System.Windows.Forms.Button btnSettings;
-        private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.TextBox txtUserCode;
-        private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.CheckBox cbxUseItemPrice;
-        private System.Windows.Forms.Button btnStartIntegration;
-        private System.Windows.Forms.TabControl tabIntegration;
-        private System.Windows.Forms.TabPage tabPOSIntegration;
-        private System.Windows.Forms.TabPage tabFolderMonitoring;
-        private System.Windows.Forms.Button btnStartFolderMonitoringIntegration;
-        private System.Windows.Forms.Button btnStopFolderMonitoringIntegration;
-        private System.Windows.Forms.TextBox txtFolderMonitoringLogs;
-        private System.Windows.Forms.Panel panel4;
-        private System.Windows.Forms.TextBox txtFolderMonitoringDomain;
-        private System.Windows.Forms.Label label14;
-        private System.Windows.Forms.Button btnGetCSVTemplate;
-        private System.Windows.Forms.FolderBrowserDialog fbdGetCSVTemplate;
-        private System.IO.FileSystemWatcher fileSystemWatcherCSVFiles;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox txtFolderMonitoringUserCode;
+        private System.Windows.Forms.Panel panel6;
     }
 }
