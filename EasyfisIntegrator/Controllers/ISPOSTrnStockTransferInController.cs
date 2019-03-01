@@ -60,6 +60,8 @@ namespace EasyfisIntegrator.Controllers
                 httpWebRequest.Method = "GET";
                 httpWebRequest.Accept = "application/json";
 
+                Boolean isRead = false;
+
                 // ================
                 // Process Response
                 // ================
@@ -152,14 +154,19 @@ namespace EasyfisIntegrator.Controllers
                                     }
                                 }
 
-                                trnIntegrationForm.logMessages("Stock Transfer In Integration Done.");
-
                                 trnIntegrationForm.logMessages("Save Successful!" + "\r\n\n");
                                 trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                                 trnIntegrationForm.logMessages("\r\n\n");
                             }
                         }
                     }
+
+                    isRead = true;
+                }
+
+                if (isRead)
+                {
+                    trnIntegrationForm.logMessages("Stock Transfer In Integration Done.");
                 }
             }
             catch (Exception e)

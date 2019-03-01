@@ -44,6 +44,8 @@ namespace EasyfisIntegrator.Controllers
                 httpWebRequest.Method = "GET";
                 httpWebRequest.Accept = "application/json";
 
+                Boolean isRead = false;
+
                 // ================
                 // Process Response
                 // ================
@@ -142,8 +144,6 @@ namespace EasyfisIntegrator.Controllers
                                         updateCustomer.CustomerCode = customer.ManualArticleCode;
                                         posdb.SubmitChanges();
 
-                                        trnIntegrationForm.logMessages("Customer Integration Done.");
-
                                         trnIntegrationForm.logMessages("Update Successful!" + "\r\n\n");
                                         trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                                         trnIntegrationForm.logMessages("\r\n\n");
@@ -179,8 +179,6 @@ namespace EasyfisIntegrator.Controllers
                                     posdb.MstCustomers.InsertOnSubmit(newCustomer);
                                     posdb.SubmitChanges();
 
-                                    trnIntegrationForm.logMessages("Customer Integration Done.");
-
                                     trnIntegrationForm.logMessages("Save Successful!" + "\r\n\n");
                                     trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                                     trnIntegrationForm.logMessages("\r\n\n");
@@ -188,8 +186,6 @@ namespace EasyfisIntegrator.Controllers
                             }
                             else
                             {
-                                trnIntegrationForm.logMessages("Customer Integration Done.");
-
                                 trnIntegrationForm.logMessages("Cannot Save Customer: " + customer.Article + "\r\n\n");
                                 trnIntegrationForm.logMessages("Term Mismatch!" + "\r\n\n");
                                 trnIntegrationForm.logMessages("Save Failed!" + "\r\n\n");
@@ -198,6 +194,13 @@ namespace EasyfisIntegrator.Controllers
                             }
                         }
                     }
+
+                    isRead = true;
+                }
+
+                if (isRead)
+                {
+                    trnIntegrationForm.logMessages("Customer Integration Done.");
                 }
             }
             catch (Exception e)

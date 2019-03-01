@@ -90,6 +90,14 @@ namespace EasyfisIntegrator.Controllers
                         trnIntegrationForm.logMessages("Amount: " + collectionData.ListPOSIntegrationTrnSalesInvoiceItem.Sum(d => d.Amount).ToString("#,##0.00") + "\r\n\n");
                         SendCollection(apiUrlHost, json);
                     }
+                    else
+                    {
+                        trnIntegrationForm.logMessages("Collection Integration Done.");
+                    }
+                }
+                else
+                {
+                    trnIntegrationForm.logMessages("Collection Integration Done.");
                 }
             }
             catch (Exception e)
@@ -125,6 +133,8 @@ namespace EasyfisIntegrator.Controllers
                     streamWriter.Write(new JavaScriptSerializer().Serialize(collection));
                 }
 
+                Boolean isRead = false;
+
                 // ================
                 // Process Response
                 // ================
@@ -143,12 +153,17 @@ namespace EasyfisIntegrator.Controllers
                             posdb.SubmitChanges();
                         }
 
-                        trnIntegrationForm.logMessages("Collection Integration Done.");
-
                         trnIntegrationForm.logMessages("Send Succesful!" + "\r\n\n");
                         trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                         trnIntegrationForm.logMessages("\r\n\n");
                     }
+
+                    isRead = true;
+                }
+
+                if (isRead)
+                {
+                    trnIntegrationForm.logMessages("Collection Integration Done.");
                 }
             }
             catch (WebException we)

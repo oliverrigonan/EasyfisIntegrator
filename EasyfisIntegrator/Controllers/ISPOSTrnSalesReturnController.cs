@@ -87,9 +87,29 @@ namespace EasyfisIntegrator.Controllers
                                     trnIntegrationForm.logMessages("Amount: " + collectionData.ListPOSIntegrationTrnSalesInvoiceItem.Sum(d => d.Amount).ToString("#,##0.00") + "\r\n\n");
                                     SendSalesReturn(apiUrlHost, json);
                                 }
+                                else
+                                {
+                                    trnIntegrationForm.logMessages("Sales Return Integration Done.");
+                                }
+                            }
+                            else
+                            {
+                                trnIntegrationForm.logMessages("Sales Return Integration Done.");
                             }
                         }
+                        else
+                        {
+                            trnIntegrationForm.logMessages("Sales Return Integration Done.");
+                        }
                     }
+                    else
+                    {
+                        trnIntegrationForm.logMessages("Sales Return Integration Done.");
+                    }
+                }
+                else
+                {
+                    trnIntegrationForm.logMessages("Sales Return Integration Done.");
                 }
             }
             catch (Exception e)
@@ -125,6 +145,8 @@ namespace EasyfisIntegrator.Controllers
                     streamWriter.Write(new JavaScriptSerializer().Serialize(collection));
                 }
 
+                Boolean isRead = false;
+
                 // ================
                 // Process response
                 // ================
@@ -143,12 +165,17 @@ namespace EasyfisIntegrator.Controllers
                             posdb.SubmitChanges();
                         }
 
-                        trnIntegrationForm.logMessages("Sales Return Integration Done.");
-
                         trnIntegrationForm.logMessages("Send Succesful!" + "\r\n\n");
                         trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                         trnIntegrationForm.logMessages("\r\n\n");
                     }
+
+                    isRead = true;
+                }
+
+                if (isRead)
+                {
+                    trnIntegrationForm.logMessages("Sales Return Integration Done.");
                 }
             }
             catch (WebException we)

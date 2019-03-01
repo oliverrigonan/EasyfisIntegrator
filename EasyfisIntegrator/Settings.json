@@ -1,9 +1,9 @@
 ﻿{
   "ConnectionString": "Data Source=localhost;Initial Catalog=pos13;Persist Security Info=True;User ID=sa;Password=innosoft",
   "Domain": "localhost:2651",
-  "LogFileLocation": "D:\\Easyfis Integrator\\Logs",
-  "FolderToMonitor": "D:\\Easyfis Integrator\\Modules",
+  "LogFileLocation": "D:\\Work\\Easyfis\\Projects\\Integrations\\Easyfis Integration\\Easyfis Integrator\\Logs",
+  "FolderToMonitor": "D:\\Work\\Easyfis\\Projects\\Integrations\\Easyfis Integration\\Easyfis Integrator\\Modules",
   "IsFolderMonitoringOnly": false,
   "FolderMonitoringUserCode": "easyfis",
-  "FolderForSentFiles": "D:\\Easyfis Integrator\\Sent"
+  "FolderForSentFiles": "D:\\Work\\Easyfis\\Projects\\Integrations\\Easyfis Integration\\Easyfis Integrator\\Sent"
 }

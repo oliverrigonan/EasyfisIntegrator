@@ -60,6 +60,8 @@ namespace EasyfisIntegrator.Controllers
                 httpWebRequest.Method = "GET";
                 httpWebRequest.Accept = "application/json";
 
+                Boolean isRead = false;
+
                 // ================
                 // Process Response
                 // ================
@@ -154,8 +156,6 @@ namespace EasyfisIntegrator.Controllers
                                         }
                                     }
 
-                                    trnIntegrationForm.logMessages("Receiving Receipt Integration Done.");
-
                                     trnIntegrationForm.logMessages("Save Successful!" + "\r\n\n");
                                     trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                                     trnIntegrationForm.logMessages("\r\n\n");
@@ -163,6 +163,13 @@ namespace EasyfisIntegrator.Controllers
                             }
                         }
                     }
+
+                    isRead = true;
+                }
+
+                if (isRead)
+                {
+                    trnIntegrationForm.logMessages("Receiving Receipt Integration Done.");
                 }
             }
             catch (Exception e)

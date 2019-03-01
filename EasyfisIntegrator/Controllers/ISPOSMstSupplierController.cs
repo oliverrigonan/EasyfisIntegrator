@@ -44,6 +44,8 @@ namespace EasyfisIntegrator.Controllers
                 httpWebRequest.Method = "GET";
                 httpWebRequest.Accept = "application/json";
 
+                Boolean isRead = false;
+
                 // ================
                 // Process Response
                 // ================
@@ -123,8 +125,6 @@ namespace EasyfisIntegrator.Controllers
                                         updateSupplier.UpdateDateTime = DateTime.Now;
                                         posdb.SubmitChanges();
 
-                                        trnIntegrationForm.logMessages("Supplier Integration Done.");
-
                                         trnIntegrationForm.logMessages("Update Successful!" + "\r\n\n");
                                         trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                                         trnIntegrationForm.logMessages("\r\n\n");
@@ -155,8 +155,6 @@ namespace EasyfisIntegrator.Controllers
                                     posdb.MstSuppliers.InsertOnSubmit(newSupplier);
                                     posdb.SubmitChanges();
 
-                                    trnIntegrationForm.logMessages("Supplier Integration Done.");
-
                                     trnIntegrationForm.logMessages("Save Successful!" + "\r\n\n");
                                     trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                                     trnIntegrationForm.logMessages("\r\n\n");
@@ -164,8 +162,6 @@ namespace EasyfisIntegrator.Controllers
                             }
                             else
                             {
-                                trnIntegrationForm.logMessages("Supplier Integration Done.");
-
                                 trnIntegrationForm.logMessages("Cannot Save Supplier: " + supplier.Article + "\r\n\n");
                                 trnIntegrationForm.logMessages("Term Mismatch!" + "\r\n\n");
                                 trnIntegrationForm.logMessages("Save Failed!" + "\r\n\n");
@@ -174,6 +170,13 @@ namespace EasyfisIntegrator.Controllers
                             }
                         }
                     }
+
+                    isRead = true;
+                }
+
+                if (isRead)
+                {
+                    trnIntegrationForm.logMessages("Supplier Integration Done.");
                 }
             }
             catch (Exception e)

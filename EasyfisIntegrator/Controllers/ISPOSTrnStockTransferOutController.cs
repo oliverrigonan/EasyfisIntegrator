@@ -60,6 +60,8 @@ namespace EasyfisIntegrator.Controllers
                 httpWebRequest.Method = "GET";
                 httpWebRequest.Accept = "application/json";
 
+                Boolean isRead = false;
+
                 // ================
                 // Process Response
                 // ================
@@ -153,16 +155,12 @@ namespace EasyfisIntegrator.Controllers
                                         }
                                     }
 
-                                    trnIntegrationForm.logMessages("Stock Transfer Out Integration Done.");
-
                                     trnIntegrationForm.logMessages("Save Successful!" + "\r\n\n");
                                     trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                                     trnIntegrationForm.logMessages("\r\n\n");
                                 }
                                 else
                                 {
-                                    trnIntegrationForm.logMessages("Stock Transfer Out Integration Done.");
-
                                     trnIntegrationForm.logMessages("Cannot Save Stock Transfer (OT): ST-" + stockTransfer.BranchCode + "-" + stockTransfer.STNumber + "\r\n\n");
                                     trnIntegrationForm.logMessages("Empty Accounts!" + "\r\n\n");
                                     trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
@@ -171,6 +169,13 @@ namespace EasyfisIntegrator.Controllers
                             }
                         }
                     }
+
+                    isRead = true;
+                }
+
+                if (isRead)
+                {
+                    trnIntegrationForm.logMessages("Stock Transfer Out Integration Done.");
                 }
             }
             catch (Exception e)

@@ -44,6 +44,8 @@ namespace EasyfisIntegrator.Controllers
                 httpWebRequest.Method = "GET";
                 httpWebRequest.Accept = "application/json";
 
+                Boolean isRead = false;
+
                 // ================
                 // Process Response
                 // ================
@@ -79,10 +81,7 @@ namespace EasyfisIntegrator.Controllers
 
                                     var updateCurrentItem = currentItem.FirstOrDefault();
                                     updateCurrentItem.Price = itemPrice.Price;
-
                                     posdb.SubmitChanges();
-
-                                    trnIntegrationForm.logMessages("ItemPrice Integration Done.");
 
                                     trnIntegrationForm.logMessages("Save Successful!" + "\r\n\n");
                                     trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
@@ -91,8 +90,6 @@ namespace EasyfisIntegrator.Controllers
                             }
                             else
                             {
-                                trnIntegrationForm.logMessages("ItemPrice Integration Done.");
-
                                 trnIntegrationForm.logMessages("Cannot Save Item Price: IP-" + itemPrice.BranchCode + "-" + itemPrice.IPNumber + " (" + itemPrice.IPDate + ")" + "..." + "\r\n\n");
                                 trnIntegrationForm.logMessages("Price: " + itemPrice.Price + "\r\n\n");
                                 trnIntegrationForm.logMessages("Item Not Found!" + "\r\n\n");
@@ -101,6 +98,13 @@ namespace EasyfisIntegrator.Controllers
                             }
                         }
                     }
+
+                    isRead = true;
+                }
+
+                if (isRead)
+                {
+                    trnIntegrationForm.logMessages("ItemPrice Integration Done.");
                 }
             }
             catch (Exception e)
