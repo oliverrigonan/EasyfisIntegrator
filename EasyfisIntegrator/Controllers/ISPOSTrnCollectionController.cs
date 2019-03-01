@@ -94,12 +94,12 @@ namespace EasyfisIntegrator.Controllers
             }
             catch (Exception e)
             {
+                trnIntegrationForm.logMessages("Collection Integration Done.");
+
                 trnIntegrationForm.logMessages("Collection Error: " + e.Message + "\r\n\n");
                 trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                 trnIntegrationForm.logMessages("\r\n\n");
             }
-
-            trnIntegrationForm.logMessages("Collection Integration Done.");
         }
 
         // ===============
@@ -143,6 +143,8 @@ namespace EasyfisIntegrator.Controllers
                             posdb.SubmitChanges();
                         }
 
+                        trnIntegrationForm.logMessages("Collection Integration Done.");
+
                         trnIntegrationForm.logMessages("Send Succesful!" + "\r\n\n");
                         trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                         trnIntegrationForm.logMessages("\r\n\n");
@@ -152,6 +154,9 @@ namespace EasyfisIntegrator.Controllers
             catch (WebException we)
             {
                 var resp = new StreamReader(we.Response.GetResponseStream()).ReadToEnd();
+
+                trnIntegrationForm.logMessages("Collection Integration Done.");
+
                 trnIntegrationForm.logMessages(resp.Replace("\"", "") + "\r\n\n");
                 trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                 trnIntegrationForm.logMessages("\r\n\n");

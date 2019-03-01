@@ -123,6 +123,8 @@ namespace EasyfisIntegrator.Controllers
                                         updateSupplier.UpdateDateTime = DateTime.Now;
                                         posdb.SubmitChanges();
 
+                                        trnIntegrationForm.logMessages("Supplier Integration Done.");
+
                                         trnIntegrationForm.logMessages("Update Successful!" + "\r\n\n");
                                         trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                                         trnIntegrationForm.logMessages("\r\n\n");
@@ -153,6 +155,8 @@ namespace EasyfisIntegrator.Controllers
                                     posdb.MstSuppliers.InsertOnSubmit(newSupplier);
                                     posdb.SubmitChanges();
 
+                                    trnIntegrationForm.logMessages("Supplier Integration Done.");
+
                                     trnIntegrationForm.logMessages("Save Successful!" + "\r\n\n");
                                     trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                                     trnIntegrationForm.logMessages("\r\n\n");
@@ -160,6 +164,8 @@ namespace EasyfisIntegrator.Controllers
                             }
                             else
                             {
+                                trnIntegrationForm.logMessages("Supplier Integration Done.");
+
                                 trnIntegrationForm.logMessages("Cannot Save Supplier: " + supplier.Article + "\r\n\n");
                                 trnIntegrationForm.logMessages("Term Mismatch!" + "\r\n\n");
                                 trnIntegrationForm.logMessages("Save Failed!" + "\r\n\n");
@@ -172,12 +178,12 @@ namespace EasyfisIntegrator.Controllers
             }
             catch (Exception e)
             {
+                trnIntegrationForm.logMessages("Supplier Integration Done.");
+
                 trnIntegrationForm.logMessages("Supplier Error: " + e.Message + "\r\n\n");
                 trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                 trnIntegrationForm.logMessages("\r\n\n");
             }
-
-            trnIntegrationForm.logMessages("Supplier Integration Done.");
         }
     }
 }

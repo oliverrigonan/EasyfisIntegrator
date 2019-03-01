@@ -82,6 +82,8 @@ namespace EasyfisIntegrator.Controllers
 
                                     posdb.SubmitChanges();
 
+                                    trnIntegrationForm.logMessages("ItemPrice Integration Done.");
+
                                     trnIntegrationForm.logMessages("Save Successful!" + "\r\n\n");
                                     trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                                     trnIntegrationForm.logMessages("\r\n\n");
@@ -89,6 +91,8 @@ namespace EasyfisIntegrator.Controllers
                             }
                             else
                             {
+                                trnIntegrationForm.logMessages("ItemPrice Integration Done.");
+
                                 trnIntegrationForm.logMessages("Cannot Save Item Price: IP-" + itemPrice.BranchCode + "-" + itemPrice.IPNumber + " (" + itemPrice.IPDate + ")" + "..." + "\r\n\n");
                                 trnIntegrationForm.logMessages("Price: " + itemPrice.Price + "\r\n\n");
                                 trnIntegrationForm.logMessages("Item Not Found!" + "\r\n\n");
@@ -101,12 +105,12 @@ namespace EasyfisIntegrator.Controllers
             }
             catch (Exception e)
             {
+                trnIntegrationForm.logMessages("ItemPrice Integration Done.");
+
                 trnIntegrationForm.logMessages("Item Price Error: " + e.Message + "\r\n\n");
                 trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                 trnIntegrationForm.logMessages("\r\n\n");
             }
-
-            trnIntegrationForm.logMessages("ItemPrice Integration Done.");
         }
     }
 }

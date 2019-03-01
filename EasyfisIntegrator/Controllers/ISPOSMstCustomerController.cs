@@ -142,6 +142,8 @@ namespace EasyfisIntegrator.Controllers
                                         updateCustomer.CustomerCode = customer.ManualArticleCode;
                                         posdb.SubmitChanges();
 
+                                        trnIntegrationForm.logMessages("Customer Integration Done.");
+
                                         trnIntegrationForm.logMessages("Update Successful!" + "\r\n\n");
                                         trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                                         trnIntegrationForm.logMessages("\r\n\n");
@@ -177,6 +179,8 @@ namespace EasyfisIntegrator.Controllers
                                     posdb.MstCustomers.InsertOnSubmit(newCustomer);
                                     posdb.SubmitChanges();
 
+                                    trnIntegrationForm.logMessages("Customer Integration Done.");
+
                                     trnIntegrationForm.logMessages("Save Successful!" + "\r\n\n");
                                     trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                                     trnIntegrationForm.logMessages("\r\n\n");
@@ -184,6 +188,8 @@ namespace EasyfisIntegrator.Controllers
                             }
                             else
                             {
+                                trnIntegrationForm.logMessages("Customer Integration Done.");
+
                                 trnIntegrationForm.logMessages("Cannot Save Customer: " + customer.Article + "\r\n\n");
                                 trnIntegrationForm.logMessages("Term Mismatch!" + "\r\n\n");
                                 trnIntegrationForm.logMessages("Save Failed!" + "\r\n\n");
@@ -196,12 +202,12 @@ namespace EasyfisIntegrator.Controllers
             }
             catch (Exception e)
             {
+                trnIntegrationForm.logMessages("Customer Integration Done.");
+
                 trnIntegrationForm.logMessages("Customer Error: " + e.Message + "\r\n\n");
                 trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                 trnIntegrationForm.logMessages("\r\n\n");
             }
-
-            trnIntegrationForm.logMessages("Customer Integration Done.");
         }
     }
 }

@@ -152,6 +152,8 @@ namespace EasyfisIntegrator.Controllers
                                     }
                                 }
 
+                                trnIntegrationForm.logMessages("Stock Transfer In Integration Done.");
+
                                 trnIntegrationForm.logMessages("Save Successful!" + "\r\n\n");
                                 trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                                 trnIntegrationForm.logMessages("\r\n\n");
@@ -162,12 +164,12 @@ namespace EasyfisIntegrator.Controllers
             }
             catch (Exception e)
             {
+                trnIntegrationForm.logMessages("Stock Transfer In Integration Done.");
+
                 trnIntegrationForm.logMessages("Stock Transfer (In) Error: " + e.Message + "\r\n\n");
                 trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                 trnIntegrationForm.logMessages("\r\n\n");
             }
-
-            trnIntegrationForm.logMessages("Stock Transfer In Integration Done.");
         }
     }
 }

@@ -151,12 +151,16 @@ namespace EasyfisIntegrator.Controllers
                                         }
                                     }
 
+                                    trnIntegrationForm.logMessages("StockOut Integration Done.");
+
                                     trnIntegrationForm.logMessages("Save Successful!" + "\r\n\n");
                                     trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                                     trnIntegrationForm.logMessages("\r\n\n");
                                 }
                                 else
                                 {
+                                    trnIntegrationForm.logMessages("StockOut Integration Done.");
+
                                     trnIntegrationForm.logMessages("Cannot Save Stock Out: OT - " + stockOut.BranchCode + " - " + stockOut.OTNumber + "\r\n\n");
                                     trnIntegrationForm.logMessages("Empty Accounts!" + "\r\n\n");
                                     trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
@@ -169,12 +173,12 @@ namespace EasyfisIntegrator.Controllers
             }
             catch (Exception e)
             {
+                trnIntegrationForm.logMessages("StockOut Integration Done.");
+
                 trnIntegrationForm.logMessages("Stock-Out Error: " + e.Message + "\r\n\n");
                 trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                 trnIntegrationForm.logMessages("\r\n\n");
             }
-
-            trnIntegrationForm.logMessages("StockOut Integration Done.");
         }
     }
 }

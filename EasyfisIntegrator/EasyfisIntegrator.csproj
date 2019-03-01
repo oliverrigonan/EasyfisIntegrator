@@ -8,11 +8,12 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>EasyfisIntegrator</RootNamespace>
     <AssemblyName>EasyfisIntegrator</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <IsWebBootstrapper>false</IsWebBootstrapper>
-    <PublishUrl>D:\Work\Easyfis\Projects\Integrations\Easyfis Integration\Easyfis Integrator\Application\</PublishUrl>
+    <TargetFrameworkProfile />
+    <PublishUrl>D:\Work\Easyfis\Projects\Integrations\Easyfis Integration\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
     <UpdateEnabled>false</UpdateEnabled>
@@ -211,6 +212,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="InnosoftPOSData\InnosoftPOSData.dbml">
       <Generator>MSLinqToSQLGenerator</Generator>

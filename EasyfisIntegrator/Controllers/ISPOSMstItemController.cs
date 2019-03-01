@@ -262,6 +262,8 @@ namespace EasyfisIntegrator.Controllers
                                                     }
                                                 }
 
+                                                trnIntegrationForm.logMessages("Item Integration Done.");
+
                                                 trnIntegrationForm.logMessages("Update Successful!" + "\r\n\n");
                                                 trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                                                 trnIntegrationForm.logMessages("\r\n\n");
@@ -335,6 +337,8 @@ namespace EasyfisIntegrator.Controllers
                                                 posdb.SubmitChanges();
                                             }
 
+                                            trnIntegrationForm.logMessages("Item Integration Done.");
+
                                             trnIntegrationForm.logMessages("Save Successful!" + "\r\n\n");
                                             trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                                             trnIntegrationForm.logMessages("\r\n\n");
@@ -342,6 +346,8 @@ namespace EasyfisIntegrator.Controllers
                                     }
                                     else
                                     {
+                                        trnIntegrationForm.logMessages("Item Integration Done.");
+
                                         trnIntegrationForm.logMessages("Cannot Save Item: " + item.Article + "\r\n\n");
                                         trnIntegrationForm.logMessages("Empty Supplier!" + "\r\n\n");
                                         trnIntegrationForm.logMessages("Save Failed!" + "\r\n\n");
@@ -351,6 +357,8 @@ namespace EasyfisIntegrator.Controllers
                                 }
                                 else
                                 {
+                                    trnIntegrationForm.logMessages("Item Integration Done.");
+
                                     trnIntegrationForm.logMessages("Cannot Save Item: " + item.Article + "\r\n\n");
                                     trnIntegrationForm.logMessages("Output Tax Mismatch!" + "\r\n\n");
                                     trnIntegrationForm.logMessages("Save Failed!" + "\r\n\n");
@@ -360,6 +368,8 @@ namespace EasyfisIntegrator.Controllers
                             }
                             else
                             {
+                                trnIntegrationForm.logMessages("Item Integration Done.");
+
                                 trnIntegrationForm.logMessages("Cannot Save Item: " + item.Article + "\r\n\n");
                                 trnIntegrationForm.logMessages("Unit Mismatch!" + "\r\n\n");
                                 trnIntegrationForm.logMessages("Save Failed!" + "\r\n\n");
@@ -376,8 +386,6 @@ namespace EasyfisIntegrator.Controllers
                 trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                 trnIntegrationForm.logMessages("\r\n\n");
             }
-
-            trnIntegrationForm.logMessages("Item Integration Done.");
         }
     }
 }

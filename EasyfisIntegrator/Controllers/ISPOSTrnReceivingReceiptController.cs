@@ -154,6 +154,8 @@ namespace EasyfisIntegrator.Controllers
                                         }
                                     }
 
+                                    trnIntegrationForm.logMessages("Receiving Receipt Integration Done.");
+
                                     trnIntegrationForm.logMessages("Save Successful!" + "\r\n\n");
                                     trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                                     trnIntegrationForm.logMessages("\r\n\n");
@@ -165,12 +167,12 @@ namespace EasyfisIntegrator.Controllers
             }
             catch (Exception e)
             {
+                trnIntegrationForm.logMessages("Receiving Receipt Integration Done.");
+
                 trnIntegrationForm.logMessages("Receiving Receipt Error: " + e.Message + "\r\n\n");
                 trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                 trnIntegrationForm.logMessages("\r\n\n");
             }
-
-            trnIntegrationForm.logMessages("Receiving Receipt Integration Done.");
         }
     }
 }
