@@ -21,6 +21,7 @@ namespace EasyfisIntegrator.Entities
         public Boolean IsClear { get; set; }
         public String UserCode { get; set; }
         public String CreatedDateTime { get; set; }
+        public String LineBranchCode { get; set; }
         public String AccountCode { get; set; }
         public String ArticleCode { get; set; }
         public String RRNumber { get; set; }

@@ -14,6 +14,7 @@ namespace EasyfisIntegrator.Entities
         public String ManualORNumber { get; set; }
         public String UserCode { get; set; }
         public String CreatedDateTime { get; set; }
+        public String LineBranchCode { get; set; }
         public String AccountCode { get; set; }
         public String ArticleCode { get; set; }
         public String SINumber { get; set; }

@@ -51,17 +51,18 @@ namespace EasyfisIntegrator.Controllers
                                 ManualORNumber = data[4],
                                 UserCode = userCode,
                                 CreatedDateTime = data[5],
-                                AccountCode = data[6],
-                                ArticleCode = data[7],
-                                SINumber = data[8],
-                                Particulars = data[9],
-                                Amount = Convert.ToDecimal(data[10]),
-                                PayType = data[11],
-                                CheckNumber = data[12],
-                                CheckDate = data[13],
-                                CheckBank = data[14],
-                                DepositoryBankCode = data[15],
-                                IsClear = Convert.ToBoolean(data[16])
+                                LineBranchCode = data[6],
+                                AccountCode = data[7],
+                                ArticleCode = data[8],
+                                SINumber = data[9],
+                                Particulars = data[10],
+                                Amount = Convert.ToDecimal(data[11]),
+                                PayType = data[12],
+                                CheckNumber = data[13],
+                                CheckDate = data[14],
+                                CheckBank = data[15],
+                                DepositoryBankCode = data[16],
+                                IsClear = Convert.ToBoolean(data[17])
                             });
                         }
 

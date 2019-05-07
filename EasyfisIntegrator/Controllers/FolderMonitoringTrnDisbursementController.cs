@@ -56,11 +56,12 @@ namespace EasyfisIntegrator.Controllers
                                 IsClear = Convert.ToBoolean(data[11]),
                                 UserCode = userCode,
                                 CreatedDateTime = data[12],
-                                AccountCode = data[13],
-                                ArticleCode = data[14],
-                                RRNumber = data[15],
-                                Particulars = data[16],
-                                Amount = Convert.ToDecimal(data[17]),
+                                LineBranchCode = data[13],
+                                AccountCode = data[14],
+                                ArticleCode = data[15],
+                                RRNumber = data[16],
+                                Particulars = data[17],
+                                Amount = Convert.ToDecimal(data[18])
                             });
                         }
 
