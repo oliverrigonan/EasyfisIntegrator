@@ -21,8 +21,6 @@ namespace EasyfisIntegrator.Entities
         public String Unit { get; set; }
         public Decimal Quantity { get; set; }
         public Decimal Price { get; set; }
-        public String Discount { get; set; }
-        public Decimal DiscountRate { get; set; }
         public Decimal DiscountAmount { get; set; }
         public Decimal NetPrice { get; set; }
         public Decimal Amount { get; set; }

@@ -56,11 +56,9 @@ namespace EasyfisIntegrator.Controllers
                                 Unit = data[10],
                                 Quantity = Convert.ToDecimal(data[11]),
                                 Price = Convert.ToDecimal(data[12]),
-                                Discount = data[13],
-                                DiscountRate = Convert.ToDecimal(data[14]),
-                                DiscountAmount = Convert.ToDecimal(data[15]),
-                                NetPrice = Convert.ToDecimal(data[16]),
-                                Amount = Convert.ToDecimal(data[17])
+                                DiscountAmount = Convert.ToDecimal(data[13]),
+                                NetPrice = Convert.ToDecimal(data[14]),
+                                Amount = Convert.ToDecimal(data[15])
                             });
                         }
 
