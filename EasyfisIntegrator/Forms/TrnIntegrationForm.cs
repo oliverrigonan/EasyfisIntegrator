@@ -99,6 +99,7 @@ namespace EasyfisIntegrator.Forms
             txtFolderMonitoringUserCode.Text = sysSettings.FolderMonitoringUserCode;
             isFolderMonitoringOnly = sysSettings.IsFolderMonitoringOnly;
             folderToMonitor = sysSettings.FolderToMonitor;
+            fileSystemWatcherCSVFiles.Path = folderToMonitor;
             domain = sysSettings.Domain;
 
             if (isFolderMonitoringOnly)
