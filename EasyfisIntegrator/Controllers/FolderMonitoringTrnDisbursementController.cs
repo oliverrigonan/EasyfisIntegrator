@@ -37,9 +37,9 @@ namespace EasyfisIntegrator.Controllers
                     using (StreamReader dataStreamReader = new StreamReader(file))
                     {
                         dataStreamReader.ReadLine();
-                        while (dataStreamReader.Peek() != -1)
+                        while (dataStreamReader.Peek() >= 0)
                         {
-                            String[] data = dataStreamReader.ReadLine().Split(',');
+                            List<String> data = dataStreamReader.ReadLine().Split(',').ToList();
                             newDisbursements.Add(new Entities.FolderMonitoringTrnDisbursement
                             {
                                 BranchCode = data[0],

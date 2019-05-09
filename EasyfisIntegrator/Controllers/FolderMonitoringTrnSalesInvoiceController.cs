@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -37,9 +38,9 @@ namespace EasyfisIntegrator.Controllers
                     using (StreamReader dataStreamReader = new StreamReader(file))
                     {
                         dataStreamReader.ReadLine();
-                        while (dataStreamReader.Peek() != -1)
+                        while (dataStreamReader.Peek() >= 0)
                         {
-                            String[] data = dataStreamReader.ReadLine().Split(',');
+                            List<String> data = dataStreamReader.ReadLine().Split(',').ToList();
                             newSalesInvoices.Add(new Entities.FolderMonitoringTrnSalesInvoice
                             {
                                 BranchCode = data[0],
@@ -134,7 +135,7 @@ namespace EasyfisIntegrator.Controllers
             }
             catch (Exception ex)
             {
-                trnIntegrationForm.logFolderMonitoringMessage("Exception Error: " + ex.Message + "\r\n\n");
+                trnIntegrationForm.logFolderMonitoringMessage("Exception Error: " + ex + "\r\n\n");
                 trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                 trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
             }

@@ -46,10 +46,11 @@ namespace EasyfisIntegrator.Controllers
                             {
                                 var stockIn = stockIns.FirstOrDefault();
 
+                                List<Entities.ISPOSTrnCollectionLines> listCollectionLines = new List<Entities.ISPOSTrnCollectionLines>();
+
                                 var stockInLines = from d in posdb.TrnStockInLines where d.StockInId == stockIn.Id select d;
                                 if (stockInLines.Any())
                                 {
-                                    List<Entities.ISPOSTrnCollectionLines> listCollectionLines = new List<Entities.ISPOSTrnCollectionLines>();
                                     foreach (var stockInLine in stockInLines)
                                     {
                                         listCollectionLines.Add(new Entities.ISPOSTrnCollectionLines()
@@ -67,30 +68,26 @@ namespace EasyfisIntegrator.Controllers
                                             SalesItemTimeStamp = DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss.fff", CultureInfo.InvariantCulture)
                                         });
                                     }
-
-                                    var collectionData = new Entities.ISPOSTrnCollection()
-                                    {
-                                        SIDate = stockIn.StockInDate.ToShortDateString(),
-                                        BranchCode = branchCode,
-                                        CustomerManualArticleCode = stockIn.TrnCollection.TrnSale.MstCustomer.CustomerCode,
-                                        CreatedBy = userCode,
-                                        Term = terms.FirstOrDefault().Term,
-                                        DocumentReference = stockIn.StockInNumber,
-                                        ManualSINumber = stockIn.TrnCollection.TrnSale.SalesNumber,
-                                        Remarks = "Return from Customer",
-                                        ListPOSIntegrationTrnSalesInvoiceItem = listCollectionLines.ToList()
-                                    };
-
-                                    String json = new JavaScriptSerializer().Serialize(collectionData);
-
-                                    trnIntegrationForm.logMessages("Sending Returned Sales: " + collectionData.DocumentReference + "\r\n\n");
-                                    trnIntegrationForm.logMessages("Amount: " + collectionData.ListPOSIntegrationTrnSalesInvoiceItem.Sum(d => d.Amount).ToString("#,##0.00") + "\r\n\n");
-                                    SendSalesReturn(apiUrlHost, json);
                                 }
-                                else
+
+                                var collectionData = new Entities.ISPOSTrnCollection()
                                 {
-                                    trnIntegrationForm.logMessages("Sales Return Integration Done.");
-                                }
+                                    SIDate = stockIn.StockInDate.ToShortDateString(),
+                                    BranchCode = branchCode,
+                                    CustomerManualArticleCode = stockIn.TrnCollection.TrnSale.MstCustomer.CustomerCode,
+                                    CreatedBy = userCode,
+                                    Term = terms.FirstOrDefault().Term,
+                                    DocumentReference = stockIn.StockInNumber,
+                                    ManualSINumber = stockIn.TrnCollection.TrnSale.SalesNumber,
+                                    Remarks = "Return from Customer",
+                                    ListPOSIntegrationTrnSalesInvoiceItem = listCollectionLines.ToList()
+                                };
+
+                                String json = new JavaScriptSerializer().Serialize(collectionData);
+
+                                trnIntegrationForm.logMessages("Sending Returned Sales: " + collectionData.DocumentReference + "\r\n\n");
+                                trnIntegrationForm.logMessages("Amount: " + collectionData.ListPOSIntegrationTrnSalesInvoiceItem.Sum(d => d.Amount).ToString("#,##0.00") + "\r\n\n");
+                                SendSalesReturn(apiUrlHost, json);
                             }
                             else
                             {

@@ -33,15 +33,15 @@ namespace EasyfisIntegrator.Controllers
             {
                 String json = "";
                 List<Entities.FolderMonitoringTrnCollection> newCollections = new List<Entities.FolderMonitoringTrnCollection>();
-                
+
                 if (SysFileControl.IsCurrentFileClosed(file))
                 {
                     using (StreamReader dataStreamReader = new StreamReader(file))
                     {
                         dataStreamReader.ReadLine();
-                        while (dataStreamReader.Peek() != -1)
+                        while (dataStreamReader.Peek() >= 0)
                         {
-                            String[] data = dataStreamReader.ReadLine().Split(',');
+                            List<String> data = dataStreamReader.ReadLine().Split(',').ToList();
                             newCollections.Add(new Entities.FolderMonitoringTrnCollection
                             {
                                 BranchCode = data[0],
