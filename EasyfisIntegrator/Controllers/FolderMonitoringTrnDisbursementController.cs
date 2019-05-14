@@ -44,12 +44,12 @@ namespace EasyfisIntegrator.Controllers
                             {
                                 BranchCode = data[0],
                                 CVDate = data[1],
-                                SupplierCode = data[2],
-                                Payee = data[3],
-                                PayType = data[4],
-                                BankCode = data[5],
-                                Remarks = data[6],
-                                ManualCVNumber = data[7],
+                                ManualCVNumber = data[2],
+                                SupplierCode = data[3],
+                                Payee = data[4],
+                                PayType = data[5],
+                                BankCode = data[6],
+                                Remarks = data[7],
                                 CheckNumber = data[8],
                                 CheckDate = data[9],
                                 IsCrossCheck = Convert.ToBoolean(data[10]),
@@ -60,8 +60,9 @@ namespace EasyfisIntegrator.Controllers
                                 AccountCode = data[14],
                                 ArticleCode = data[15],
                                 RRNumber = data[16],
-                                Particulars = data[17],
-                                Amount = Convert.ToDecimal(data[18])
+                                ManualRRNumber = data[17],
+                                Particulars = data[18],
+                                Amount = Convert.ToDecimal(data[19])
                             });
                         }
 

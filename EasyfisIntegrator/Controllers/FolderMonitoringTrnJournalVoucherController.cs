@@ -44,8 +44,8 @@ namespace EasyfisIntegrator.Controllers
                             {
                                 BranchCode = data[0],
                                 JVDate = data[1],
-                                Remarks = data[2],
-                                ManualJVNumber = data[3],
+                                ManualJVNumber = data[2],
+                                Remarks = data[3],
                                 UserCode = userCode,
                                 CreatedDateTime = data[4],
                                 EntryBranchCode = data[5],
@@ -55,8 +55,10 @@ namespace EasyfisIntegrator.Controllers
                                 DebitAmount = Convert.ToDecimal(data[9]),
                                 CreditAmount = Convert.ToDecimal(data[10]),
                                 APRRNumber = data[11],
-                                ARSINumber = data[12],
-                                IsClear = Convert.ToBoolean(data[13])
+                                APManualRRNumber = data[12],
+                                ARSINumber = data[13],
+                                ARManualSINumber = data[14],
+                                IsClear = Convert.ToBoolean(data[15])
                             });
                         }
 

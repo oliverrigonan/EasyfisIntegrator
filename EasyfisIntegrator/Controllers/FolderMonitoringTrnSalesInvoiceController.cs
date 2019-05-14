@@ -45,21 +45,20 @@ namespace EasyfisIntegrator.Controllers
                             {
                                 BranchCode = data[0],
                                 SIDate = data[1],
-                                CustomerCode = data[2],
-                                Term = data[3],
-                                DocumentReference = data[4],
-                                ManualSINumber = data[5],
-                                Remarks = data[6],
+                                ManualSINumber = data[2],
+                                DocumentReference = data[3],
+                                CustomerCode = data[4],
+                                Remarks = data[5],
                                 UserCode = userCode,
-                                CreatedDateTime = data[7],
-                                ItemCode = data[8],
-                                Particulars = data[9],
-                                Unit = data[10],
-                                Quantity = Convert.ToDecimal(data[11]),
-                                Price = Convert.ToDecimal(data[12]),
-                                DiscountAmount = Convert.ToDecimal(data[13]),
-                                NetPrice = Convert.ToDecimal(data[14]),
-                                Amount = Convert.ToDecimal(data[15])
+                                CreatedDateTime = data[6],
+                                ItemCode = data[7],
+                                Particulars = data[8],
+                                Unit = data[9],
+                                Quantity = Convert.ToDecimal(data[10]),
+                                Price = Convert.ToDecimal(data[11]),
+                                DiscountAmount = Convert.ToDecimal(data[12]),
+                                NetPrice = Convert.ToDecimal(data[13]),
+                                Amount = Convert.ToDecimal(data[14])
                             });
                         }
 

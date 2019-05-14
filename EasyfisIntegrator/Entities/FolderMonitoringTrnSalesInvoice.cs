@@ -9,10 +9,9 @@ namespace EasyfisIntegrator.Entities
     {
         public String BranchCode { get; set; }
         public String SIDate { get; set; }
-        public String CustomerCode { get; set; }
-        public String Term { get; set; }
-        public String DocumentReference { get; set; }
         public String ManualSINumber { get; set; }
+        public String DocumentReference { get; set; }
+        public String CustomerCode { get; set; }
         public String Remarks { get; set; }
         public String UserCode { get; set; }
         public String CreatedDateTime { get; set; }
