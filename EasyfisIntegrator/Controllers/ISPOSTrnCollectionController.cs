@@ -31,7 +31,7 @@ namespace EasyfisIntegrator.Controllers
         {
             try
             {
-                var collections = from d in posdb.TrnCollections where d.PostCode == null && d.CollectionNumber != "NA" && d.IsLocked == true select d;
+                var collections = from d in posdb.TrnCollections where d.SalesId != null && d.PostCode == null && d.IsLocked == true select d;
                 if (collections.Any())
                 {
                     var collection = collections.FirstOrDefault();
@@ -51,49 +51,42 @@ namespace EasyfisIntegrator.Controllers
                     String[] payTypes = listPayTypes.ToArray();
                     List<Entities.ISPOSTrnCollectionLines> listCollectionLines = new List<Entities.ISPOSTrnCollectionLines>();
 
-                    if (collection.TrnSale != null)
+                    foreach (var salesLine in collection.TrnSale.TrnSalesLines)
                     {
-                        foreach (var salesLine in collection.TrnSale.TrnSalesLines)
+                        listCollectionLines.Add(new Entities.ISPOSTrnCollectionLines()
                         {
-                            listCollectionLines.Add(new Entities.ISPOSTrnCollectionLines()
-                            {
-                                ItemManualArticleCode = salesLine.MstItem.BarCode,
-                                Particulars = salesLine.MstItem.ItemDescription,
-                                Unit = salesLine.MstUnit.Unit,
-                                Quantity = salesLine.Quantity,
-                                Price = salesLine.Price,
-                                Discount = salesLine.MstDiscount.Discount,
-                                DiscountAmount = salesLine.DiscountAmount,
-                                NetPrice = salesLine.NetPrice,
-                                Amount = salesLine.Amount,
-                                VAT = salesLine.MstTax.Tax,
-                                SalesItemTimeStamp = salesLine.SalesLineTimeStamp.ToString("MM/dd/yyyy HH:mm:ss.fff", CultureInfo.InvariantCulture)
-                            });
-                        }
-
-                        var collectionData = new Entities.ISPOSTrnCollection()
-                        {
-                            SIDate = collection.CollectionDate.ToShortDateString(),
-                            BranchCode = branchCode,
-                            CustomerManualArticleCode = collection.TrnSale.MstCustomer.CustomerCode,
-                            CreatedBy = userCode,
-                            Term = collection.TrnSale.MstTerm.Term,
-                            DocumentReference = collection.CollectionNumber,
-                            ManualSINumber = collection.TrnSale.SalesNumber,
-                            Remarks = "User: " + collection.MstUser4.UserName + ", " + String.Join(", ", payTypes),
-                            ListPOSIntegrationTrnSalesInvoiceItem = listCollectionLines.ToList()
-                        };
-
-                        String json = new JavaScriptSerializer().Serialize(collectionData);
-
-                        trnIntegrationForm.logMessages("Sending Collection: " + collectionData.DocumentReference + "\r\n\n");
-                        trnIntegrationForm.logMessages("Amount: " + collectionData.ListPOSIntegrationTrnSalesInvoiceItem.Sum(d => d.Amount).ToString("#,##0.00") + "\r\n\n");
-                        SendCollection(apiUrlHost, json);
+                            ItemManualArticleCode = salesLine.MstItem.BarCode,
+                            Particulars = salesLine.MstItem.ItemDescription,
+                            Unit = salesLine.MstUnit.Unit,
+                            Quantity = salesLine.Quantity,
+                            Price = salesLine.Price,
+                            Discount = salesLine.MstDiscount.Discount,
+                            DiscountAmount = salesLine.DiscountAmount,
+                            NetPrice = salesLine.NetPrice,
+                            Amount = salesLine.Amount,
+                            VAT = salesLine.MstTax.Tax,
+                            SalesItemTimeStamp = salesLine.SalesLineTimeStamp.ToString("MM/dd/yyyy HH:mm:ss.fff", CultureInfo.InvariantCulture)
+                        });
                     }
-                    else
+
+                    var collectionData = new Entities.ISPOSTrnCollection()
                     {
-                        trnIntegrationForm.logMessages("Collection Integration Done.");
-                    }
+                        SIDate = collection.CollectionDate.ToShortDateString(),
+                        BranchCode = branchCode,
+                        CustomerManualArticleCode = collection.TrnSale.MstCustomer.CustomerCode,
+                        CreatedBy = userCode,
+                        Term = collection.TrnSale.MstTerm.Term,
+                        DocumentReference = collection.CollectionNumber,
+                        ManualSINumber = collection.TrnSale.SalesNumber,
+                        Remarks = "User: " + collection.MstUser4.UserName + ", " + String.Join(", ", payTypes),
+                        ListPOSIntegrationTrnSalesInvoiceItem = listCollectionLines.ToList()
+                    };
+
+                    String json = new JavaScriptSerializer().Serialize(collectionData);
+
+                    trnIntegrationForm.logMessages("Sending Collection: " + collectionData.DocumentReference + "\r\n\n");
+                    trnIntegrationForm.logMessages("Amount: " + collectionData.ListPOSIntegrationTrnSalesInvoiceItem.Sum(d => d.Amount).ToString("#,##0.00") + "\r\n\n");
+                    SendCollection(apiUrlHost, json);
                 }
                 else
                 {
