@@ -44,8 +44,8 @@ namespace EasyfisIntegrator.Controllers
                             {
                                 BranchCode = data[0],
                                 JVDate = data[1],
-                                ManualJVNumber = data[2],
-                                Remarks = data[3],
+                                Remarks = data[2],
+                                ManualJVNumber = data[3],
                                 UserCode = userCode,
                                 CreatedDateTime = data[4],
                                 EntryBranchCode = data[5],

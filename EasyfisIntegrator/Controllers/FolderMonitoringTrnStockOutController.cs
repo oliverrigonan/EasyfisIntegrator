@@ -44,9 +44,9 @@ namespace EasyfisIntegrator.Controllers
                             {
                                 BranchCode = data[0],
                                 OTDate = data[1],
-                                ManualOTNumber = data[2],
-                                AccountCode = data[3],
-                                ArticleCode = data[4],
+                                AccountCode = data[2],
+                                ArticleCode = data[3],
+                                ManualOTNumber = data[4],
                                 Remarks = data[5],
                                 UserCode = userCode,
                                 CreatedDateTime = data[6],
