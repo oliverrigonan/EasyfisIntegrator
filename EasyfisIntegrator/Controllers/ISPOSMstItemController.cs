@@ -179,16 +179,9 @@ namespace EasyfisIntegrator.Controllers
                                                         var posItemPrices = from d in posdb.MstItemPrices where d.MstItem.BarCode.Equals(item.ManualArticleCode) select d;
                                                         if (posItemPrices.Any())
                                                         {
-                                                            int posItemPriceCount = posItemPrices.Count();
-                                                            int itemPriceListCount = item.ListItemPrice.Count();
-
-                                                            if (posItemPriceCount != itemPriceListCount)
+                                                            foreach (var itemPrice in item.ListItemPrice)
                                                             {
-                                                                foundChanges = true;
-                                                            }
-                                                            else
-                                                            {
-                                                                foreach (var itemPrice in item.ListItemPrice.ToList())
+                                                                if (!foundChanges)
                                                                 {
                                                                     var currentPOSItemPrices = from d in posItemPrices where d.PriceDescription.Equals(itemPrice.PriceDescription) && d.Price == itemPrice.Price select d;
                                                                     if (!currentPOSItemPrices.Any())
@@ -200,7 +193,6 @@ namespace EasyfisIntegrator.Controllers
                                                         }
                                                     }
                                                 }
-
                                             }
 
                                             if (foundChanges)
@@ -215,12 +207,7 @@ namespace EasyfisIntegrator.Controllers
                                                 updateItem.GenericName = item.Article;
                                                 updateItem.Category = item.Category;
                                                 updateItem.UnitId = units.FirstOrDefault().Id;
-
-                                                if (!defaultSettings.FirstOrDefault().UseItemPrice)
-                                                {
-                                                    updateItem.Price = item.Price;
-                                                }
-
+                                                updateItem.Price = item.Price;
                                                 updateItem.Cost = item.Cost;
                                                 updateItem.IsInventory = item.IsInventory;
                                                 updateItem.Remarks = item.Particulars;
@@ -234,33 +221,26 @@ namespace EasyfisIntegrator.Controllers
                                                     if (item.ListItemPrice.Any())
                                                     {
                                                         var posItemPrices = from d in posdb.MstItemPrices where d.ItemId == currentItem.FirstOrDefault().Id select d;
-
-                                                        bool isEmpty = false;
                                                         if (posItemPrices.Any())
                                                         {
                                                             posdb.MstItemPrices.DeleteAllOnSubmit(posItemPrices);
                                                             posdb.SubmitChanges();
-
-                                                            isEmpty = true;
                                                         }
 
-                                                        if (isEmpty)
+                                                        List<InnosoftPOSData.MstItemPrice> newItemPrice = new List<InnosoftPOSData.MstItemPrice>();
+                                                        foreach (var itemPrice in item.ListItemPrice)
                                                         {
-                                                            foreach (var itemPrice in item.ListItemPrice.ToList())
+                                                            newItemPrice.Add(new InnosoftPOSData.MstItemPrice
                                                             {
-                                                                InnosoftPOSData.MstItemPrice newItemPrice = new InnosoftPOSData.MstItemPrice
-                                                                {
-                                                                    ItemId = currentItem.FirstOrDefault().Id,
-                                                                    PriceDescription = itemPrice.PriceDescription,
-                                                                    Price = itemPrice.Price,
-                                                                    TriggerQuantity = 0
-                                                                };
-
-                                                                posdb.MstItemPrices.InsertOnSubmit(newItemPrice);
-                                                            }
-
-                                                            posdb.SubmitChanges();
+                                                                ItemId = currentItem.FirstOrDefault().Id,
+                                                                PriceDescription = itemPrice.PriceDescription,
+                                                                Price = itemPrice.Price,
+                                                                TriggerQuantity = 0
+                                                            });
                                                         }
+
+                                                        posdb.MstItemPrices.InsertAllOnSubmit(newItemPrice);
+                                                        posdb.SubmitChanges();
                                                     }
                                                 }
 
@@ -321,19 +301,19 @@ namespace EasyfisIntegrator.Controllers
 
                                             if (item.ListItemPrice.Any())
                                             {
-                                                foreach (var itemPrice in item.ListItemPrice.ToList())
+                                                List<InnosoftPOSData.MstItemPrice> newItemPrice = new List<InnosoftPOSData.MstItemPrice>();
+                                                foreach (var itemPrice in item.ListItemPrice)
                                                 {
-                                                    InnosoftPOSData.MstItemPrice newItemPrice = new InnosoftPOSData.MstItemPrice
+                                                    newItemPrice.Add(new InnosoftPOSData.MstItemPrice
                                                     {
                                                         ItemId = newItem.Id,
                                                         PriceDescription = itemPrice.PriceDescription,
                                                         Price = itemPrice.Price,
                                                         TriggerQuantity = 0
-                                                    };
-
-                                                    posdb.MstItemPrices.InsertOnSubmit(newItemPrice);
+                                                    });
                                                 }
 
+                                                posdb.MstItemPrices.InsertAllOnSubmit(newItemPrice);
                                                 posdb.SubmitChanges();
                                             }
 
