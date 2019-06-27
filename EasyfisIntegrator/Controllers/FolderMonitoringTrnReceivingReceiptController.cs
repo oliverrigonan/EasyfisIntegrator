@@ -124,17 +124,6 @@ namespace EasyfisIntegrator.Controllers
                     }
                 }
             }
-            catch (WebException we)
-            {
-                using (StreamReader streamReader = new StreamReader(we.Response.GetResponseStream()))
-                {
-                    String resp = streamReader.ReadToEnd().Replace("\"", "");
-
-                    trnIntegrationForm.logFolderMonitoringMessage("Web Exception Error: " + resp + "\r\n\n");
-                    trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-                }
-            }
             catch (Exception ex)
             {
                 trnIntegrationForm.logFolderMonitoringMessage("Exception Error: " + ex.Message + "\r\n\n");
