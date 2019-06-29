@@ -471,6 +471,12 @@ namespace EasyfisIntegrator.Forms
 
         public void logFolderMonitoringMessage(String message)
         {
+            if (txtFolderMonitoringLogs.InvokeRequired)
+            {
+                Action<String> action = new Action<String>(logFolderMonitoringMessage);
+                return;
+            }
+
             txtFolderMonitoringLogs.Text += message;
 
             txtFolderMonitoringLogs.Focus();
