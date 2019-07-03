@@ -87,7 +87,7 @@ namespace EasyfisIntegrator.Controllers
                                     {
                                         var defaultSettings = from d in posdb.SysSettings select d;
 
-                                        var currentItem = from d in posdb.MstItems where d.BarCode.Equals(item.ManualArticleCode) && d.IsLocked == true select d;
+                                        var currentItem = from d in posdb.MstItems where d.BarCode.Equals(item.ManualArticleCode) && d.MstUnit.Unit.Equals(item.Unit) && d.IsLocked == true select d;
                                         if (currentItem.Any())
                                         {
                                             Boolean foundChanges = false;

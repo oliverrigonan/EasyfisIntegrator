@@ -121,35 +121,31 @@ namespace EasyfisIntegrator.Controllers
                                 {
                                     foreach (var item in stockTransfer.ListPOSIntegrationTrnStockTransferItem.ToList())
                                     {
-                                        var currentItem = from d in posdb.MstItems where d.BarCode.Equals(item.ItemCode) select d;
+                                        var currentItem = from d in posdb.MstItems where d.BarCode.Equals(item.ItemCode) && d.MstUnit.Unit.Equals(item.Unit) select d;
                                         if (currentItem.Any())
                                         {
-                                            var currentItemUnit = from d in posdb.MstUnits where d.Unit.Equals(item.Unit) select d;
-                                            if (currentItemUnit.Any())
+                                            InnosoftPOSData.TrnStockInLine newStockInLine = new InnosoftPOSData.TrnStockInLine
                                             {
-                                                InnosoftPOSData.TrnStockInLine newStockInLine = new InnosoftPOSData.TrnStockInLine
-                                                {
-                                                    StockInId = newStockIn.Id,
-                                                    ItemId = currentItem.FirstOrDefault().Id,
-                                                    UnitId = currentItemUnit.FirstOrDefault().Id,
-                                                    Quantity = item.Quantity,
-                                                    Cost = item.Cost,
-                                                    Amount = item.Amount,
-                                                    ExpiryDate = currentItem.FirstOrDefault().ExpiryDate,
-                                                    LotNumber = currentItem.FirstOrDefault().LotNumber,
-                                                    AssetAccountId = currentItem.FirstOrDefault().AssetAccountId,
-                                                    Price = currentItem.FirstOrDefault().Price
-                                                };
+                                                StockInId = newStockIn.Id,
+                                                ItemId = currentItem.FirstOrDefault().Id,
+                                                UnitId = currentItem.FirstOrDefault().UnitId,
+                                                Quantity = item.Quantity,
+                                                Cost = item.Cost,
+                                                Amount = item.Amount,
+                                                ExpiryDate = currentItem.FirstOrDefault().ExpiryDate,
+                                                LotNumber = currentItem.FirstOrDefault().LotNumber,
+                                                AssetAccountId = currentItem.FirstOrDefault().AssetAccountId,
+                                                Price = currentItem.FirstOrDefault().Price
+                                            };
 
-                                                posdb.TrnStockInLines.InsertOnSubmit(newStockInLine);
+                                            posdb.TrnStockInLines.InsertOnSubmit(newStockInLine);
 
-                                                var updateItem = currentItem.FirstOrDefault();
-                                                updateItem.OnhandQuantity = currentItem.FirstOrDefault().OnhandQuantity + Convert.ToDecimal(item.Quantity);
+                                            var updateItem = currentItem.FirstOrDefault();
+                                            updateItem.OnhandQuantity = currentItem.FirstOrDefault().OnhandQuantity + Convert.ToDecimal(item.Quantity);
 
-                                                posdb.SubmitChanges();
+                                            posdb.SubmitChanges();
 
-                                                trnIntegrationForm.logMessages(" > " + currentItem.FirstOrDefault().ItemDescription + " * " + item.Quantity.ToString("#,##0.00") + "\r\n\n");
-                                            }
+                                            trnIntegrationForm.logMessages(" > " + currentItem.FirstOrDefault().ItemDescription + " * " + item.Quantity.ToString("#,##0.00") + "\r\n\n");
                                         }
                                     }
                                 }
