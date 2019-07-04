@@ -83,12 +83,12 @@ namespace EasyfisIntegrator.Controllers
 
                     for (var i = 1; i <= newSalesInvoices.Count(); i++)
                     {
-                        if (i % 10 == 0)
+                        if (i % 100 == 0)
                         {
-                            Int32 take = 10;
+                            Int32 take = 100;
 
                             var jsonSalesInvoices = newSalesInvoices.Skip(skip).Take(take);
-                            skip += 10;
+                            skip += 100;
 
                             JavaScriptSerializer serializer = new JavaScriptSerializer();
                             json = serializer.Serialize(jsonSalesInvoices);
