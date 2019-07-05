@@ -33,12 +33,12 @@ namespace EasyfisIntegrator.Controllers
         {
             try
             {
-                //trnIntegrationForm.logFolderMonitoringMessage("Cleaning Temporary Data..." + "\r\n\n");
+                trnIntegrationForm.logFolderMonitoringMessage("Cleaning Temporary Data..." + "\r\n\n");
 
-                //String deleteTemporarySalesInvoiceTask = await DeleteTemporarySalesInvoice(domain);
-                //trnIntegrationForm.logFolderMonitoringMessage(deleteTemporarySalesInvoiceTask);
-                //trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                //trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                String deleteTemporarySalesInvoiceTask = await DeleteTemporarySalesInvoice(domain);
+                trnIntegrationForm.logFolderMonitoringMessage(deleteTemporarySalesInvoiceTask);
+                trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
 
                 String json = "";
                 List<Entities.FolderMonitoringTrnSalesInvoice> newSalesInvoices = new List<Entities.FolderMonitoringTrnSalesInvoice>();
@@ -93,7 +93,7 @@ namespace EasyfisIntegrator.Controllers
                             JavaScriptSerializer serializer = new JavaScriptSerializer();
                             json = serializer.Serialize(jsonSalesInvoices);
 
-                            String insertTemporarySalesInvoiceTask = await InsertTemporarySalesInvoice(domain, json, file);
+                            String insertTemporarySalesInvoiceTask = await InsertTemporarySalesInvoice(domain, json);
                             if (!insertTemporarySalesInvoiceTask.Equals("Send Successful..."))
                             {
                                 trnIntegrationForm.logFolderMonitoringMessage(insertTemporarySalesInvoiceTask);
@@ -106,7 +106,7 @@ namespace EasyfisIntegrator.Controllers
                             {
                                 if (i == newSalesInvoices.Count())
                                 {
-                                    trnIntegrationForm.logFolderMonitoringMessage("Send Successful..." + "\r\n\n");
+                                    trnIntegrationForm.logFolderMonitoringMessage("Send Successful!" + "\r\n\n");
                                     trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                                     trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
 
@@ -118,10 +118,13 @@ namespace EasyfisIntegrator.Controllers
                                     if (listBranchCodes.Any())
                                     {
                                         Boolean isPostingError = false;
+                                        Int32 branchCodeCount = 0;
 
                                         foreach (var branchCode in listBranchCodes)
                                         {
-                                            trnIntegrationForm.logFolderMonitoringMessage("Posting Sales To Branch Code: " + branchCode + " ... \r\n\n");
+                                            branchCodeCount += 1;
+
+                                            trnIntegrationForm.logFolderMonitoringMessage("Posting Sales from Branch Code: " + branchCode + " ... \r\n\n");
 
                                             var manualSINumbers = from d in newSalesInvoices
                                                                   where d.BranchCode.Equals(branchCode)
@@ -137,7 +140,7 @@ namespace EasyfisIntegrator.Controllers
                                                 {
                                                     manualSINumberCount += 1;
 
-                                                    String postSalesInvoiceTask = await PostSalesInvoice(domain, file, branchCode, manualSINumber);
+                                                    String postSalesInvoiceTask = await PostSalesInvoice(domain, branchCode, manualSINumber);
                                                     if (!postSalesInvoiceTask.Equals("Post Successful..."))
                                                     {
                                                         trnIntegrationForm.logFolderMonitoringMessage(postSalesInvoiceTask);
@@ -149,9 +152,9 @@ namespace EasyfisIntegrator.Controllers
                                                     }
                                                     else
                                                     {
-                                                        if (manualSINumberCount == manualSINumbers.Count())
+                                                        if (manualSINumberCount == listManualSINumbers.Count())
                                                         {
-                                                            trnIntegrationForm.logFolderMonitoringMessage("Post Successful..." + "\r\n\n");
+                                                            trnIntegrationForm.logFolderMonitoringMessage("Sales from branch code: " + branchCode + " was successfuly posted!" + "\r\n\n");
                                                             trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                                                             trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
                                                         }
@@ -162,6 +165,33 @@ namespace EasyfisIntegrator.Controllers
                                             if (isPostingError)
                                             {
                                                 break;
+                                            }
+                                            else
+                                            {
+                                                if (branchCodeCount == listBranchCodes.Count())
+                                                {
+                                                    String settingsPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Settings.json");
+
+                                                    using (StreamReader trmRead = new StreamReader(settingsPath))
+                                                    {
+                                                        JavaScriptSerializer javaScriptSerializer = new JavaScriptSerializer();
+                                                        Entities.SysSettings sysSettings = javaScriptSerializer.Deserialize<Entities.SysSettings>(trmRead.ReadToEnd());
+
+                                                        String executingUser = WindowsIdentity.GetCurrent().Name;
+
+                                                        DirectorySecurity securityRules = new DirectorySecurity();
+                                                        securityRules.AddAccessRule(new FileSystemAccessRule(executingUser, FileSystemRights.Read, AccessControlType.Allow));
+                                                        securityRules.AddAccessRule(new FileSystemAccessRule(executingUser, FileSystemRights.FullControl, AccessControlType.Allow));
+
+                                                        if (!Directory.Exists(sysSettings.FolderForSentFiles + "\\SI_" + DateTime.Now.ToString("yyyyMMdd") + "\\"))
+                                                        {
+                                                            DirectoryInfo createDirectorySICSV = Directory.CreateDirectory(sysSettings.FolderForSentFiles + "\\SI_" + DateTime.Now.ToString("yyyyMMdd") + "\\", securityRules);
+                                                        }
+
+                                                        String folderForSentFiles = sysSettings.FolderForSentFiles + "\\SI_" + DateTime.Now.ToString("yyyyMMdd") + "\\";
+                                                        File.Move(file, folderForSentFiles + "SI_" + DateTime.Now.ToString("yyyyMMdd_hhmmss") + ".csv");
+                                                    }
+                                                }
                                             }
                                         }
                                     }
@@ -180,7 +210,7 @@ namespace EasyfisIntegrator.Controllers
                                 JavaScriptSerializer serializer = new JavaScriptSerializer();
                                 json = serializer.Serialize(jsonSalesInvoices);
 
-                                String insertTemporarySalesInvoiceTask = await InsertTemporarySalesInvoice(domain, json, file);
+                                String insertTemporarySalesInvoiceTask = await InsertTemporarySalesInvoice(domain, json);
                                 if (!insertTemporarySalesInvoiceTask.Equals("Send Successful..."))
                                 {
                                     trnIntegrationForm.logFolderMonitoringMessage(insertTemporarySalesInvoiceTask);
@@ -193,7 +223,7 @@ namespace EasyfisIntegrator.Controllers
                                 {
                                     if (i == newSalesInvoices.Count())
                                     {
-                                        trnIntegrationForm.logFolderMonitoringMessage("Send Successful..." + "\r\n\n");
+                                        trnIntegrationForm.logFolderMonitoringMessage("Send Successful!" + "\r\n\n");
                                         trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                                         trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
 
@@ -205,10 +235,13 @@ namespace EasyfisIntegrator.Controllers
                                         if (listBranchCodes.Any())
                                         {
                                             Boolean isPostingError = false;
+                                            Int32 branchCodeCount = 0;
 
                                             foreach (var branchCode in listBranchCodes)
                                             {
-                                                trnIntegrationForm.logFolderMonitoringMessage("Posting Sales To Branch Code: " + branchCode + " ... \r\n\n");
+                                                branchCodeCount += 1;
+
+                                                trnIntegrationForm.logFolderMonitoringMessage("Posting Sales from Branch Code: " + branchCode + " ... \r\n\n");
 
                                                 var manualSINumbers = from d in newSalesInvoices
                                                                       where d.BranchCode.Equals(branchCode)
@@ -224,7 +257,7 @@ namespace EasyfisIntegrator.Controllers
                                                     {
                                                         manualSINumberCount += 1;
 
-                                                        String postSalesInvoiceTask = await PostSalesInvoice(domain, file, branchCode, manualSINumber);
+                                                        String postSalesInvoiceTask = await PostSalesInvoice(domain, branchCode, manualSINumber);
                                                         if (!postSalesInvoiceTask.Equals("Post Successful..."))
                                                         {
                                                             trnIntegrationForm.logFolderMonitoringMessage(postSalesInvoiceTask);
@@ -236,9 +269,9 @@ namespace EasyfisIntegrator.Controllers
                                                         }
                                                         else
                                                         {
-                                                            if (manualSINumberCount == manualSINumbers.Count())
+                                                            if (manualSINumberCount == listManualSINumbers.Count())
                                                             {
-                                                                trnIntegrationForm.logFolderMonitoringMessage("Post Successful..." + "\r\n\n");
+                                                                trnIntegrationForm.logFolderMonitoringMessage("Sales from branch code: " + branchCode + " was successfuly posted!" + "\r\n\n");
                                                                 trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                                                                 trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
                                                             }
@@ -249,6 +282,33 @@ namespace EasyfisIntegrator.Controllers
                                                 if (isPostingError)
                                                 {
                                                     break;
+                                                }
+                                                else
+                                                {
+                                                    if (branchCodeCount == listBranchCodes.Count())
+                                                    {
+                                                        String settingsPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Settings.json");
+
+                                                        using (StreamReader trmRead = new StreamReader(settingsPath))
+                                                        {
+                                                            JavaScriptSerializer javaScriptSerializer = new JavaScriptSerializer();
+                                                            Entities.SysSettings sysSettings = javaScriptSerializer.Deserialize<Entities.SysSettings>(trmRead.ReadToEnd());
+
+                                                            String executingUser = WindowsIdentity.GetCurrent().Name;
+
+                                                            DirectorySecurity securityRules = new DirectorySecurity();
+                                                            securityRules.AddAccessRule(new FileSystemAccessRule(executingUser, FileSystemRights.Read, AccessControlType.Allow));
+                                                            securityRules.AddAccessRule(new FileSystemAccessRule(executingUser, FileSystemRights.FullControl, AccessControlType.Allow));
+
+                                                            if (!Directory.Exists(sysSettings.FolderForSentFiles + "\\SI_" + DateTime.Now.ToString("yyyyMMdd") + "\\"))
+                                                            {
+                                                                DirectoryInfo createDirectorySICSV = Directory.CreateDirectory(sysSettings.FolderForSentFiles + "\\SI_" + DateTime.Now.ToString("yyyyMMdd") + "\\", securityRules);
+                                                            }
+
+                                                            String folderForSentFiles = sysSettings.FolderForSentFiles + "\\SI_" + DateTime.Now.ToString("yyyyMMdd") + "\\";
+                                                            File.Move(file, folderForSentFiles + "SI_" + DateTime.Now.ToString("yyyyMMdd_hhmmss") + ".csv");
+                                                        }
+                                                    }
                                                 }
                                             }
                                         }
@@ -304,7 +364,7 @@ namespace EasyfisIntegrator.Controllers
         // ==============================
         // Insert Temporary Sales Invoice
         // ==============================
-        public Task<String> InsertTemporarySalesInvoice(String domain, String json, String file)
+        public Task<String> InsertTemporarySalesInvoice(String domain, String json)
         {
             try
             {
@@ -338,7 +398,7 @@ namespace EasyfisIntegrator.Controllers
         // ==================
         // Post Sales Invoice
         // ==================
-        public Task<String> PostSalesInvoice(String domain, String file, String branchCode, String manualSINumber)
+        public Task<String> PostSalesInvoice(String domain, String branchCode, String manualSINumber)
         {
             try
             {
@@ -355,28 +415,6 @@ namespace EasyfisIntegrator.Controllers
                     String resp = streamReader.ReadToEnd().Replace("\"", "");
                     if (resp.Equals(""))
                     {
-                        String settingsPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Settings.json");
-
-                        using (StreamReader trmRead = new StreamReader(settingsPath))
-                        {
-                            JavaScriptSerializer javaScriptSerializer = new JavaScriptSerializer();
-                            Entities.SysSettings sysSettings = javaScriptSerializer.Deserialize<Entities.SysSettings>(trmRead.ReadToEnd());
-
-                            String executingUser = WindowsIdentity.GetCurrent().Name;
-
-                            DirectorySecurity securityRules = new DirectorySecurity();
-                            securityRules.AddAccessRule(new FileSystemAccessRule(executingUser, FileSystemRights.Read, AccessControlType.Allow));
-                            securityRules.AddAccessRule(new FileSystemAccessRule(executingUser, FileSystemRights.FullControl, AccessControlType.Allow));
-
-                            if (!Directory.Exists(sysSettings.FolderForSentFiles + "\\SI_" + DateTime.Now.ToString("yyyyMMdd") + "\\"))
-                            {
-                                DirectoryInfo createDirectorySICSV = Directory.CreateDirectory(sysSettings.FolderForSentFiles + "\\SI_" + DateTime.Now.ToString("yyyyMMdd") + "\\", securityRules);
-                            }
-
-                            String folderForSentFiles = sysSettings.FolderForSentFiles + "\\SI_" + DateTime.Now.ToString("yyyyMMdd") + "\\";
-                            File.Move(file, folderForSentFiles + "SI_" + DateTime.Now.ToString("yyyyMMdd_hhmmss") + ".csv");
-                        }
-
                         return Task.FromResult("Post Successful...");
                     }
                     else
