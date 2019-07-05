@@ -83,9 +83,9 @@ namespace EasyfisIntegrator.Controllers
 
                     for (var i = 1; i <= newSalesInvoices.Count(); i++)
                     {
-                        if (i % 100 == 0)
+                        if (i % 250 == 0)
                         {
-                            Int32 take = 100;
+                            Int32 take = 250;
 
                             var jsonSalesInvoices = newSalesInvoices.Skip(skip).Take(take);
                             skip += 100;
@@ -110,12 +110,61 @@ namespace EasyfisIntegrator.Controllers
                                     trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                                     trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
 
-                                    trnIntegrationForm.logFolderMonitoringMessage("Posting Sales Invoice..." + "\r\n\n");
+                                    var branchCodes = from d in newSalesInvoices
+                                                      group d by d.BranchCode into g
+                                                      select g.Key;
 
-                                    String postSalesInvoiceTask = await PostSalesInvoice(domain, file);
-                                    trnIntegrationForm.logFolderMonitoringMessage(postSalesInvoiceTask);
-                                    trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                                    var listBranchCodes = branchCodes.ToList();
+                                    if (listBranchCodes.Any())
+                                    {
+                                        Boolean isPostingError = false;
+
+                                        foreach (var branchCode in listBranchCodes)
+                                        {
+                                            trnIntegrationForm.logFolderMonitoringMessage("Posting Sales To Branch Code: " + branchCode + " ... \r\n\n");
+
+                                            var manualSINumbers = from d in newSalesInvoices
+                                                                  where d.BranchCode.Equals(branchCode)
+                                                                  group d by d.ManualSINumber into g
+                                                                  select g.Key;
+
+                                            var listManualSINumbers = manualSINumbers.ToList();
+                                            if (listManualSINumbers.Any())
+                                            {
+                                                Int32 manualSINumberCount = 0;
+
+                                                foreach (var manualSINumber in listManualSINumbers)
+                                                {
+                                                    manualSINumberCount += 1;
+
+                                                    String postSalesInvoiceTask = await PostSalesInvoice(domain, file, branchCode, manualSINumber);
+                                                    if (!postSalesInvoiceTask.Equals("Post Successful..."))
+                                                    {
+                                                        trnIntegrationForm.logFolderMonitoringMessage(postSalesInvoiceTask);
+                                                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+
+                                                        isPostingError = true;
+                                                        break;
+                                                    }
+                                                    else
+                                                    {
+                                                        if (manualSINumberCount == manualSINumbers.Count())
+                                                        {
+                                                            trnIntegrationForm.logFolderMonitoringMessage("Post Successful..." + "\r\n\n");
+                                                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                                                        }
+                                                    }
+                                                }
+                                            }
+
+                                            if (isPostingError)
+                                            {
+                                                break;
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -148,12 +197,61 @@ namespace EasyfisIntegrator.Controllers
                                         trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                                         trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
 
-                                        trnIntegrationForm.logFolderMonitoringMessage("Posting Sales Invoice..." + "\r\n\n");
+                                        var branchCodes = from d in newSalesInvoices
+                                                          group d by d.BranchCode into g
+                                                          select g.Key;
 
-                                        String postSalesInvoiceTask = await PostSalesInvoice(domain, file);
-                                        trnIntegrationForm.logFolderMonitoringMessage(postSalesInvoiceTask);
-                                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                                        var listBranchCodes = branchCodes.ToList();
+                                        if (listBranchCodes.Any())
+                                        {
+                                            Boolean isPostingError = false;
+
+                                            foreach (var branchCode in listBranchCodes)
+                                            {
+                                                trnIntegrationForm.logFolderMonitoringMessage("Posting Sales To Branch Code: " + branchCode + " ... \r\n\n");
+
+                                                var manualSINumbers = from d in newSalesInvoices
+                                                                      where d.BranchCode.Equals(branchCode)
+                                                                      group d by d.ManualSINumber into g
+                                                                      select g.Key;
+
+                                                var listManualSINumbers = manualSINumbers.ToList();
+                                                if (listManualSINumbers.Any())
+                                                {
+                                                    Int32 manualSINumberCount = 0;
+
+                                                    foreach (var manualSINumber in listManualSINumbers)
+                                                    {
+                                                        manualSINumberCount += 1;
+
+                                                        String postSalesInvoiceTask = await PostSalesInvoice(domain, file, branchCode, manualSINumber);
+                                                        if (!postSalesInvoiceTask.Equals("Post Successful..."))
+                                                        {
+                                                            trnIntegrationForm.logFolderMonitoringMessage(postSalesInvoiceTask);
+                                                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+
+                                                            isPostingError = true;
+                                                            break;
+                                                        }
+                                                        else
+                                                        {
+                                                            if (manualSINumberCount == manualSINumbers.Count())
+                                                            {
+                                                                trnIntegrationForm.logFolderMonitoringMessage("Post Successful..." + "\r\n\n");
+                                                                trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                                                trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                                                            }
+                                                        }
+                                                    }
+                                                }
+
+                                                if (isPostingError)
+                                                {
+                                                    break;
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -240,11 +338,11 @@ namespace EasyfisIntegrator.Controllers
         // ==================
         // Post Sales Invoice
         // ==================
-        public Task<String> PostSalesInvoice(String domain, String file)
+        public Task<String> PostSalesInvoice(String domain, String file, String branchCode, String manualSINumber)
         {
             try
             {
-                String apiURL = "http://" + domain + "/api/folderMonitoring/salesInvoice/post";
+                String apiURL = "http://" + domain + "/api/folderMonitoring/salesInvoice/post/" + branchCode + "/" + manualSINumber;
 
                 HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(apiURL);
                 httpWebRequest.ContentType = "application/json";
@@ -279,7 +377,7 @@ namespace EasyfisIntegrator.Controllers
                             File.Move(file, folderForSentFiles + "SI_" + DateTime.Now.ToString("yyyyMMdd_hhmmss") + ".csv");
                         }
 
-                        return Task.FromResult("Post Successful..." + "\r\n\n");
+                        return Task.FromResult("Post Successful...");
                     }
                     else
                     {
