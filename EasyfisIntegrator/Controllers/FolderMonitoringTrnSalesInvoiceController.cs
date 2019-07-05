@@ -33,12 +33,12 @@ namespace EasyfisIntegrator.Controllers
         {
             try
             {
-                trnIntegrationForm.logFolderMonitoringMessage("Cleaning Temporary Data..." + "\r\n\n");
+                //trnIntegrationForm.logFolderMonitoringMessage("Cleaning Temporary Data..." + "\r\n\n");
 
-                String deleteTemporarySalesInvoiceTask = await DeleteTemporarySalesInvoice(domain);
-                trnIntegrationForm.logFolderMonitoringMessage(deleteTemporarySalesInvoiceTask);
-                trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                //String deleteTemporarySalesInvoiceTask = await DeleteTemporarySalesInvoice(domain);
+                //trnIntegrationForm.logFolderMonitoringMessage(deleteTemporarySalesInvoiceTask);
+                //trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                //trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
 
                 String json = "";
                 List<Entities.FolderMonitoringTrnSalesInvoice> newSalesInvoices = new List<Entities.FolderMonitoringTrnSalesInvoice>();
@@ -83,9 +83,9 @@ namespace EasyfisIntegrator.Controllers
 
                     for (var i = 1; i <= newSalesInvoices.Count(); i++)
                     {
-                        if (i % 250 == 0)
+                        if (i % 100 == 0)
                         {
-                            Int32 take = 250;
+                            Int32 take = 100;
 
                             var jsonSalesInvoices = newSalesInvoices.Skip(skip).Take(take);
                             skip += 100;
