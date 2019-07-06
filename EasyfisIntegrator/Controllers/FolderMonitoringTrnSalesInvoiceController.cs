@@ -402,12 +402,22 @@ namespace EasyfisIntegrator.Controllers
         {
             try
             {
-                String apiURL = "http://" + domain + "/api/folderMonitoring/salesInvoice/post/" + branchCode + "/" + manualSINumber;
+                String apiURL = "http://" + domain + "/api/folderMonitoring/salesInvoice/post";
 
                 HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(apiURL);
                 httpWebRequest.ContentType = "application/json";
                 httpWebRequest.Method = "POST";
-                using (StreamWriter streamWriter = new StreamWriter(httpWebRequest.GetRequestStream())) { streamWriter.Write(""); }
+
+                Entities.FolderMonitoringTrnSalesInvoice jsonSalesInvoice = new Entities.FolderMonitoringTrnSalesInvoice()
+                {
+                    BranchCode = branchCode,
+                    ManualSINumber = manualSINumber
+                };
+
+                JavaScriptSerializer serializer = new JavaScriptSerializer();
+                String json = serializer.Serialize(jsonSalesInvoice);
+
+                using (StreamWriter streamWriter = new StreamWriter(httpWebRequest.GetRequestStream())) { streamWriter.Write(json); }
 
                 HttpWebResponse httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
                 using (StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream()))
