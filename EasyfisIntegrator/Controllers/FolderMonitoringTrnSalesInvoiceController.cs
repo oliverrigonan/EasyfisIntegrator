@@ -16,51 +16,53 @@ namespace EasyfisIntegrator.Controllers
 {
     class FolderMonitoringTrnSalesInvoiceController
     {
-        public Forms.TrnIntegrationForm trnIntegrationForm;
-
-        public FolderMonitoringTrnSalesInvoiceController(Forms.TrnIntegrationForm form, String userCode, String directory, String domain)
-        {
-            trnIntegrationForm = form;
-
-            List<String> ext = new List<String> { ".csv" };
-            List<String> files = new List<String>(Directory.EnumerateFiles(directory, "*.*", SearchOption.AllDirectories).Where(e => ext.Contains(Path.GetExtension(e))));
-            if (files.Any()) { foreach (var file in files) { SendSalesInvoice(userCode, file, domain); } }
-        }
-
         // ==================
         // Send Sales Invoice
         // ==================
-        public async void SendSalesInvoice(String userCode, String file, String domain)
+        public async void SendSalesInvoice(Forms.TrnIntegrationForm trnIntegrationForm, String userCode, String file, String domain)
         {
             List<Entities.FolderMonitoringTrnSalesInvoice> newSalesInvoices = new List<Entities.FolderMonitoringTrnSalesInvoice>();
+
             JavaScriptSerializer serializer = new JavaScriptSerializer();
             String jsonData = "";
+
             Boolean post = false;
 
             // Delete
-            while (true)
+            try
             {
-                String deleteTemporarySalesInvoiceTask = await DeleteTemporarySalesInvoice(domain);
-                if (!deleteTemporarySalesInvoiceTask.Equals("Clean Successful..."))
-                {
-                    trnIntegrationForm.logFolderMonitoringMessage(deleteTemporarySalesInvoiceTask);
-                    trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-                    trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+                trnIntegrationForm.logFolderMonitoringMessage("Cleaning... (0%) \r\n\n");
 
-                    Thread.Sleep(3000);
-                }
-                else
+                while (true)
                 {
-                    trnIntegrationForm.logFolderMonitoringMessage("Clean Successful!" + "\r\n\n");
-                    trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                    String deleteTemporarySalesInvoiceTask = await DeleteTemporarySalesInvoice(domain);
+                    if (!deleteTemporarySalesInvoiceTask.Equals("Clean Successful..."))
+                    {
+                        trnIntegrationForm.logFolderMonitoringMessage(deleteTemporarySalesInvoiceTask);
+                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
 
-                    break;
+                        Thread.Sleep(3000);
+                    }
+                    else
+                    {
+                        trnIntegrationForm.logFolderMonitoringMessage("Clean Successful! (100%)" + "\r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+
+                        break;
+                    }
                 }
             }
+            catch (Exception e)
+            {
+                trnIntegrationForm.logFolderMonitoringMessage("Cleaning Error: " + e + "\r\n\n");
+                trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+            }
 
-            // CSV
+            // CSV Data
             try
             {
                 if (SysFileControl.IsCurrentFileClosed(file))
@@ -96,7 +98,7 @@ namespace EasyfisIntegrator.Controllers
             }
             catch (Exception e)
             {
-                trnIntegrationForm.logFolderMonitoringMessage("Exception Error: " + e + "\r\n\n");
+                trnIntegrationForm.logFolderMonitoringMessage("CSV Error: " + e + "\r\n\n");
                 trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                 trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
             }
@@ -106,52 +108,68 @@ namespace EasyfisIntegrator.Controllers
             {
                 try
                 {
-                    String[] fileName = file.Split('\\');
-                    trnIntegrationForm.logFolderMonitoringMessage("Sending Sales: " + fileName[fileName.Length - 1] + "... \r\n\n");
+                    Decimal percentage = 0;
+                    trnIntegrationForm.logFolderMonitoringMessage("Sending... (0%) \r\n\n");
+
+                    Boolean send = false;
 
                     var data = newSalesInvoices.Take(100);
-                    int skip = 100;
+                    Int32 skip = 100;
 
-                    for (var i = 101; i <= newSalesInvoices.Count(); i++)
+                    for (Int32 i = 101; i <= newSalesInvoices.Count(); i++)
                     {
                         if (i % 100 == 0)
                         {
                             data = newSalesInvoices.Skip(skip).Take(100);
+                            send = true;
+
                             skip = i;
+
+                            percentage = Convert.ToDecimal((Convert.ToDecimal(skip) / Convert.ToDecimal(newSalesInvoices.Count())) * 100);
                         }
                         else
                         {
                             if (i == newSalesInvoices.Count())
                             {
                                 data = newSalesInvoices.Skip(skip).Take(i - skip);
+                                send = true;
+
+                                percentage = Convert.ToDecimal((Convert.ToDecimal(skip) / Convert.ToDecimal(newSalesInvoices.Count())) * 100);
                             }
                         }
 
-                        jsonData = serializer.Serialize(data);
-
-                        while (true)
+                        if (send)
                         {
-                            String insertTemporarySalesInvoiceTask = await InsertTemporarySalesInvoice(domain, jsonData);
-                            if (!insertTemporarySalesInvoiceTask.Equals("Send Successful..."))
+                            jsonData = serializer.Serialize(data);
+                            while (true)
                             {
-                                trnIntegrationForm.logFolderMonitoringMessage(insertTemporarySalesInvoiceTask);
-                                trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-                                trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
-
-                                Thread.Sleep(3000);
-                            }
-                            else
-                            {
-                                if (i == newSalesInvoices.Count())
+                                String insertTemporarySalesInvoiceTask = await InsertTemporarySalesInvoice(domain, jsonData);
+                                if (!insertTemporarySalesInvoiceTask.Equals("Send Successful..."))
                                 {
-                                    trnIntegrationForm.logFolderMonitoringMessage("Send Successful!" + "\r\n\n");
+                                    trnIntegrationForm.logFolderMonitoringMessage(insertTemporarySalesInvoiceTask);
                                     trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                                     trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-                                }
+                                    trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
 
-                                break;
+                                    Thread.Sleep(3000);
+                                }
+                                else
+                                {
+                                    trnIntegrationForm.logFolderMonitoringMessage("SIIntegrateSuccessful");
+                                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\nSending... (" + Math.Round(percentage, 2) + "%) \r\n\n");
+
+                                    if (i == newSalesInvoices.Count())
+                                    {
+                                        trnIntegrationForm.logFolderMonitoringMessage("Send Successful! (100%)" + "\r\n\n");
+                                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                                    }
+
+                                    break;
+                                }
                             }
+
+                            send = false;
                         }
                     }
 
@@ -159,7 +177,7 @@ namespace EasyfisIntegrator.Controllers
                 }
                 catch (Exception e)
                 {
-                    trnIntegrationForm.logFolderMonitoringMessage("Exception Error: " + e + "\r\n\n");
+                    trnIntegrationForm.logFolderMonitoringMessage("Sending Error: " + e + "\r\n\n");
                     trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                     trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
                 }
@@ -168,6 +186,9 @@ namespace EasyfisIntegrator.Controllers
             // Post
             if (post)
             {
+                Decimal percentage = 0;
+                trnIntegrationForm.logFolderMonitoringMessage("Posting... (0%) \r\n\n");
+
                 var branchCodes = from d in newSalesInvoices
                                   group d by d.BranchCode into g
                                   select g.Key;
@@ -175,11 +196,13 @@ namespace EasyfisIntegrator.Controllers
                 var listBranchCodes = branchCodes.ToList();
                 if (listBranchCodes.Any())
                 {
-                    Int32 branchCodeCount = 0;
+                    Int32 branchCount = 0;
+                    Decimal branchPercentage = 0;
 
                     foreach (var branchCode in listBranchCodes)
                     {
-                        branchCodeCount += 1;
+                        branchCount += 1;
+                        branchPercentage = (branchCount / listBranchCodes.Count()) * 100;
 
                         var manualSINumbers = from d in newSalesInvoices
                                               where d.BranchCode.Equals(branchCode)
@@ -189,8 +212,18 @@ namespace EasyfisIntegrator.Controllers
                         var listManualSINumbers = manualSINumbers.ToList();
                         if (listManualSINumbers.Any())
                         {
+                            Decimal totalNumberOfManualSINumber = listManualSINumbers.Count();
+
+                            Int32 manualSINumberCount = 0;
+                            Decimal manualSINumberPercentage = 0;
+
                             foreach (var manualSINumber in listManualSINumbers)
                             {
+                                manualSINumberCount += 1;
+                                manualSINumberPercentage = (branchPercentage / totalNumberOfManualSINumber) * manualSINumberCount;
+
+                                percentage += manualSINumberPercentage;
+
                                 while (true)
                                 {
                                     String postSalesInvoiceTask = await PostSalesInvoice(domain, branchCode, manualSINumber);
@@ -205,7 +238,10 @@ namespace EasyfisIntegrator.Controllers
                                     }
                                     else
                                     {
-                                        if (branchCodeCount == listBranchCodes.Count())
+                                        trnIntegrationForm.logFolderMonitoringMessage("SIIntegrateSuccessful");
+                                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\nPosting... (" + Math.Round(percentage, 2) + "%) \r\n\n");
+
+                                        if (branchCount == listBranchCodes.Count())
                                         {
                                             trnIntegrationForm.logFolderMonitoringMessage("Post Successful!" + "\r\n\n");
                                             trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
@@ -223,6 +259,8 @@ namespace EasyfisIntegrator.Controllers
                 // Move CSV File
                 try
                 {
+                    trnIntegrationForm.logFolderMonitoringMessage("Moving...\r\n\n");
+
                     String settingsPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Settings.json");
                     using (StreamReader trmRead = new StreamReader(settingsPath))
                     {
@@ -243,10 +281,14 @@ namespace EasyfisIntegrator.Controllers
                         String folderForSentFiles = sysSettings.FolderForSentFiles + "\\SI_" + DateTime.Now.ToString("yyyyMMdd") + "\\";
                         File.Move(file, folderForSentFiles + "SI_" + DateTime.Now.ToString("yyyyMMdd_hhmmss") + ".csv");
                     }
+
+                    trnIntegrationForm.logFolderMonitoringMessage("Move Successful!" + "\r\n\n");
+                    trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
                 }
                 catch (Exception e)
                 {
-                    trnIntegrationForm.logFolderMonitoringMessage("Exception Error: " + e + "\r\n\n");
+                    trnIntegrationForm.logFolderMonitoringMessage("Moving File Error: " + e + "\r\n\n");
                     trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                     trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
                 }

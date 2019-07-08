@@ -73,6 +73,7 @@
             this.btnStartFolderMonitoringIntegration = new System.Windows.Forms.Button();
             this.btnStopFolderMonitoringIntegration = new System.Windows.Forms.Button();
             this.txtFolderMonitoringLogs = new System.Windows.Forms.TextBox();
+            this.bgwSalesInvoice = new System.ComponentModel.BackgroundWorker();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.fileSystemWatcherCSVFiles)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -616,6 +617,13 @@
             this.txtFolderMonitoringLogs.Size = new System.Drawing.Size(848, 479);
             this.txtFolderMonitoringLogs.TabIndex = 17;
             // 
+            // bgwSalesInvoice
+            // 
+            this.bgwSalesInvoice.WorkerReportsProgress = true;
+            this.bgwSalesInvoice.WorkerSupportsCancellation = true;
+            this.bgwSalesInvoice.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bgwSalesInvoice_DoWork);
+            this.bgwSalesInvoice.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.bgwSalesInvoice_ProgressChanged);
+            // 
             // TrnIntegrationForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(120F, 120F);
@@ -699,5 +707,6 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox txtLogs;
         private System.Windows.Forms.Panel panel6;
+        private System.ComponentModel.BackgroundWorker bgwSalesInvoice;
     }
 }

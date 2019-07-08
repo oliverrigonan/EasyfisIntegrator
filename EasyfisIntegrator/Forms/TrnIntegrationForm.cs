@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EasyfisIntegrator.Controllers;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -48,6 +49,8 @@ namespace EasyfisIntegrator.Forms
         public TrnIntegrationForm()
         {
             InitializeComponent();
+
+            bgwSalesInvoice.DoWork += new DoWorkEventHandler(bgwSalesInvoice_DoWork);
 
             isSettingsClicked = false;
 
@@ -425,7 +428,11 @@ namespace EasyfisIntegrator.Forms
                         new Controllers.FolderMonitoringTrnReceivingReceiptController(this, txtFolderMonitoringUserCode.Text, folderToMonitor + "\\RR\\", domain);
                         break;
                     case "SI":
-                        new Controllers.FolderMonitoringTrnSalesInvoiceController(this, txtFolderMonitoringUserCode.Text, folderToMonitor + "\\SI\\", domain);
+                        if (bgwSalesInvoice.IsBusy != true)
+                        {
+                            bgwSalesInvoice.RunWorkerAsync();
+                        }
+
                         break;
                     case "IN":
                         new Controllers.FolderMonitoringTrnStockInController(this, txtFolderMonitoringUserCode.Text, folderToMonitor + "\\IN\\", domain);
@@ -473,15 +480,38 @@ namespace EasyfisIntegrator.Forms
         {
             if (txtFolderMonitoringLogs.InvokeRequired)
             {
-                Action<String> action = new Action<String>(logFolderMonitoringMessage);
-                return;
+                BeginInvoke((MethodInvoker)delegate
+                {
+                    bool log = true;
+
+                    switch (message)
+                    {
+                        case "SIIntegrateSuccessful":
+                            log = false;
+                            txtFolderMonitoringLogs.Text = txtFolderMonitoringLogs.Text.Substring(0, txtFolderMonitoringLogs.Text.Trim().LastIndexOf(Environment.NewLine));
+
+                            break;
+                        default: break;
+                    }
+
+                    if (log)
+                    {
+                        txtFolderMonitoringLogs.Text += message;
+
+                        txtFolderMonitoringLogs.Focus();
+                        txtFolderMonitoringLogs.SelectionStart = txtFolderMonitoringLogs.Text.Length;
+                        txtFolderMonitoringLogs.ScrollToCaret();
+                    }
+                });
             }
+            else
+            {
+                txtFolderMonitoringLogs.Text += message;
 
-            txtFolderMonitoringLogs.Text += message;
-
-            txtFolderMonitoringLogs.Focus();
-            txtFolderMonitoringLogs.SelectionStart = txtFolderMonitoringLogs.Text.Length;
-            txtFolderMonitoringLogs.ScrollToCaret();
+                txtFolderMonitoringLogs.Focus();
+                txtFolderMonitoringLogs.SelectionStart = txtFolderMonitoringLogs.Text.Length;
+                txtFolderMonitoringLogs.ScrollToCaret();
+            }
         }
 
         private void btnGetCSVTemplate_Click(object sender, EventArgs e)
@@ -537,6 +567,31 @@ namespace EasyfisIntegrator.Forms
             {
                 MessageBox.Show(ex.Message, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void bgwSalesInvoice_DoWork(object sender, DoWorkEventArgs e)
+        {
+            String userCode = txtFolderMonitoringUserCode.Text;
+            String subFolderToMonitor = folderToMonitor + "\\SI\\";
+            String apiDomain = domain;
+
+            BackgroundWorker worker = sender as BackgroundWorker;
+            List<String> ext = new List<String> { ".csv" };
+            List<String> files = new List<String>(Directory.EnumerateFiles(subFolderToMonitor, "*.*", SearchOption.AllDirectories).Where(f => ext.Contains(Path.GetExtension(f))));
+
+            FolderMonitoringTrnSalesInvoiceController folderMonitoringSI = new FolderMonitoringTrnSalesInvoiceController();
+            if (files.Any())
+            {
+                foreach (var file in files)
+                {
+                    folderMonitoringSI.SendSalesInvoice(this, userCode, file, domain);
+                }
+            }
+        }
+
+        private void bgwSalesInvoice_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+
         }
     }
 }
