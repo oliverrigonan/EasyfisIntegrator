@@ -134,7 +134,7 @@ namespace EasyfisIntegrator.Controllers
                                 data = newSalesInvoices.Skip(skip).Take(i - skip);
                                 send = true;
 
-                                percentage = Convert.ToDecimal((Convert.ToDecimal(skip) / Convert.ToDecimal(newSalesInvoices.Count())) * 100);
+                                percentage = Convert.ToDecimal((Convert.ToDecimal(i) / Convert.ToDecimal(newSalesInvoices.Count())) * 100);
                             }
                         }
 
@@ -160,7 +160,7 @@ namespace EasyfisIntegrator.Controllers
 
                                     if (i == newSalesInvoices.Count())
                                     {
-                                        trnIntegrationForm.logFolderMonitoringMessage("Send Successful! (100%)" + "\r\n\n");
+                                        trnIntegrationForm.logFolderMonitoringMessage("Send Successful!" + "\r\n\n");
                                         trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                                         trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
                                     }
@@ -186,9 +186,6 @@ namespace EasyfisIntegrator.Controllers
             // Post
             if (post)
             {
-                Decimal percentage = 0;
-                trnIntegrationForm.logFolderMonitoringMessage("Posting... (0%) \r\n\n");
-
                 var branchCodes = from d in newSalesInvoices
                                   group d by d.BranchCode into g
                                   select g.Key;
@@ -197,12 +194,13 @@ namespace EasyfisIntegrator.Controllers
                 if (listBranchCodes.Any())
                 {
                     Int32 branchCount = 0;
-                    Decimal branchPercentage = 0;
 
                     foreach (var branchCode in listBranchCodes)
                     {
                         branchCount += 1;
-                        branchPercentage = (branchCount / listBranchCodes.Count()) * 100;
+
+                        Decimal percentage = 0;
+                        trnIntegrationForm.logFolderMonitoringMessage("Posting Branch: " + branchCode + " ... (0%) \r\n\n");
 
                         var manualSINumbers = from d in newSalesInvoices
                                               where d.BranchCode.Equals(branchCode)
@@ -212,17 +210,12 @@ namespace EasyfisIntegrator.Controllers
                         var listManualSINumbers = manualSINumbers.ToList();
                         if (listManualSINumbers.Any())
                         {
-                            Decimal totalNumberOfManualSINumber = listManualSINumbers.Count();
-
                             Int32 manualSINumberCount = 0;
-                            Decimal manualSINumberPercentage = 0;
 
                             foreach (var manualSINumber in listManualSINumbers)
                             {
                                 manualSINumberCount += 1;
-                                manualSINumberPercentage = (branchPercentage / totalNumberOfManualSINumber) * manualSINumberCount;
-
-                                percentage += manualSINumberPercentage;
+                                percentage = Convert.ToDecimal((Convert.ToDecimal(manualSINumberCount) / Convert.ToDecimal(listManualSINumbers.Count())) * 100);
 
                                 while (true)
                                 {
@@ -239,11 +232,11 @@ namespace EasyfisIntegrator.Controllers
                                     else
                                     {
                                         trnIntegrationForm.logFolderMonitoringMessage("SIIntegrateSuccessful");
-                                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\nPosting... (" + Math.Round(percentage, 2) + "%) \r\n\n");
+                                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\nPosting Branch: " + branchCode + " ... (" + Math.Round(percentage, 2) + "%) \r\n\n");
 
-                                        if (branchCount == listBranchCodes.Count())
+                                        if (manualSINumberCount == listManualSINumbers.Count())
                                         {
-                                            trnIntegrationForm.logFolderMonitoringMessage("Post Successful!" + "\r\n\n");
+                                            trnIntegrationForm.logFolderMonitoringMessage("Branch: " + branchCode + " Post Successful!" + "\r\n\n");
                                             trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                                             trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
                                         }
@@ -259,7 +252,7 @@ namespace EasyfisIntegrator.Controllers
                 // Move CSV File
                 try
                 {
-                    trnIntegrationForm.logFolderMonitoringMessage("Moving...\r\n\n");
+                    trnIntegrationForm.logFolderMonitoringMessage("Moving... (0%) \r\n\n");
 
                     String settingsPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Settings.json");
                     using (StreamReader trmRead = new StreamReader(settingsPath))
@@ -281,6 +274,9 @@ namespace EasyfisIntegrator.Controllers
                         String folderForSentFiles = sysSettings.FolderForSentFiles + "\\SI_" + DateTime.Now.ToString("yyyyMMdd") + "\\";
                         File.Move(file, folderForSentFiles + "SI_" + DateTime.Now.ToString("yyyyMMdd_hhmmss") + ".csv");
                     }
+
+                    trnIntegrationForm.logFolderMonitoringMessage("SIIntegrateSuccessful");
+                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\nMoving... (100%) \r\n\n");
 
                     trnIntegrationForm.logFolderMonitoringMessage("Move Successful!" + "\r\n\n");
                     trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");

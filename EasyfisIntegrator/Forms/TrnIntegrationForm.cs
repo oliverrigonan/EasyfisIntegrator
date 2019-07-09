@@ -484,14 +484,10 @@ namespace EasyfisIntegrator.Forms
                 {
                     bool log = true;
 
-                    switch (message)
+                    if (message.Equals("SIIntegrateSuccessful"))
                     {
-                        case "SIIntegrateSuccessful":
-                            log = false;
-                            txtFolderMonitoringLogs.Text = txtFolderMonitoringLogs.Text.Substring(0, txtFolderMonitoringLogs.Text.Trim().LastIndexOf(Environment.NewLine));
-
-                            break;
-                        default: break;
+                        log = false;
+                        txtFolderMonitoringLogs.Text = txtFolderMonitoringLogs.Text.Substring(0, txtFolderMonitoringLogs.Text.Trim().LastIndexOf(Environment.NewLine));
                     }
 
                     if (log)
