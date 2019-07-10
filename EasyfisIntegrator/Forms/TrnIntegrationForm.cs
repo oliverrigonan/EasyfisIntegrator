@@ -492,6 +492,21 @@ namespace EasyfisIntegrator.Forms
 
                     if (log)
                     {
+                        if (txtFolderMonitoringLogs.Lines.Length == 1000)
+                        {
+                            txtFolderMonitoringLogs.Text = "";
+
+                            String settingsPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Settings.json");
+
+                            String json;
+                            using (StreamReader trmRead = new StreamReader(settingsPath)) { json = trmRead.ReadToEnd(); }
+
+                            JavaScriptSerializer javaScriptSerializer = new JavaScriptSerializer();
+                            Entities.SysSettings sysSettings = javaScriptSerializer.Deserialize<Entities.SysSettings>(json);
+
+                            File.WriteAllText(sysSettings.LogFileLocation + "\\FM_" + DateTime.Now.ToString("yyyyMMdd_hhmmss") + ".txt", txtFolderMonitoringLogs.Text);
+                        }
+
                         txtFolderMonitoringLogs.Text += message;
 
                         txtFolderMonitoringLogs.Focus();
