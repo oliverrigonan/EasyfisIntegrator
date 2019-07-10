@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Security.AccessControl;
 using System.Security.Principal;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
@@ -33,21 +31,45 @@ namespace EasyfisIntegrator.Controllers
             {
                 trnIntegrationForm.logFolderMonitoringMessage("Cleaning... (0%) \r\n\n");
 
+                Boolean isErrorLogged = false;
+                String previousErrorMessage = String.Empty;
+
                 while (true)
                 {
                     String deleteTemporarySalesInvoiceTask = await DeleteTemporarySalesInvoice(domain);
                     if (!deleteTemporarySalesInvoiceTask.Equals("Clean Successful..."))
                     {
-                        trnIntegrationForm.logFolderMonitoringMessage(deleteTemporarySalesInvoiceTask);
-                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-                        trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+                        if (previousErrorMessage.Equals(String.Empty))
+                        {
+                            previousErrorMessage = deleteTemporarySalesInvoiceTask;
+                        }
+                        else
+                        {
+                            if (!previousErrorMessage.Equals(deleteTemporarySalesInvoiceTask))
+                            {
+                                previousErrorMessage = deleteTemporarySalesInvoiceTask;
+                                isErrorLogged = false;
+                            }
+                        }
 
-                        Thread.Sleep(3000);
+                        if (!isErrorLogged)
+                        {
+                            trnIntegrationForm.logFolderMonitoringMessage(previousErrorMessage);
+                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                            trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+
+                            isErrorLogged = true;
+                        }
+
+                        Thread.Sleep(5000);
                     }
                     else
                     {
-                        trnIntegrationForm.logFolderMonitoringMessage("Clean Successful! (100%)" + "\r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("SIIntegrateSuccessful");
+                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\nCleaning... (100%) \r\n\n");
+
+                        trnIntegrationForm.logFolderMonitoringMessage("Clean Successful!" + "\r\n\n");
                         trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                         trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
 
@@ -57,7 +79,7 @@ namespace EasyfisIntegrator.Controllers
             }
             catch (Exception e)
             {
-                trnIntegrationForm.logFolderMonitoringMessage("Cleaning Error: " + e + "\r\n\n");
+                trnIntegrationForm.logFolderMonitoringMessage("Cleaning Error: " + e.Message + "\r\n\n");
                 trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                 trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
             }
@@ -98,7 +120,7 @@ namespace EasyfisIntegrator.Controllers
             }
             catch (Exception e)
             {
-                trnIntegrationForm.logFolderMonitoringMessage("CSV Error: " + e + "\r\n\n");
+                trnIntegrationForm.logFolderMonitoringMessage("CSV Error: " + e.Message + "\r\n\n");
                 trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                 trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
             }
@@ -141,17 +163,39 @@ namespace EasyfisIntegrator.Controllers
                         if (send)
                         {
                             jsonData = serializer.Serialize(data);
+
+                            Boolean isErrorLogged = false;
+                            String previousErrorMessage = String.Empty;
+
                             while (true)
                             {
                                 String insertTemporarySalesInvoiceTask = await InsertTemporarySalesInvoice(domain, jsonData);
                                 if (!insertTemporarySalesInvoiceTask.Equals("Send Successful..."))
                                 {
-                                    trnIntegrationForm.logFolderMonitoringMessage(insertTemporarySalesInvoiceTask);
-                                    trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-                                    trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+                                    if (previousErrorMessage.Equals(String.Empty))
+                                    {
+                                        previousErrorMessage = insertTemporarySalesInvoiceTask;
+                                    }
+                                    else
+                                    {
+                                        if (!previousErrorMessage.Equals(insertTemporarySalesInvoiceTask))
+                                        {
+                                            previousErrorMessage = insertTemporarySalesInvoiceTask;
+                                            isErrorLogged = false;
+                                        }
+                                    }
 
-                                    Thread.Sleep(3000);
+                                    if (!isErrorLogged)
+                                    {
+                                        trnIntegrationForm.logFolderMonitoringMessage(previousErrorMessage);
+                                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                                        trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+
+                                        isErrorLogged = true;
+                                    }
+
+                                    Thread.Sleep(5000);
                                 }
                                 else
                                 {
@@ -177,7 +221,7 @@ namespace EasyfisIntegrator.Controllers
                 }
                 catch (Exception e)
                 {
-                    trnIntegrationForm.logFolderMonitoringMessage("Sending Error: " + e + "\r\n\n");
+                    trnIntegrationForm.logFolderMonitoringMessage("Sending Error: " + e.Message + "\r\n\n");
                     trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                     trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
                 }
@@ -217,17 +261,38 @@ namespace EasyfisIntegrator.Controllers
                                 manualSINumberCount += 1;
                                 percentage = Convert.ToDecimal((Convert.ToDecimal(manualSINumberCount) / Convert.ToDecimal(listManualSINumbers.Count())) * 100);
 
+                                Boolean isErrorLogged = false;
+                                String previousErrorMessage = String.Empty;
+
                                 while (true)
                                 {
                                     String postSalesInvoiceTask = await PostSalesInvoice(domain, branchCode, manualSINumber);
                                     if (!postSalesInvoiceTask.Equals("Post Successful..."))
                                     {
-                                        trnIntegrationForm.logFolderMonitoringMessage(postSalesInvoiceTask);
-                                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-                                        trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+                                        if (previousErrorMessage.Equals(String.Empty))
+                                        {
+                                            previousErrorMessage = postSalesInvoiceTask;
+                                        }
+                                        else
+                                        {
+                                            if (!previousErrorMessage.Equals(postSalesInvoiceTask))
+                                            {
+                                                previousErrorMessage = postSalesInvoiceTask;
+                                                isErrorLogged = false;
+                                            }
+                                        }
 
-                                        Thread.Sleep(3000);
+                                        if (!isErrorLogged)
+                                        {
+                                            trnIntegrationForm.logFolderMonitoringMessage(previousErrorMessage);
+                                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                                            trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+
+                                            isErrorLogged = true;
+                                        }
+
+                                        Thread.Sleep(5000);
                                     }
                                     else
                                     {
@@ -284,7 +349,7 @@ namespace EasyfisIntegrator.Controllers
                 }
                 catch (Exception e)
                 {
-                    trnIntegrationForm.logFolderMonitoringMessage("Moving File Error: " + e + "\r\n\n");
+                    trnIntegrationForm.logFolderMonitoringMessage("Moving File Error: " + e.Message + "\r\n\n");
                     trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                     trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
                 }
@@ -319,9 +384,9 @@ namespace EasyfisIntegrator.Controllers
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                return Task.FromResult("Exception Error: " + ex + "\r\n\n");
+                return Task.FromResult("Exception Error: " + e.Message + "\r\n\n");
             }
         }
 
@@ -353,9 +418,9 @@ namespace EasyfisIntegrator.Controllers
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                return Task.FromResult("Exception Error: " + ex + "\r\n\n");
+                return Task.FromResult("Exception Error: " + e.Message + "\r\n\n");
             }
         }
 
@@ -397,9 +462,9 @@ namespace EasyfisIntegrator.Controllers
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                return Task.FromResult("Exception Error: " + ex + "\r\n\n");
+                return Task.FromResult("Exception Error: " + e.Message + "\r\n\n");
             }
         }
     }
