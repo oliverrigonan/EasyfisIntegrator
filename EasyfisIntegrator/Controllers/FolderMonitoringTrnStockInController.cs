@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 
@@ -14,24 +15,79 @@ namespace EasyfisIntegrator.Controllers
 {
     class FolderMonitoringTrnStockInController
     {
-        public Forms.TrnIntegrationForm trnIntegrationForm;
-
-        public FolderMonitoringTrnStockInController(Forms.TrnIntegrationForm form, String userCode, String directory, String domain)
+        // =============
+        // Send Stock In
+        // =============
+        public async void SendStockIn(Forms.TrnIntegrationForm trnIntegrationForm, String userCode, String file, String domain)
         {
-            trnIntegrationForm = form;
+            List<Entities.FolderMonitoringTrnStockIn> newStockIns = new List<Entities.FolderMonitoringTrnStockIn>();
 
-            List<String> ext = new List<String> { ".csv" };
-            List<String> files = new List<String>(Directory.EnumerateFiles(directory, "*.*", SearchOption.AllDirectories).Where(e => ext.Contains(Path.GetExtension(e))));
-            if (files.Any()) { foreach (var file in files) { SendStockInData(userCode, file, domain); } }
-        }
+            JavaScriptSerializer serializer = new JavaScriptSerializer();
+            String jsonData = "";
 
-        public void SendStockInData(String userCode, String file, String domain)
-        {
+            Boolean post = false;
+
+            // Delete
             try
             {
-                String json = "";
-                List<Entities.FolderMonitoringTrnStockIn> newStockIns = new List<Entities.FolderMonitoringTrnStockIn>();
+                trnIntegrationForm.logFolderMonitoringMessage("Cleaning... (0%) \r\n\n");
 
+                Boolean isErrorLogged = false;
+                String previousErrorMessage = String.Empty;
+
+                while (true)
+                {
+                    String deleteTemporaryStockInTask = await DeleteTemporaryStockIn(domain);
+                    if (!deleteTemporaryStockInTask.Equals("Clean Successful..."))
+                    {
+                        if (previousErrorMessage.Equals(String.Empty))
+                        {
+                            previousErrorMessage = deleteTemporaryStockInTask;
+                        }
+                        else
+                        {
+                            if (!previousErrorMessage.Equals(deleteTemporaryStockInTask))
+                            {
+                                previousErrorMessage = deleteTemporaryStockInTask;
+                                isErrorLogged = false;
+                            }
+                        }
+
+                        if (!isErrorLogged)
+                        {
+                            trnIntegrationForm.logFolderMonitoringMessage(previousErrorMessage);
+                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                            trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+
+                            isErrorLogged = true;
+                        }
+
+                        Thread.Sleep(5000);
+                    }
+                    else
+                    {
+                        trnIntegrationForm.logFolderMonitoringMessage("INIntegrateSuccessful");
+                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\nCleaning... (100%) \r\n\n");
+
+                        trnIntegrationForm.logFolderMonitoringMessage("Clean Successful!" + "\r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+
+                        break;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                trnIntegrationForm.logFolderMonitoringMessage("Cleaning Error: " + e.Message + "\r\n\n");
+                trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+            }
+
+            // CSV Data
+            try
+            {
                 if (SysFileControl.IsCurrentFileClosed(file))
                 {
                     using (StreamReader dataStreamReader = new StreamReader(file))
@@ -59,25 +115,260 @@ namespace EasyfisIntegrator.Controllers
                                 Amount = Convert.ToDecimal(data[13])
                             });
                         }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                trnIntegrationForm.logFolderMonitoringMessage("CSV Error: " + e.Message + "\r\n\n");
+                trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+            }
 
-                        JavaScriptSerializer serializer = new JavaScriptSerializer();
-                        json = serializer.Serialize(newStockIns);
+            // Send
+            if (newStockIns.Any())
+            {
+                try
+                {
+                    Decimal percentage = 0;
+                    trnIntegrationForm.logFolderMonitoringMessage("Sending... (0%) \r\n\n");
+
+                    Boolean send = false;
+
+                    var data = newStockIns.Take(100);
+                    Int32 skip = 100;
+
+                    for (Int32 i = 101; i <= newStockIns.Count(); i++)
+                    {
+                        if (i % 100 == 0)
+                        {
+                            data = newStockIns.Skip(skip).Take(100);
+                            send = true;
+
+                            skip = i;
+
+                            percentage = Convert.ToDecimal((Convert.ToDecimal(skip) / Convert.ToDecimal(newStockIns.Count())) * 100);
+                        }
+                        else
+                        {
+                            if (i == newStockIns.Count())
+                            {
+                                data = newStockIns.Skip(skip).Take(i - skip);
+                                send = true;
+
+                                percentage = Convert.ToDecimal((Convert.ToDecimal(i) / Convert.ToDecimal(newStockIns.Count())) * 100);
+                            }
+                        }
+
+                        if (send)
+                        {
+                            jsonData = serializer.Serialize(data);
+
+                            Boolean isErrorLogged = false;
+                            String previousErrorMessage = String.Empty;
+
+                            while (true)
+                            {
+                                String insertTemporaryStockInTask = await InsertTemporaryStockIn(domain, jsonData);
+                                if (!insertTemporaryStockInTask.Equals("Send Successful..."))
+                                {
+                                    if (previousErrorMessage.Equals(String.Empty))
+                                    {
+                                        previousErrorMessage = insertTemporaryStockInTask;
+                                    }
+                                    else
+                                    {
+                                        if (!previousErrorMessage.Equals(insertTemporaryStockInTask))
+                                        {
+                                            previousErrorMessage = insertTemporaryStockInTask;
+                                            isErrorLogged = false;
+                                        }
+                                    }
+
+                                    if (!isErrorLogged)
+                                    {
+                                        trnIntegrationForm.logFolderMonitoringMessage(previousErrorMessage);
+                                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                                        trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+
+                                        isErrorLogged = true;
+                                    }
+
+                                    Thread.Sleep(5000);
+                                }
+                                else
+                                {
+                                    trnIntegrationForm.logFolderMonitoringMessage("INIntegrateSuccessful");
+                                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\nSending... (" + Math.Round(percentage, 2) + "%) \r\n\n");
+
+                                    if (i == newStockIns.Count())
+                                    {
+                                        trnIntegrationForm.logFolderMonitoringMessage("Send Successful!" + "\r\n\n");
+                                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                                    }
+
+                                    break;
+                                }
+                            }
+
+                            send = false;
+                        }
+                    }
+
+                    post = true;
+                }
+                catch (Exception e)
+                {
+                    trnIntegrationForm.logFolderMonitoringMessage("Sending Error: " + e.Message + "\r\n\n");
+                    trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                }
+            }
+
+            // Post
+            if (post)
+            {
+                var branchCodes = from d in newStockIns
+                                  group d by d.BranchCode into g
+                                  select g.Key;
+
+                var listBranchCodes = branchCodes.ToList();
+                if (listBranchCodes.Any())
+                {
+                    Int32 branchCount = 0;
+
+                    foreach (var branchCode in listBranchCodes)
+                    {
+                        branchCount += 1;
+
+                        Decimal percentage = 0;
+                        trnIntegrationForm.logFolderMonitoringMessage("Posting Branch: " + branchCode + " ... (0%) \r\n\n");
+
+                        var manualINNumbers = from d in newStockIns
+                                              where d.BranchCode.Equals(branchCode)
+                                              group d by d.ManualINNumber into g
+                                              select g.Key;
+
+                        var listManualINNumbers = manualINNumbers.ToList();
+                        if (listManualINNumbers.Any())
+                        {
+                            Int32 manualINNumberCount = 0;
+
+                            foreach (var manualINNumber in listManualINNumbers)
+                            {
+                                manualINNumberCount += 1;
+                                percentage = Convert.ToDecimal((Convert.ToDecimal(manualINNumberCount) / Convert.ToDecimal(listManualINNumbers.Count())) * 100);
+
+                                Boolean isErrorLogged = false;
+                                String previousErrorMessage = String.Empty;
+
+                                while (true)
+                                {
+                                    String postStockInTask = await PostStockIn(domain, branchCode, manualINNumber);
+                                    if (!postStockInTask.Equals("Post Successful..."))
+                                    {
+                                        if (previousErrorMessage.Equals(String.Empty))
+                                        {
+                                            previousErrorMessage = postStockInTask;
+                                        }
+                                        else
+                                        {
+                                            if (!previousErrorMessage.Equals(postStockInTask))
+                                            {
+                                                previousErrorMessage = postStockInTask;
+                                                isErrorLogged = false;
+                                            }
+                                        }
+
+                                        if (!isErrorLogged)
+                                        {
+                                            trnIntegrationForm.logFolderMonitoringMessage(previousErrorMessage);
+                                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                                            trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+
+                                            isErrorLogged = true;
+                                        }
+
+                                        Thread.Sleep(5000);
+                                    }
+                                    else
+                                    {
+                                        trnIntegrationForm.logFolderMonitoringMessage("INIntegrateSuccessful");
+                                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\nPosting Branch: " + branchCode + " ... (" + Math.Round(percentage, 2) + "%) \r\n\n");
+
+                                        if (manualINNumberCount == listManualINNumbers.Count())
+                                        {
+                                            trnIntegrationForm.logFolderMonitoringMessage("Branch: " + branchCode + " Post Successful!" + "\r\n\n");
+                                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                                        }
+
+                                        break;
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
 
-                String[] fileNamePrefix = file.Split('\\');
-                trnIntegrationForm.logFolderMonitoringMessage("Sending Stock In: " + fileNamePrefix[fileNamePrefix.Length - 1] + "\r\n\n");
+                // Move CSV File
+                try
+                {
+                    trnIntegrationForm.logFolderMonitoringMessage("Moving... (0%) \r\n\n");
 
-                String apiURL = "http://" + domain + "/api/folderMonitoring/stockIn/add";
+                    String settingsPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Settings.json");
+                    using (StreamReader trmRead = new StreamReader(settingsPath))
+                    {
+                        JavaScriptSerializer javaScriptSerializer = new JavaScriptSerializer();
+                        Entities.SysSettings sysSettings = javaScriptSerializer.Deserialize<Entities.SysSettings>(trmRead.ReadToEnd());
+
+                        String executingUser = WindowsIdentity.GetCurrent().Name;
+
+                        DirectorySecurity securityRules = new DirectorySecurity();
+                        securityRules.AddAccessRule(new FileSystemAccessRule(executingUser, FileSystemRights.Read, AccessControlType.Allow));
+                        securityRules.AddAccessRule(new FileSystemAccessRule(executingUser, FileSystemRights.FullControl, AccessControlType.Allow));
+
+                        if (!Directory.Exists(sysSettings.FolderForSentFiles + "\\IN_" + DateTime.Now.ToString("yyyyMMdd") + "\\"))
+                        {
+                            DirectoryInfo createDirectoryINCSV = Directory.CreateDirectory(sysSettings.FolderForSentFiles + "\\IN_" + DateTime.Now.ToString("yyyyMMdd") + "\\", securityRules);
+                        }
+
+                        String folderForSentFiles = sysSettings.FolderForSentFiles + "\\IN_" + DateTime.Now.ToString("yyyyMMdd") + "\\";
+                        File.Move(file, folderForSentFiles + "IN_" + DateTime.Now.ToString("yyyyMMdd_hhmmss") + ".csv");
+                    }
+
+                    trnIntegrationForm.logFolderMonitoringMessage("INIntegrateSuccessful");
+                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\nMoving... (100%) \r\n\n");
+
+                    trnIntegrationForm.logFolderMonitoringMessage("Move Successful!" + "\r\n\n");
+                    trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                }
+                catch (Exception e)
+                {
+                    trnIntegrationForm.logFolderMonitoringMessage("Moving File Error: " + e.Message + "\r\n\n");
+                    trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                }
+            }
+        }
+
+        // =========================
+        // Delete Temporary Stock In
+        // =========================
+        public Task<String> DeleteTemporaryStockIn(String domain)
+        {
+            try
+            {
+                String apiURL = "http://" + domain + "/api/folderMonitoring/stockIn/temporary/delete";
 
                 HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(apiURL);
                 httpWebRequest.ContentType = "application/json";
-                httpWebRequest.Method = "POST";
-
-                using (StreamWriter streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
-                {
-                    streamWriter.Write(json);
-                }
+                httpWebRequest.Method = "DELETE";
+                using (StreamWriter streamWriter = new StreamWriter(httpWebRequest.GetRequestStream())) { streamWriter.Write(""); }
 
                 HttpWebResponse httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
                 using (StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream()))
@@ -85,45 +376,95 @@ namespace EasyfisIntegrator.Controllers
                     String resp = streamReader.ReadToEnd().Replace("\"", "");
                     if (resp.Equals(""))
                     {
-                        trnIntegrationForm.logFolderMonitoringMessage("Send Successful!" + "\r\n\n");
-                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-
-                        String settingsPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Settings.json");
-
-                        using (StreamReader trmRead = new StreamReader(settingsPath))
-                        {
-                            JavaScriptSerializer javaScriptSerializer = new JavaScriptSerializer();
-                            Entities.SysSettings sysSettings = javaScriptSerializer.Deserialize<Entities.SysSettings>(trmRead.ReadToEnd());
-
-                            String executingUser = WindowsIdentity.GetCurrent().Name;
-
-                            DirectorySecurity securityRules = new DirectorySecurity();
-                            securityRules.AddAccessRule(new FileSystemAccessRule(executingUser, FileSystemRights.Read, AccessControlType.Allow));
-                            securityRules.AddAccessRule(new FileSystemAccessRule(executingUser, FileSystemRights.FullControl, AccessControlType.Allow));
-
-                            if (!Directory.Exists(sysSettings.FolderForSentFiles + "\\IN_" + DateTime.Now.ToString("yyyyMMdd") + "\\"))
-                            {
-                                DirectoryInfo createDirectorySICSV = Directory.CreateDirectory(sysSettings.FolderForSentFiles + "\\IN_" + DateTime.Now.ToString("yyyyMMdd") + "\\", securityRules);
-                            }
-
-                            String folderForSentFiles = sysSettings.FolderForSentFiles + "\\IN_" + DateTime.Now.ToString("yyyyMMdd") + "\\";
-                            File.Move(file, folderForSentFiles + "IN_" + DateTime.Now.ToString("yyyyMMdd_hhmmss") + ".csv");
-                        }
+                        return Task.FromResult("Clean Successful...");
                     }
                     else
                     {
-                        trnIntegrationForm.logFolderMonitoringMessage("Send Failed! " + resp + "\r\n\n");
-                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                        return Task.FromResult("Clean Failed! " + resp + "\r\n\n");
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                trnIntegrationForm.logFolderMonitoringMessage("Exception Error: " + ex.Message + "\r\n\n");
-                trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                return Task.FromResult("Exception Error: " + e.Message + "\r\n\n");
+            }
+        }
+
+        // =========================
+        // Insert Temporary Stock In
+        // =========================
+        public Task<String> InsertTemporaryStockIn(String domain, String json)
+        {
+            try
+            {
+                String apiURL = "http://" + domain + "/api/folderMonitoring/stockIn/temporary/insert";
+
+                HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(apiURL);
+                httpWebRequest.ContentType = "application/json";
+                httpWebRequest.Method = "POST";
+                using (StreamWriter streamWriter = new StreamWriter(httpWebRequest.GetRequestStream())) { streamWriter.Write(json); }
+
+                HttpWebResponse httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                using (StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream()))
+                {
+                    String resp = streamReader.ReadToEnd().Replace("\"", "");
+                    if (resp.Equals(""))
+                    {
+                        return Task.FromResult("Send Successful...");
+                    }
+                    else
+                    {
+                        return Task.FromResult("Send Failed! " + resp + "\r\n\n");
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                return Task.FromResult("Exception Error: " + e.Message + "\r\n\n");
+            }
+        }
+
+        // =============
+        // Post Stock In
+        // =============
+        public Task<String> PostStockIn(String domain, String branchCode, String manualINNumber)
+        {
+            try
+            {
+                String apiURL = "http://" + domain + "/api/folderMonitoring/stockIn/post";
+
+                HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(apiURL);
+                httpWebRequest.ContentType = "application/json";
+                httpWebRequest.Method = "POST";
+
+                Entities.FolderMonitoringTrnStockIn jsonStockIn = new Entities.FolderMonitoringTrnStockIn()
+                {
+                    BranchCode = branchCode,
+                    ManualINNumber = manualINNumber
+                };
+
+                JavaScriptSerializer serializer = new JavaScriptSerializer();
+                String json = serializer.Serialize(jsonStockIn);
+
+                using (StreamWriter streamWriter = new StreamWriter(httpWebRequest.GetRequestStream())) { streamWriter.Write(json); }
+
+                HttpWebResponse httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                using (StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream()))
+                {
+                    String resp = streamReader.ReadToEnd().Replace("\"", "");
+                    if (resp.Equals(""))
+                    {
+                        return Task.FromResult("Post Successful...");
+                    }
+                    else
+                    {
+                        return Task.FromResult("Post Failed! " + resp + "\r\n\n");
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                return Task.FromResult("Exception Error: " + e.Message + "\r\n\n");
             }
         }
     }

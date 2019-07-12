@@ -74,6 +74,13 @@
             this.btnStopFolderMonitoringIntegration = new System.Windows.Forms.Button();
             this.txtFolderMonitoringLogs = new System.Windows.Forms.TextBox();
             this.bgwSalesInvoice = new System.ComponentModel.BackgroundWorker();
+            this.bgwCollection = new System.ComponentModel.BackgroundWorker();
+            this.bgwReceivingReceipt = new System.ComponentModel.BackgroundWorker();
+            this.bgwDisbursement = new System.ComponentModel.BackgroundWorker();
+            this.bgwJournalVoucher = new System.ComponentModel.BackgroundWorker();
+            this.bgwStockIn = new System.ComponentModel.BackgroundWorker();
+            this.bgwStockOut = new System.ComponentModel.BackgroundWorker();
+            this.bgwStockTransfer = new System.ComponentModel.BackgroundWorker();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.fileSystemWatcherCSVFiles)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -622,7 +629,48 @@
             this.bgwSalesInvoice.WorkerReportsProgress = true;
             this.bgwSalesInvoice.WorkerSupportsCancellation = true;
             this.bgwSalesInvoice.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bgwSalesInvoice_DoWork);
-            this.bgwSalesInvoice.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.bgwSalesInvoice_ProgressChanged);
+            // 
+            // bgwCollection
+            // 
+            this.bgwCollection.WorkerReportsProgress = true;
+            this.bgwCollection.WorkerSupportsCancellation = true;
+            this.bgwCollection.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bgwCollection_DoWork);
+            // 
+            // bgwReceivingReceipt
+            // 
+            this.bgwReceivingReceipt.WorkerReportsProgress = true;
+            this.bgwReceivingReceipt.WorkerSupportsCancellation = true;
+            this.bgwReceivingReceipt.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bgwReceivingReceipt_DoWork);
+            // 
+            // bgwDisbursement
+            // 
+            this.bgwDisbursement.WorkerReportsProgress = true;
+            this.bgwDisbursement.WorkerSupportsCancellation = true;
+            this.bgwDisbursement.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bgwDisbursement_DoWork);
+            // 
+            // bgwJournalVoucher
+            // 
+            this.bgwJournalVoucher.WorkerReportsProgress = true;
+            this.bgwJournalVoucher.WorkerSupportsCancellation = true;
+            this.bgwJournalVoucher.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bgwJournalVoucher_DoWork);
+            // 
+            // bgwStockIn
+            // 
+            this.bgwStockIn.WorkerReportsProgress = true;
+            this.bgwStockIn.WorkerSupportsCancellation = true;
+            this.bgwStockIn.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bgwStockIn_DoWork);
+            // 
+            // bgwStockOut
+            // 
+            this.bgwStockOut.WorkerReportsProgress = true;
+            this.bgwStockOut.WorkerSupportsCancellation = true;
+            this.bgwStockOut.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bgwStockOut_DoWork);
+            // 
+            // bgwStockTransfer
+            // 
+            this.bgwStockTransfer.WorkerReportsProgress = true;
+            this.bgwStockTransfer.WorkerSupportsCancellation = true;
+            this.bgwStockTransfer.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bgwStockTransfer_DoWork);
             // 
             // TrnIntegrationForm
             // 
@@ -708,5 +756,12 @@
         private System.Windows.Forms.TextBox txtLogs;
         private System.Windows.Forms.Panel panel6;
         private System.ComponentModel.BackgroundWorker bgwSalesInvoice;
+        private System.ComponentModel.BackgroundWorker bgwCollection;
+        private System.ComponentModel.BackgroundWorker bgwReceivingReceipt;
+        private System.ComponentModel.BackgroundWorker bgwDisbursement;
+        private System.ComponentModel.BackgroundWorker bgwJournalVoucher;
+        private System.ComponentModel.BackgroundWorker bgwStockIn;
+        private System.ComponentModel.BackgroundWorker bgwStockOut;
+        private System.ComponentModel.BackgroundWorker bgwStockTransfer;
     }
 }

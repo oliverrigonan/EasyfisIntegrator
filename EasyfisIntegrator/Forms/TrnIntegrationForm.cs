@@ -409,46 +409,6 @@ namespace EasyfisIntegrator.Forms
             monitorControllers(documentPrefix[documentPrefix.Length - 2]);
         }
 
-        public void monitorControllers(String documentPrefix)
-        {
-            if (isFolderMonitoringIntegrationStarted)
-            {
-                switch (documentPrefix)
-                {
-                    case "OR":
-                        new Controllers.FolderMonitoringTrnCollectionController(this, txtFolderMonitoringUserCode.Text, folderToMonitor + "\\OR\\", domain);
-                        break;
-                    case "CV":
-                        new Controllers.FolderMonitoringTrnDisbursementController(this, txtFolderMonitoringUserCode.Text, folderToMonitor + "\\CV\\", domain);
-                        break;
-                    case "JV":
-                        new Controllers.FolderMonitoringTrnJournalVoucherController(this, txtFolderMonitoringUserCode.Text, folderToMonitor + "\\JV\\", domain);
-                        break;
-                    case "RR":
-                        new Controllers.FolderMonitoringTrnReceivingReceiptController(this, txtFolderMonitoringUserCode.Text, folderToMonitor + "\\RR\\", domain);
-                        break;
-                    case "SI":
-                        if (bgwSalesInvoice.IsBusy != true)
-                        {
-                            bgwSalesInvoice.RunWorkerAsync();
-                        }
-
-                        break;
-                    case "IN":
-                        new Controllers.FolderMonitoringTrnStockInController(this, txtFolderMonitoringUserCode.Text, folderToMonitor + "\\IN\\", domain);
-                        break;
-                    case "OT":
-                        new Controllers.FolderMonitoringTrnStockOutController(this, txtFolderMonitoringUserCode.Text, folderToMonitor + "\\OT\\", domain);
-                        break;
-                    case "ST":
-                        new Controllers.FolderMonitoringTrnStockTransferController(this, txtFolderMonitoringUserCode.Text, folderToMonitor + "\\ST\\", domain);
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }
-
         private void btnStartFolderMonitoringIntegration_Click(object sender, EventArgs e)
         {
             btnSettings.Enabled = false;
@@ -580,6 +540,42 @@ namespace EasyfisIntegrator.Forms
             }
         }
 
+        public void monitorControllers(String documentPrefix)
+        {
+            if (isFolderMonitoringIntegrationStarted)
+            {
+                switch (documentPrefix)
+                {
+                    case "OR":
+                        if (bgwCollection.IsBusy != true) { bgwCollection.RunWorkerAsync(); }
+                        break;
+                    case "CV":
+                        if (bgwDisbursement.IsBusy != true) { bgwDisbursement.RunWorkerAsync(); }
+                        break;
+                    case "JV":
+                        if (bgwJournalVoucher.IsBusy != true) { bgwJournalVoucher.RunWorkerAsync(); }
+                        break;
+                    case "RR":
+                        if (bgwReceivingReceipt.IsBusy != true) { bgwReceivingReceipt.RunWorkerAsync(); }
+                        break;
+                    case "SI":
+                        if (bgwSalesInvoice.IsBusy != true) { bgwSalesInvoice.RunWorkerAsync(); }
+                        break;
+                    case "IN":
+                        if (bgwStockIn.IsBusy != true) { bgwStockIn.RunWorkerAsync(); }
+                        break;
+                    case "OT":
+                        if (bgwStockOut.IsBusy != true) { bgwStockOut.RunWorkerAsync(); }
+                        break;
+                    case "ST":
+                        if (bgwStockTransfer.IsBusy != true) { bgwStockTransfer.RunWorkerAsync(); }
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
         private void bgwSalesInvoice_DoWork(object sender, DoWorkEventArgs e)
         {
             String userCode = txtFolderMonitoringUserCode.Text;
@@ -600,9 +596,144 @@ namespace EasyfisIntegrator.Forms
             }
         }
 
-        private void bgwSalesInvoice_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        private void bgwCollection_DoWork(object sender, DoWorkEventArgs e)
         {
+            String userCode = txtFolderMonitoringUserCode.Text;
+            String subFolderToMonitor = folderToMonitor + "\\OR\\";
+            String apiDomain = domain;
 
+            BackgroundWorker worker = sender as BackgroundWorker;
+            List<String> ext = new List<String> { ".csv" };
+            List<String> files = new List<String>(Directory.EnumerateFiles(subFolderToMonitor, "*.*", SearchOption.AllDirectories).Where(f => ext.Contains(Path.GetExtension(f))));
+
+            FolderMonitoringTrnCollectionController folderMonitoringOR = new FolderMonitoringTrnCollectionController();
+            if (files.Any())
+            {
+                foreach (var file in files)
+                {
+                    folderMonitoringOR.SendCollection(this, userCode, file, domain);
+                }
+            }
+        }
+
+        private void bgwReceivingReceipt_DoWork(object sender, DoWorkEventArgs e)
+        {
+            String userCode = txtFolderMonitoringUserCode.Text;
+            String subFolderToMonitor = folderToMonitor + "\\RR\\";
+            String apiDomain = domain;
+
+            BackgroundWorker worker = sender as BackgroundWorker;
+            List<String> ext = new List<String> { ".csv" };
+            List<String> files = new List<String>(Directory.EnumerateFiles(subFolderToMonitor, "*.*", SearchOption.AllDirectories).Where(f => ext.Contains(Path.GetExtension(f))));
+
+            FolderMonitoringTrnReceivingReceiptController folderMonitoringRR = new FolderMonitoringTrnReceivingReceiptController();
+            if (files.Any())
+            {
+                foreach (var file in files)
+                {
+                    folderMonitoringRR.SendReceivingReceipt(this, userCode, file, domain);
+                }
+            }
+        }
+
+        private void bgwDisbursement_DoWork(object sender, DoWorkEventArgs e)
+        {
+            String userCode = txtFolderMonitoringUserCode.Text;
+            String subFolderToMonitor = folderToMonitor + "\\CV\\";
+            String apiDomain = domain;
+
+            BackgroundWorker worker = sender as BackgroundWorker;
+            List<String> ext = new List<String> { ".csv" };
+            List<String> files = new List<String>(Directory.EnumerateFiles(subFolderToMonitor, "*.*", SearchOption.AllDirectories).Where(f => ext.Contains(Path.GetExtension(f))));
+
+            FolderMonitoringTrnDisbursementController folderMonitoringCV = new FolderMonitoringTrnDisbursementController();
+            if (files.Any())
+            {
+                foreach (var file in files)
+                {
+                    folderMonitoringCV.SendDisbursement(this, userCode, file, domain);
+                }
+            }
+        }
+
+        private void bgwJournalVoucher_DoWork(object sender, DoWorkEventArgs e)
+        {
+            String userCode = txtFolderMonitoringUserCode.Text;
+            String subFolderToMonitor = folderToMonitor + "\\JV\\";
+            String apiDomain = domain;
+
+            BackgroundWorker worker = sender as BackgroundWorker;
+            List<String> ext = new List<String> { ".csv" };
+            List<String> files = new List<String>(Directory.EnumerateFiles(subFolderToMonitor, "*.*", SearchOption.AllDirectories).Where(f => ext.Contains(Path.GetExtension(f))));
+
+            FolderMonitoringTrnJournalVoucherController folderMonitoringJV = new FolderMonitoringTrnJournalVoucherController();
+            if (files.Any())
+            {
+                foreach (var file in files)
+                {
+                    folderMonitoringJV.SendJournalVoucher(this, userCode, file, domain);
+                }
+            }
+        }
+
+        private void bgwStockIn_DoWork(object sender, DoWorkEventArgs e)
+        {
+            String userCode = txtFolderMonitoringUserCode.Text;
+            String subFolderToMonitor = folderToMonitor + "\\IN\\";
+            String apiDomain = domain;
+
+            BackgroundWorker worker = sender as BackgroundWorker;
+            List<String> ext = new List<String> { ".csv" };
+            List<String> files = new List<String>(Directory.EnumerateFiles(subFolderToMonitor, "*.*", SearchOption.AllDirectories).Where(f => ext.Contains(Path.GetExtension(f))));
+
+            FolderMonitoringTrnStockInController folderMonitoringIN = new FolderMonitoringTrnStockInController();
+            if (files.Any())
+            {
+                foreach (var file in files)
+                {
+                    folderMonitoringIN.SendStockIn(this, userCode, file, domain);
+                }
+            }
+        }
+
+        private void bgwStockOut_DoWork(object sender, DoWorkEventArgs e)
+        {
+            String userCode = txtFolderMonitoringUserCode.Text;
+            String subFolderToMonitor = folderToMonitor + "\\OT\\";
+            String apiDomain = domain;
+
+            BackgroundWorker worker = sender as BackgroundWorker;
+            List<String> ext = new List<String> { ".csv" };
+            List<String> files = new List<String>(Directory.EnumerateFiles(subFolderToMonitor, "*.*", SearchOption.AllDirectories).Where(f => ext.Contains(Path.GetExtension(f))));
+
+            FolderMonitoringTrnStockOutController folderMonitoringOT = new FolderMonitoringTrnStockOutController();
+            if (files.Any())
+            {
+                foreach (var file in files)
+                {
+                    folderMonitoringOT.SendStockOut(this, userCode, file, domain);
+                }
+            }
+        }
+
+        private void bgwStockTransfer_DoWork(object sender, DoWorkEventArgs e)
+        {
+            String userCode = txtFolderMonitoringUserCode.Text;
+            String subFolderToMonitor = folderToMonitor + "\\ST\\";
+            String apiDomain = domain;
+
+            BackgroundWorker worker = sender as BackgroundWorker;
+            List<String> ext = new List<String> { ".csv" };
+            List<String> files = new List<String>(Directory.EnumerateFiles(subFolderToMonitor, "*.*", SearchOption.AllDirectories).Where(f => ext.Contains(Path.GetExtension(f))));
+
+            FolderMonitoringTrnStockTransferController folderMonitoringST = new FolderMonitoringTrnStockTransferController();
+            if (files.Any())
+            {
+                foreach (var file in files)
+                {
+                    folderMonitoringST.SendStockTransfer(this, userCode, file, domain);
+                }
+            }
         }
     }
 }

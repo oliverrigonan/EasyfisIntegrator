@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 
@@ -14,24 +15,79 @@ namespace EasyfisIntegrator.Controllers
 {
     class FolderMonitoringTrnDisbursementController
     {
-        public Forms.TrnIntegrationForm trnIntegrationForm;
-
-        public FolderMonitoringTrnDisbursementController(Forms.TrnIntegrationForm form, String userCode, String directory, String domain)
+        // =================
+        // Send Disbursement
+        // =================
+        public async void SendDisbursement(Forms.TrnIntegrationForm trnIntegrationForm, String userCode, String file, String domain)
         {
-            trnIntegrationForm = form;
+            List<Entities.FolderMonitoringTrnDisbursement> newDisbursements = new List<Entities.FolderMonitoringTrnDisbursement>();
 
-            List<String> ext = new List<String> { ".csv" };
-            List<String> files = new List<String>(Directory.EnumerateFiles(directory, "*.*", SearchOption.AllDirectories).Where(e => ext.Contains(Path.GetExtension(e))));
-            if (files.Any()) { foreach (var file in files) { SendDisbursementData(userCode, file, domain); } }
-        }
+            JavaScriptSerializer serializer = new JavaScriptSerializer();
+            String jsonData = "";
 
-        public void SendDisbursementData(String userCode, String file, String domain)
-        {
+            Boolean post = false;
+
+            // Delete
             try
             {
-                String json = "";
-                List<Entities.FolderMonitoringTrnDisbursement> newDisbursements = new List<Entities.FolderMonitoringTrnDisbursement>();
+                trnIntegrationForm.logFolderMonitoringMessage("Cleaning... (0%) \r\n\n");
 
+                Boolean isErrorLogged = false;
+                String previousErrorMessage = String.Empty;
+
+                while (true)
+                {
+                    String deleteTemporaryDisbursementTask = await DeleteTemporaryDisbursement(domain);
+                    if (!deleteTemporaryDisbursementTask.Equals("Clean Successful..."))
+                    {
+                        if (previousErrorMessage.Equals(String.Empty))
+                        {
+                            previousErrorMessage = deleteTemporaryDisbursementTask;
+                        }
+                        else
+                        {
+                            if (!previousErrorMessage.Equals(deleteTemporaryDisbursementTask))
+                            {
+                                previousErrorMessage = deleteTemporaryDisbursementTask;
+                                isErrorLogged = false;
+                            }
+                        }
+
+                        if (!isErrorLogged)
+                        {
+                            trnIntegrationForm.logFolderMonitoringMessage(previousErrorMessage);
+                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                            trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+
+                            isErrorLogged = true;
+                        }
+
+                        Thread.Sleep(5000);
+                    }
+                    else
+                    {
+                        trnIntegrationForm.logFolderMonitoringMessage("CVIntegrateSuccessful");
+                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\nCleaning... (100%) \r\n\n");
+
+                        trnIntegrationForm.logFolderMonitoringMessage("Clean Successful!" + "\r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+
+                        break;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                trnIntegrationForm.logFolderMonitoringMessage("Cleaning Error: " + e.Message + "\r\n\n");
+                trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+            }
+
+            // CSV Data
+            try
+            {
                 if (SysFileControl.IsCurrentFileClosed(file))
                 {
                     using (StreamReader dataStreamReader = new StreamReader(file))
@@ -65,25 +121,260 @@ namespace EasyfisIntegrator.Controllers
                                 Amount = Convert.ToDecimal(data[19])
                             });
                         }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                trnIntegrationForm.logFolderMonitoringMessage("CSV Error: " + e.Message + "\r\n\n");
+                trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+            }
 
-                        JavaScriptSerializer serializer = new JavaScriptSerializer();
-                        json = serializer.Serialize(newDisbursements);
+            // Send
+            if (newDisbursements.Any())
+            {
+                try
+                {
+                    Decimal percentage = 0;
+                    trnIntegrationForm.logFolderMonitoringMessage("Sending... (0%) \r\n\n");
+
+                    Boolean send = false;
+
+                    var data = newDisbursements.Take(100);
+                    Int32 skip = 100;
+
+                    for (Int32 i = 101; i <= newDisbursements.Count(); i++)
+                    {
+                        if (i % 100 == 0)
+                        {
+                            data = newDisbursements.Skip(skip).Take(100);
+                            send = true;
+
+                            skip = i;
+
+                            percentage = Convert.ToDecimal((Convert.ToDecimal(skip) / Convert.ToDecimal(newDisbursements.Count())) * 100);
+                        }
+                        else
+                        {
+                            if (i == newDisbursements.Count())
+                            {
+                                data = newDisbursements.Skip(skip).Take(i - skip);
+                                send = true;
+
+                                percentage = Convert.ToDecimal((Convert.ToDecimal(i) / Convert.ToDecimal(newDisbursements.Count())) * 100);
+                            }
+                        }
+
+                        if (send)
+                        {
+                            jsonData = serializer.Serialize(data);
+
+                            Boolean isErrorLogged = false;
+                            String previousErrorMessage = String.Empty;
+
+                            while (true)
+                            {
+                                String insertTemporaryDisbursementTask = await InsertTemporaryDisbursement(domain, jsonData);
+                                if (!insertTemporaryDisbursementTask.Equals("Send Successful..."))
+                                {
+                                    if (previousErrorMessage.Equals(String.Empty))
+                                    {
+                                        previousErrorMessage = insertTemporaryDisbursementTask;
+                                    }
+                                    else
+                                    {
+                                        if (!previousErrorMessage.Equals(insertTemporaryDisbursementTask))
+                                        {
+                                            previousErrorMessage = insertTemporaryDisbursementTask;
+                                            isErrorLogged = false;
+                                        }
+                                    }
+
+                                    if (!isErrorLogged)
+                                    {
+                                        trnIntegrationForm.logFolderMonitoringMessage(previousErrorMessage);
+                                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                                        trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+
+                                        isErrorLogged = true;
+                                    }
+
+                                    Thread.Sleep(5000);
+                                }
+                                else
+                                {
+                                    trnIntegrationForm.logFolderMonitoringMessage("CVIntegrateSuccessful");
+                                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\nSending... (" + Math.Round(percentage, 2) + "%) \r\n\n");
+
+                                    if (i == newDisbursements.Count())
+                                    {
+                                        trnIntegrationForm.logFolderMonitoringMessage("Send Successful!" + "\r\n\n");
+                                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                                    }
+
+                                    break;
+                                }
+                            }
+
+                            send = false;
+                        }
+                    }
+
+                    post = true;
+                }
+                catch (Exception e)
+                {
+                    trnIntegrationForm.logFolderMonitoringMessage("Sending Error: " + e.Message + "\r\n\n");
+                    trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                }
+            }
+
+            // Post
+            if (post)
+            {
+                var branchCodes = from d in newDisbursements
+                                  group d by d.BranchCode into g
+                                  select g.Key;
+
+                var listBranchCodes = branchCodes.ToList();
+                if (listBranchCodes.Any())
+                {
+                    Int32 branchCount = 0;
+
+                    foreach (var branchCode in listBranchCodes)
+                    {
+                        branchCount += 1;
+
+                        Decimal percentage = 0;
+                        trnIntegrationForm.logFolderMonitoringMessage("Posting Branch: " + branchCode + " ... (0%) \r\n\n");
+
+                        var manualCVNumbers = from d in newDisbursements
+                                              where d.BranchCode.Equals(branchCode)
+                                              group d by d.ManualCVNumber into g
+                                              select g.Key;
+
+                        var listManualCVNumbers = manualCVNumbers.ToList();
+                        if (listManualCVNumbers.Any())
+                        {
+                            Int32 manualCVNumberCount = 0;
+
+                            foreach (var manualCVNumber in listManualCVNumbers)
+                            {
+                                manualCVNumberCount += 1;
+                                percentage = Convert.ToDecimal((Convert.ToDecimal(manualCVNumberCount) / Convert.ToDecimal(listManualCVNumbers.Count())) * 100);
+
+                                Boolean isErrorLogged = false;
+                                String previousErrorMessage = String.Empty;
+
+                                while (true)
+                                {
+                                    String postDisbursementTask = await PostDisbursement(domain, branchCode, manualCVNumber);
+                                    if (!postDisbursementTask.Equals("Post Successful..."))
+                                    {
+                                        if (previousErrorMessage.Equals(String.Empty))
+                                        {
+                                            previousErrorMessage = postDisbursementTask;
+                                        }
+                                        else
+                                        {
+                                            if (!previousErrorMessage.Equals(postDisbursementTask))
+                                            {
+                                                previousErrorMessage = postDisbursementTask;
+                                                isErrorLogged = false;
+                                            }
+                                        }
+
+                                        if (!isErrorLogged)
+                                        {
+                                            trnIntegrationForm.logFolderMonitoringMessage(previousErrorMessage);
+                                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                                            trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+
+                                            isErrorLogged = true;
+                                        }
+
+                                        Thread.Sleep(5000);
+                                    }
+                                    else
+                                    {
+                                        trnIntegrationForm.logFolderMonitoringMessage("CVIntegrateSuccessful");
+                                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\nPosting Branch: " + branchCode + " ... (" + Math.Round(percentage, 2) + "%) \r\n\n");
+
+                                        if (manualCVNumberCount == listManualCVNumbers.Count())
+                                        {
+                                            trnIntegrationForm.logFolderMonitoringMessage("Branch: " + branchCode + " Post Successful!" + "\r\n\n");
+                                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                                        }
+
+                                        break;
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
 
-                String[] fileNamePrefix = file.Split('\\');
-                trnIntegrationForm.logFolderMonitoringMessage("Sending Disbursement: " + fileNamePrefix[fileNamePrefix.Length - 1] + "\r\n\n");
+                // Move CSV File
+                try
+                {
+                    trnIntegrationForm.logFolderMonitoringMessage("Moving... (0%) \r\n\n");
 
-                String apiURL = "http://" + domain + "/api/folderMonitoring/disbursement/add";
+                    String settingsPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Settings.json");
+                    using (StreamReader trmRead = new StreamReader(settingsPath))
+                    {
+                        JavaScriptSerializer javaScriptSerializer = new JavaScriptSerializer();
+                        Entities.SysSettings sysSettings = javaScriptSerializer.Deserialize<Entities.SysSettings>(trmRead.ReadToEnd());
+
+                        String executingUser = WindowsIdentity.GetCurrent().Name;
+
+                        DirectorySecurity securityRules = new DirectorySecurity();
+                        securityRules.AddAccessRule(new FileSystemAccessRule(executingUser, FileSystemRights.Read, AccessControlType.Allow));
+                        securityRules.AddAccessRule(new FileSystemAccessRule(executingUser, FileSystemRights.FullControl, AccessControlType.Allow));
+
+                        if (!Directory.Exists(sysSettings.FolderForSentFiles + "\\CV_" + DateTime.Now.ToString("yyyyMMdd") + "\\"))
+                        {
+                            DirectoryInfo createDirectoryCVCSV = Directory.CreateDirectory(sysSettings.FolderForSentFiles + "\\CV_" + DateTime.Now.ToString("yyyyMMdd") + "\\", securityRules);
+                        }
+
+                        String folderForSentFiles = sysSettings.FolderForSentFiles + "\\CV_" + DateTime.Now.ToString("yyyyMMdd") + "\\";
+                        File.Move(file, folderForSentFiles + "CV_" + DateTime.Now.ToString("yyyyMMdd_hhmmss") + ".csv");
+                    }
+
+                    trnIntegrationForm.logFolderMonitoringMessage("CVIntegrateSuccessful");
+                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\nMoving... (100%) \r\n\n");
+
+                    trnIntegrationForm.logFolderMonitoringMessage("Move Successful!" + "\r\n\n");
+                    trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                }
+                catch (Exception e)
+                {
+                    trnIntegrationForm.logFolderMonitoringMessage("Moving File Error: " + e.Message + "\r\n\n");
+                    trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                }
+            }
+        }
+
+        // =============================
+        // Delete Temporary Disbursement
+        // =============================
+        public Task<String> DeleteTemporaryDisbursement(String domain)
+        {
+            try
+            {
+                String apiURL = "http://" + domain + "/api/folderMonitoring/disbursement/temporary/delete";
 
                 HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(apiURL);
                 httpWebRequest.ContentType = "application/json";
-                httpWebRequest.Method = "POST";
-
-                using (StreamWriter streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
-                {
-                    streamWriter.Write(json);
-                }
+                httpWebRequest.Method = "DELETE";
+                using (StreamWriter streamWriter = new StreamWriter(httpWebRequest.GetRequestStream())) { streamWriter.Write(""); }
 
                 HttpWebResponse httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
                 using (StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream()))
@@ -91,45 +382,95 @@ namespace EasyfisIntegrator.Controllers
                     String resp = streamReader.ReadToEnd().Replace("\"", "");
                     if (resp.Equals(""))
                     {
-                        trnIntegrationForm.logFolderMonitoringMessage("Send Successful!" + "\r\n\n");
-                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-
-                        String settingsPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Settings.json");
-
-                        using (StreamReader trmRead = new StreamReader(settingsPath))
-                        {
-                            JavaScriptSerializer javaScriptSerializer = new JavaScriptSerializer();
-                            Entities.SysSettings sysSettings = javaScriptSerializer.Deserialize<Entities.SysSettings>(trmRead.ReadToEnd());
-
-                            String executingUser = WindowsIdentity.GetCurrent().Name;
-
-                            DirectorySecurity securityRules = new DirectorySecurity();
-                            securityRules.AddAccessRule(new FileSystemAccessRule(executingUser, FileSystemRights.Read, AccessControlType.Allow));
-                            securityRules.AddAccessRule(new FileSystemAccessRule(executingUser, FileSystemRights.FullControl, AccessControlType.Allow));
-
-                            if (!Directory.Exists(sysSettings.FolderForSentFiles + "\\CV_" + DateTime.Now.ToString("yyyyMMdd") + "\\"))
-                            {
-                                DirectoryInfo createDirectoryORCSV = Directory.CreateDirectory(sysSettings.FolderForSentFiles + "\\CV_" + DateTime.Now.ToString("yyyyMMdd") + "\\", securityRules);
-                            }
-
-                            String folderForSentFiles = sysSettings.FolderForSentFiles + "\\CV_" + DateTime.Now.ToString("yyyyMMdd") + "\\";
-                            File.Move(file, folderForSentFiles + "CV_" + DateTime.Now.ToString("yyyyMMdd_hhmmss") + ".csv");
-                        }
+                        return Task.FromResult("Clean Successful...");
                     }
                     else
                     {
-                        trnIntegrationForm.logFolderMonitoringMessage("Send Failed! " + resp + "\r\n\n");
-                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                        return Task.FromResult("Clean Failed! " + resp + "\r\n\n");
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                trnIntegrationForm.logFolderMonitoringMessage("Exception Error: " + ex.Message + "\r\n\n");
-                trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                return Task.FromResult("Exception Error: " + e.Message + "\r\n\n");
+            }
+        }
+
+        // =============================
+        // Insert Temporary Disbursement
+        // =============================
+        public Task<String> InsertTemporaryDisbursement(String domain, String json)
+        {
+            try
+            {
+                String apiURL = "http://" + domain + "/api/folderMonitoring/disbursement/temporary/insert";
+
+                HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(apiURL);
+                httpWebRequest.ContentType = "application/json";
+                httpWebRequest.Method = "POST";
+                using (StreamWriter streamWriter = new StreamWriter(httpWebRequest.GetRequestStream())) { streamWriter.Write(json); }
+
+                HttpWebResponse httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                using (StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream()))
+                {
+                    String resp = streamReader.ReadToEnd().Replace("\"", "");
+                    if (resp.Equals(""))
+                    {
+                        return Task.FromResult("Send Successful...");
+                    }
+                    else
+                    {
+                        return Task.FromResult("Send Failed! " + resp + "\r\n\n");
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                return Task.FromResult("Exception Error: " + e.Message + "\r\n\n");
+            }
+        }
+
+        // =================
+        // Post Disbursement
+        // =================
+        public Task<String> PostDisbursement(String domain, String branchCode, String manualCVNumber)
+        {
+            try
+            {
+                String apiURL = "http://" + domain + "/api/folderMonitoring/disbursement/post";
+
+                HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(apiURL);
+                httpWebRequest.ContentType = "application/json";
+                httpWebRequest.Method = "POST";
+
+                Entities.FolderMonitoringTrnDisbursement jsonDisbursement = new Entities.FolderMonitoringTrnDisbursement()
+                {
+                    BranchCode = branchCode,
+                    ManualCVNumber = manualCVNumber
+                };
+
+                JavaScriptSerializer serializer = new JavaScriptSerializer();
+                String json = serializer.Serialize(jsonDisbursement);
+
+                using (StreamWriter streamWriter = new StreamWriter(httpWebRequest.GetRequestStream())) { streamWriter.Write(json); }
+
+                HttpWebResponse httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                using (StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream()))
+                {
+                    String resp = streamReader.ReadToEnd().Replace("\"", "");
+                    if (resp.Equals(""))
+                    {
+                        return Task.FromResult("Post Successful...");
+                    }
+                    else
+                    {
+                        return Task.FromResult("Post Failed! " + resp + "\r\n\n");
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                return Task.FromResult("Exception Error: " + e.Message + "\r\n\n");
             }
         }
     }
