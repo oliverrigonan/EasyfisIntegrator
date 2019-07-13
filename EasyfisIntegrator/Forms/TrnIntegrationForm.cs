@@ -553,11 +553,6 @@ namespace EasyfisIntegrator.Forms
         {
             String[] documentPrefix = e.FullPath.Split('\\');
             monitorControllers(documentPrefix[documentPrefix.Length - 2]);
-
-            //if (bgwSalesInvoice.IsBusy != true && bgwCollection.IsBusy != true && bgwReceivingReceipt.IsBusy != true && bgwDisbursement.IsBusy != true && bgwJournalVoucher.IsBusy != true && bgwStockIn.IsBusy != true && bgwStockOut.IsBusy != true && bgwStockTransfer.IsBusy != true)
-            //{
-            //    monitorControllers(documentPrefix[documentPrefix.Length - 2]);
-            //}
         }
 
         public void monitorControllers(String documentPrefix)
@@ -567,28 +562,28 @@ namespace EasyfisIntegrator.Forms
                 switch (documentPrefix)
                 {
                     case "SI":
-                        bgwSalesInvoice.RunWorkerAsync();
+                        if (!bgwSalesInvoice.IsBusy) { bgwSalesInvoice.RunWorkerAsync(); }
                         break;
                     case "OR":
-                        bgwCollection.RunWorkerAsync();
+                        if (!bgwCollection.IsBusy) { bgwCollection.RunWorkerAsync(); }
                         break;
                     case "RR":
-                        bgwReceivingReceipt.RunWorkerAsync();
+                        if (!bgwReceivingReceipt.IsBusy) { bgwReceivingReceipt.RunWorkerAsync(); }
                         break;
                     case "CV":
-                        bgwDisbursement.RunWorkerAsync();
+                        if (!bgwDisbursement.IsBusy) { bgwDisbursement.RunWorkerAsync(); }
                         break;
                     case "JV":
-                        bgwJournalVoucher.RunWorkerAsync();
+                        if (!bgwJournalVoucher.IsBusy) { bgwJournalVoucher.RunWorkerAsync(); }
                         break;
                     case "IN":
-                        bgwStockIn.RunWorkerAsync();
+                        if (!bgwStockIn.IsBusy) { bgwStockIn.RunWorkerAsync(); }
                         break;
                     case "OT":
-                        bgwStockOut.RunWorkerAsync();
+                        if (!bgwStockOut.IsBusy) { bgwStockOut.RunWorkerAsync(); }
                         break;
                     case "ST":
-                        bgwStockTransfer.RunWorkerAsync();
+                        if (!bgwStockTransfer.IsBusy) { bgwStockTransfer.RunWorkerAsync(); }
                         break;
                     default:
                         break;
