@@ -629,48 +629,56 @@
             this.bgwSalesInvoice.WorkerReportsProgress = true;
             this.bgwSalesInvoice.WorkerSupportsCancellation = true;
             this.bgwSalesInvoice.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bgwSalesInvoice_DoWork);
+            this.bgwSalesInvoice.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.bgwSalesInvoice_RunWorkerCompleted);
             // 
             // bgwCollection
             // 
             this.bgwCollection.WorkerReportsProgress = true;
             this.bgwCollection.WorkerSupportsCancellation = true;
             this.bgwCollection.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bgwCollection_DoWork);
+            this.bgwCollection.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.bgwCollection_RunWorkerCompleted);
             // 
             // bgwReceivingReceipt
             // 
             this.bgwReceivingReceipt.WorkerReportsProgress = true;
             this.bgwReceivingReceipt.WorkerSupportsCancellation = true;
             this.bgwReceivingReceipt.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bgwReceivingReceipt_DoWork);
+            this.bgwReceivingReceipt.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.bgwReceivingReceipt_RunWorkerCompleted);
             // 
             // bgwDisbursement
             // 
             this.bgwDisbursement.WorkerReportsProgress = true;
             this.bgwDisbursement.WorkerSupportsCancellation = true;
             this.bgwDisbursement.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bgwDisbursement_DoWork);
+            this.bgwDisbursement.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.bgwDisbursement_RunWorkerCompleted);
             // 
             // bgwJournalVoucher
             // 
             this.bgwJournalVoucher.WorkerReportsProgress = true;
             this.bgwJournalVoucher.WorkerSupportsCancellation = true;
             this.bgwJournalVoucher.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bgwJournalVoucher_DoWork);
+            this.bgwJournalVoucher.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.bgwJournalVoucher_RunWorkerCompleted);
             // 
             // bgwStockIn
             // 
             this.bgwStockIn.WorkerReportsProgress = true;
             this.bgwStockIn.WorkerSupportsCancellation = true;
             this.bgwStockIn.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bgwStockIn_DoWork);
+            this.bgwStockIn.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.bgwStockIn_RunWorkerCompleted);
             // 
             // bgwStockOut
             // 
             this.bgwStockOut.WorkerReportsProgress = true;
             this.bgwStockOut.WorkerSupportsCancellation = true;
             this.bgwStockOut.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bgwStockOut_DoWork);
+            this.bgwStockOut.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.bgwStockOut_RunWorkerCompleted);
             // 
             // bgwStockTransfer
             // 
             this.bgwStockTransfer.WorkerReportsProgress = true;
             this.bgwStockTransfer.WorkerSupportsCancellation = true;
             this.bgwStockTransfer.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bgwStockTransfer_DoWork);
+            this.bgwStockTransfer.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.bgwStockTransfer_RunWorkerCompleted);
             // 
             // TrnIntegrationForm
             // 

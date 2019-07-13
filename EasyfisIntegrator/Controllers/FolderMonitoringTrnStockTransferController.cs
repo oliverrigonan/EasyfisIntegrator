@@ -30,7 +30,7 @@ namespace EasyfisIntegrator.Controllers
             // Delete
             try
             {
-                trnIntegrationForm.logFolderMonitoringMessage("Cleaning... (0%) \r\n\n");
+                trnIntegrationForm.logFolderMonitoringMessage("Cleaning Stock Transfer... (0%) \r\n\n");
 
                 Boolean isErrorLogged = false;
                 String previousErrorMessage = String.Empty;
@@ -68,7 +68,7 @@ namespace EasyfisIntegrator.Controllers
                     else
                     {
                         trnIntegrationForm.logFolderMonitoringMessage("STIntegrateSuccessful");
-                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\nCleaning... (100%) \r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\nCleaning Stock Transfer... (100%) \r\n\n");
 
                         trnIntegrationForm.logFolderMonitoringMessage("Clean Successful!" + "\r\n\n");
                         trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
@@ -130,18 +130,16 @@ namespace EasyfisIntegrator.Controllers
                 try
                 {
                     Decimal percentage = 0;
-                    trnIntegrationForm.logFolderMonitoringMessage("Sending... (0%) \r\n\n");
+                    trnIntegrationForm.logFolderMonitoringMessage("Sending Stock Transfer... (0%) \r\n\n");
 
                     Boolean send = false;
+                    Int32 skip = 0;
 
-                    var data = newStockTransfers.Take(100);
-                    Int32 skip = 100;
-
-                    for (Int32 i = 101; i <= newStockTransfers.Count(); i++)
+                    for (Int32 i = 1; i <= newStockTransfers.Count(); i++)
                     {
                         if (i % 100 == 0)
                         {
-                            data = newStockTransfers.Skip(skip).Take(100);
+                            jsonData = serializer.Serialize(newStockTransfers.Skip(skip).Take(100));
                             send = true;
 
                             skip = i;
@@ -150,19 +148,27 @@ namespace EasyfisIntegrator.Controllers
                         }
                         else
                         {
-                            if (i == newStockTransfers.Count())
+                            if (newStockTransfers.Count() <= 100)
                             {
-                                data = newStockTransfers.Skip(skip).Take(i - skip);
+                                jsonData = serializer.Serialize(newStockTransfers);
                                 send = true;
 
                                 percentage = Convert.ToDecimal((Convert.ToDecimal(i) / Convert.ToDecimal(newStockTransfers.Count())) * 100);
+                            }
+                            else
+                            {
+                                if (i == newStockTransfers.Count())
+                                {
+                                    jsonData = serializer.Serialize(newStockTransfers.Skip(skip).Take(i - skip));
+                                    send = true;
+
+                                    percentage = Convert.ToDecimal((Convert.ToDecimal(i) / Convert.ToDecimal(newStockTransfers.Count())) * 100);
+                                }
                             }
                         }
 
                         if (send)
                         {
-                            jsonData = serializer.Serialize(data);
-
                             Boolean isErrorLogged = false;
                             String previousErrorMessage = String.Empty;
 
@@ -199,7 +205,7 @@ namespace EasyfisIntegrator.Controllers
                                 else
                                 {
                                     trnIntegrationForm.logFolderMonitoringMessage("STIntegrateSuccessful");
-                                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\nSending... (" + Math.Round(percentage, 2) + "%) \r\n\n");
+                                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\nSending Stock Transfer... (" + Math.Round(percentage, 2) + "%) \r\n\n");
 
                                     if (i == newStockTransfers.Count())
                                     {
@@ -243,7 +249,7 @@ namespace EasyfisIntegrator.Controllers
                         branchCount += 1;
 
                         Decimal percentage = 0;
-                        trnIntegrationForm.logFolderMonitoringMessage("Posting Branch: " + branchCode + " ... (0%) \r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("Posting Stock Transfer Branch: " + branchCode + " ... (0%) \r\n\n");
 
                         var manualSTNumbers = from d in newStockTransfers
                                               where d.BranchCode.Equals(branchCode)
@@ -296,7 +302,7 @@ namespace EasyfisIntegrator.Controllers
                                     else
                                     {
                                         trnIntegrationForm.logFolderMonitoringMessage("STIntegrateSuccessful");
-                                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\nPosting Branch: " + branchCode + " ... (" + Math.Round(percentage, 2) + "%) \r\n\n");
+                                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\nPosting Stock Transfer Branch: " + branchCode + " ... (" + Math.Round(percentage, 2) + "%) \r\n\n");
 
                                         if (manualSTNumberCount == listManualSTNumbers.Count())
                                         {
@@ -316,7 +322,7 @@ namespace EasyfisIntegrator.Controllers
                 // Move CSV File
                 try
                 {
-                    trnIntegrationForm.logFolderMonitoringMessage("Moving... (0%) \r\n\n");
+                    trnIntegrationForm.logFolderMonitoringMessage("Moving Stock Transfer File... (0%) \r\n\n");
 
                     String settingsPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Settings.json");
                     using (StreamReader trmRead = new StreamReader(settingsPath))
@@ -340,7 +346,7 @@ namespace EasyfisIntegrator.Controllers
                     }
 
                     trnIntegrationForm.logFolderMonitoringMessage("STIntegrateSuccessful");
-                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\nMoving... (100%) \r\n\n");
+                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\nMoving Stock Transfer File... (100%) \r\n\n");
 
                     trnIntegrationForm.logFolderMonitoringMessage("Move Successful!" + "\r\n\n");
                     trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");

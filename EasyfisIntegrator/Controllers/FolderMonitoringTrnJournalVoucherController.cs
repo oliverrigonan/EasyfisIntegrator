@@ -30,7 +30,7 @@ namespace EasyfisIntegrator.Controllers
             // Delete
             try
             {
-                trnIntegrationForm.logFolderMonitoringMessage("Cleaning... (0%) \r\n\n");
+                trnIntegrationForm.logFolderMonitoringMessage("Cleaning Journal Voucher... (0%) \r\n\n");
 
                 Boolean isErrorLogged = false;
                 String previousErrorMessage = String.Empty;
@@ -68,7 +68,7 @@ namespace EasyfisIntegrator.Controllers
                     else
                     {
                         trnIntegrationForm.logFolderMonitoringMessage("JVIntegrateSuccessful");
-                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\nCleaning... (100%) \r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\nCleaning Journal Voucher... (100%) \r\n\n");
 
                         trnIntegrationForm.logFolderMonitoringMessage("Clean Successful!" + "\r\n\n");
                         trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
@@ -133,18 +133,16 @@ namespace EasyfisIntegrator.Controllers
                 try
                 {
                     Decimal percentage = 0;
-                    trnIntegrationForm.logFolderMonitoringMessage("Sending... (0%) \r\n\n");
+                    trnIntegrationForm.logFolderMonitoringMessage("Sending Journal Voucher... (0%) \r\n\n");
 
                     Boolean send = false;
+                    Int32 skip = 0;
 
-                    var data = newJournalVouchers.Take(100);
-                    Int32 skip = 100;
-
-                    for (Int32 i = 101; i <= newJournalVouchers.Count(); i++)
+                    for (Int32 i = 1; i <= newJournalVouchers.Count(); i++)
                     {
                         if (i % 100 == 0)
                         {
-                            data = newJournalVouchers.Skip(skip).Take(100);
+                            jsonData = serializer.Serialize(newJournalVouchers.Skip(skip).Take(100));
                             send = true;
 
                             skip = i;
@@ -153,19 +151,27 @@ namespace EasyfisIntegrator.Controllers
                         }
                         else
                         {
-                            if (i == newJournalVouchers.Count())
+                            if (newJournalVouchers.Count() <= 100)
                             {
-                                data = newJournalVouchers.Skip(skip).Take(i - skip);
+                                jsonData = serializer.Serialize(newJournalVouchers);
                                 send = true;
 
                                 percentage = Convert.ToDecimal((Convert.ToDecimal(i) / Convert.ToDecimal(newJournalVouchers.Count())) * 100);
+                            }
+                            else
+                            {
+                                if (i == newJournalVouchers.Count())
+                                {
+                                    jsonData = serializer.Serialize(newJournalVouchers.Skip(skip).Take(i - skip));
+                                    send = true;
+
+                                    percentage = Convert.ToDecimal((Convert.ToDecimal(i) / Convert.ToDecimal(newJournalVouchers.Count())) * 100);
+                                }
                             }
                         }
 
                         if (send)
                         {
-                            jsonData = serializer.Serialize(data);
-
                             Boolean isErrorLogged = false;
                             String previousErrorMessage = String.Empty;
 
@@ -202,7 +208,7 @@ namespace EasyfisIntegrator.Controllers
                                 else
                                 {
                                     trnIntegrationForm.logFolderMonitoringMessage("JVIntegrateSuccessful");
-                                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\nSending... (" + Math.Round(percentage, 2) + "%) \r\n\n");
+                                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\nSending Journal Voucher... (" + Math.Round(percentage, 2) + "%) \r\n\n");
 
                                     if (i == newJournalVouchers.Count())
                                     {
@@ -246,7 +252,7 @@ namespace EasyfisIntegrator.Controllers
                         branchCount += 1;
 
                         Decimal percentage = 0;
-                        trnIntegrationForm.logFolderMonitoringMessage("Posting Branch: " + branchCode + " ... (0%) \r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("Posting Journal Voucher Branch: " + branchCode + " ... (0%) \r\n\n");
 
                         var manualJVNumbers = from d in newJournalVouchers
                                               where d.BranchCode.Equals(branchCode)
@@ -299,7 +305,7 @@ namespace EasyfisIntegrator.Controllers
                                     else
                                     {
                                         trnIntegrationForm.logFolderMonitoringMessage("JVIntegrateSuccessful");
-                                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\nPosting Branch: " + branchCode + " ... (" + Math.Round(percentage, 2) + "%) \r\n\n");
+                                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\nPosting Journal Voucher Branch: " + branchCode + " ... (" + Math.Round(percentage, 2) + "%) \r\n\n");
 
                                         if (manualJVNumberCount == listManualJVNumbers.Count())
                                         {
@@ -319,7 +325,7 @@ namespace EasyfisIntegrator.Controllers
                 // Move CSV File
                 try
                 {
-                    trnIntegrationForm.logFolderMonitoringMessage("Moving... (0%) \r\n\n");
+                    trnIntegrationForm.logFolderMonitoringMessage("Moving Journal Voucher File... (0%) \r\n\n");
 
                     String settingsPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Settings.json");
                     using (StreamReader trmRead = new StreamReader(settingsPath))
@@ -343,7 +349,7 @@ namespace EasyfisIntegrator.Controllers
                     }
 
                     trnIntegrationForm.logFolderMonitoringMessage("JVIntegrateSuccessful");
-                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\nMoving... (100%) \r\n\n");
+                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\nMoving Journal Voucher File... (100%) \r\n\n");
 
                     trnIntegrationForm.logFolderMonitoringMessage("Move Successful!" + "\r\n\n");
                     trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");

@@ -31,7 +31,7 @@ namespace EasyfisIntegrator.Controllers
             // Delete
             try
             {
-                trnIntegrationForm.logFolderMonitoringMessage("Cleaning... (0%) \r\n\n");
+                trnIntegrationForm.logFolderMonitoringMessage("Cleaning Receiving Receipt... (0%) \r\n\n");
 
                 Boolean isErrorLogged = false;
                 String previousErrorMessage = String.Empty;
@@ -69,7 +69,7 @@ namespace EasyfisIntegrator.Controllers
                     else
                     {
                         trnIntegrationForm.logFolderMonitoringMessage("RRIntegrateSuccessful");
-                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\nCleaning... (100%) \r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\nCleaning Receiving Receipt... (100%) \r\n\n");
 
                         trnIntegrationForm.logFolderMonitoringMessage("Clean Successful!" + "\r\n\n");
                         trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
@@ -136,18 +136,16 @@ namespace EasyfisIntegrator.Controllers
                 try
                 {
                     Decimal percentage = 0;
-                    trnIntegrationForm.logFolderMonitoringMessage("Sending... (0%) \r\n\n");
+                    trnIntegrationForm.logFolderMonitoringMessage("Sending Receiving Receipt... (0%) \r\n\n");
 
                     Boolean send = false;
+                    Int32 skip = 0;
 
-                    var data = newReceivingReceipts.Take(100);
-                    Int32 skip = 100;
-
-                    for (Int32 i = 101; i <= newReceivingReceipts.Count(); i++)
+                    for (Int32 i = 1; i <= newReceivingReceipts.Count(); i++)
                     {
                         if (i % 100 == 0)
                         {
-                            data = newReceivingReceipts.Skip(skip).Take(100);
+                            jsonData = serializer.Serialize(newReceivingReceipts.Skip(skip).Take(100));
                             send = true;
 
                             skip = i;
@@ -156,19 +154,27 @@ namespace EasyfisIntegrator.Controllers
                         }
                         else
                         {
-                            if (i == newReceivingReceipts.Count())
+                            if (newReceivingReceipts.Count() <= 100)
                             {
-                                data = newReceivingReceipts.Skip(skip).Take(i - skip);
+                                jsonData = serializer.Serialize(newReceivingReceipts);
                                 send = true;
 
                                 percentage = Convert.ToDecimal((Convert.ToDecimal(i) / Convert.ToDecimal(newReceivingReceipts.Count())) * 100);
+                            }
+                            else
+                            {
+                                if (i == newReceivingReceipts.Count())
+                                {
+                                    jsonData = serializer.Serialize(newReceivingReceipts.Skip(skip).Take(i - skip));
+                                    send = true;
+
+                                    percentage = Convert.ToDecimal((Convert.ToDecimal(i) / Convert.ToDecimal(newReceivingReceipts.Count())) * 100);
+                                }
                             }
                         }
 
                         if (send)
                         {
-                            jsonData = serializer.Serialize(data);
-
                             Boolean isErrorLogged = false;
                             String previousErrorMessage = String.Empty;
 
@@ -205,7 +211,7 @@ namespace EasyfisIntegrator.Controllers
                                 else
                                 {
                                     trnIntegrationForm.logFolderMonitoringMessage("RRIntegrateSuccessful");
-                                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\nSending... (" + Math.Round(percentage, 2) + "%) \r\n\n");
+                                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\nSending Receiving Receipt... (" + Math.Round(percentage, 2) + "%) \r\n\n");
 
                                     if (i == newReceivingReceipts.Count())
                                     {
@@ -249,7 +255,7 @@ namespace EasyfisIntegrator.Controllers
                         branchCount += 1;
 
                         Decimal percentage = 0;
-                        trnIntegrationForm.logFolderMonitoringMessage("Posting Branch: " + branchCode + " ... (0%) \r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("Posting Receiving Receipt Branch: " + branchCode + " ... (0%) \r\n\n");
 
                         var manualRRNumbers = from d in newReceivingReceipts
                                               where d.BranchCode.Equals(branchCode)
@@ -302,7 +308,7 @@ namespace EasyfisIntegrator.Controllers
                                     else
                                     {
                                         trnIntegrationForm.logFolderMonitoringMessage("RRIntegrateSuccessful");
-                                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\nPosting Branch: " + branchCode + " ... (" + Math.Round(percentage, 2) + "%) \r\n\n");
+                                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\nPosting Receiving Receipt Branch: " + branchCode + " ... (" + Math.Round(percentage, 2) + "%) \r\n\n");
 
                                         if (manualRRNumberCount == listManualRRNumbers.Count())
                                         {
@@ -322,7 +328,7 @@ namespace EasyfisIntegrator.Controllers
                 // Move CSV File
                 try
                 {
-                    trnIntegrationForm.logFolderMonitoringMessage("Moving... (0%) \r\n\n");
+                    trnIntegrationForm.logFolderMonitoringMessage("Moving Receiving Receipt File... (0%) \r\n\n");
 
                     String settingsPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Settings.json");
                     using (StreamReader trmRead = new StreamReader(settingsPath))
@@ -346,7 +352,7 @@ namespace EasyfisIntegrator.Controllers
                     }
 
                     trnIntegrationForm.logFolderMonitoringMessage("RRIntegrateSuccessful");
-                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\nMoving... (100%) \r\n\n");
+                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\nMoving Receiving Receipt File... (100%) \r\n\n");
 
                     trnIntegrationForm.logFolderMonitoringMessage("Move Successful!" + "\r\n\n");
                     trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");

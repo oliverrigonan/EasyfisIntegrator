@@ -38,7 +38,7 @@ namespace EasyfisIntegrator.Controllers
                 while (true)
                 {
                     String deleteTemporaryDisbursementTask = await DeleteTemporaryDisbursement(domain);
-                    if (!deleteTemporaryDisbursementTask.Equals("Clean Successful..."))
+                    if (!deleteTemporaryDisbursementTask.Equals("Clean Disbursement Successful..."))
                     {
                         if (previousErrorMessage.Equals(String.Empty))
                         {
@@ -68,7 +68,7 @@ namespace EasyfisIntegrator.Controllers
                     else
                     {
                         trnIntegrationForm.logFolderMonitoringMessage("CVIntegrateSuccessful");
-                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\nCleaning... (100%) \r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\nCleaning Disbursement... (100%) \r\n\n");
 
                         trnIntegrationForm.logFolderMonitoringMessage("Clean Successful!" + "\r\n\n");
                         trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
@@ -137,18 +137,16 @@ namespace EasyfisIntegrator.Controllers
                 try
                 {
                     Decimal percentage = 0;
-                    trnIntegrationForm.logFolderMonitoringMessage("Sending... (0%) \r\n\n");
+                    trnIntegrationForm.logFolderMonitoringMessage("Sending Disbursement... (0%) \r\n\n");
 
                     Boolean send = false;
+                    Int32 skip = 0;
 
-                    var data = newDisbursements.Take(100);
-                    Int32 skip = 100;
-
-                    for (Int32 i = 101; i <= newDisbursements.Count(); i++)
+                    for (Int32 i = 1; i <= newDisbursements.Count(); i++)
                     {
                         if (i % 100 == 0)
                         {
-                            data = newDisbursements.Skip(skip).Take(100);
+                            jsonData = serializer.Serialize(newDisbursements.Skip(skip).Take(100));
                             send = true;
 
                             skip = i;
@@ -157,19 +155,27 @@ namespace EasyfisIntegrator.Controllers
                         }
                         else
                         {
-                            if (i == newDisbursements.Count())
+                            if (newDisbursements.Count() <= 100)
                             {
-                                data = newDisbursements.Skip(skip).Take(i - skip);
+                                jsonData = serializer.Serialize(newDisbursements);
                                 send = true;
 
                                 percentage = Convert.ToDecimal((Convert.ToDecimal(i) / Convert.ToDecimal(newDisbursements.Count())) * 100);
+                            }
+                            else
+                            {
+                                if (i == newDisbursements.Count())
+                                {
+                                    jsonData = serializer.Serialize(newDisbursements.Skip(skip).Take(i - skip));
+                                    send = true;
+
+                                    percentage = Convert.ToDecimal((Convert.ToDecimal(i) / Convert.ToDecimal(newDisbursements.Count())) * 100);
+                                }
                             }
                         }
 
                         if (send)
                         {
-                            jsonData = serializer.Serialize(data);
-
                             Boolean isErrorLogged = false;
                             String previousErrorMessage = String.Empty;
 
@@ -206,7 +212,7 @@ namespace EasyfisIntegrator.Controllers
                                 else
                                 {
                                     trnIntegrationForm.logFolderMonitoringMessage("CVIntegrateSuccessful");
-                                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\nSending... (" + Math.Round(percentage, 2) + "%) \r\n\n");
+                                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\nSending Disbursement... (" + Math.Round(percentage, 2) + "%) \r\n\n");
 
                                     if (i == newDisbursements.Count())
                                     {
@@ -250,7 +256,7 @@ namespace EasyfisIntegrator.Controllers
                         branchCount += 1;
 
                         Decimal percentage = 0;
-                        trnIntegrationForm.logFolderMonitoringMessage("Posting Branch: " + branchCode + " ... (0%) \r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("Posting Disbursement Branch: " + branchCode + " ... (0%) \r\n\n");
 
                         var manualCVNumbers = from d in newDisbursements
                                               where d.BranchCode.Equals(branchCode)
@@ -303,7 +309,7 @@ namespace EasyfisIntegrator.Controllers
                                     else
                                     {
                                         trnIntegrationForm.logFolderMonitoringMessage("CVIntegrateSuccessful");
-                                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\nPosting Branch: " + branchCode + " ... (" + Math.Round(percentage, 2) + "%) \r\n\n");
+                                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\nPosting Disbursement Branch: " + branchCode + " ... (" + Math.Round(percentage, 2) + "%) \r\n\n");
 
                                         if (manualCVNumberCount == listManualCVNumbers.Count())
                                         {
@@ -323,7 +329,7 @@ namespace EasyfisIntegrator.Controllers
                 // Move CSV File
                 try
                 {
-                    trnIntegrationForm.logFolderMonitoringMessage("Moving... (0%) \r\n\n");
+                    trnIntegrationForm.logFolderMonitoringMessage("Moving Disbursement File... (0%) \r\n\n");
 
                     String settingsPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Settings.json");
                     using (StreamReader trmRead = new StreamReader(settingsPath))
@@ -347,7 +353,7 @@ namespace EasyfisIntegrator.Controllers
                     }
 
                     trnIntegrationForm.logFolderMonitoringMessage("CVIntegrateSuccessful");
-                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\nMoving... (100%) \r\n\n");
+                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\nMoving Disbursement File... (100%) \r\n\n");
 
                     trnIntegrationForm.logFolderMonitoringMessage("Move Successful!" + "\r\n\n");
                     trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
