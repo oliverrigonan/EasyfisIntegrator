@@ -20,22 +20,23 @@ namespace EasyfisIntegrator.Controllers
         public async void SendSalesInvoice(Forms.TrnIntegrationForm trnIntegrationForm, String userCode, String file, String domain)
         {
             List<Entities.FolderMonitoringTrnSalesInvoice> newSalesInvoices = new List<Entities.FolderMonitoringTrnSalesInvoice>();
+            Boolean isExceptionErrorOccured = false;
 
             JavaScriptSerializer serializer = new JavaScriptSerializer();
             String jsonData = "";
 
             Boolean post = false;
 
-            // Delete
-            try
+            // Cleaning
+            while (true)
             {
-                trnIntegrationForm.logFolderMonitoringMessage("\r\n\nCleaning Sales... (0%) \r\n\n");
-
-                Boolean isErrorLogged = false;
-                String previousErrorMessage = String.Empty;
-
-                while (true)
+                try
                 {
+                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\nCleaning Sales... (0%) \r\n\n");
+
+                    Boolean isErrorLogged = false;
+                    String previousErrorMessage = String.Empty;
+
                     String deleteTemporarySalesInvoiceTask = await DeleteTemporarySalesInvoice(domain);
                     if (!deleteTemporarySalesInvoiceTask.Equals("Clean Successful..."))
                     {
@@ -66,7 +67,7 @@ namespace EasyfisIntegrator.Controllers
                     }
                     else
                     {
-                        trnIntegrationForm.logFolderMonitoringMessage("SIIntegrateSuccessful");
+                        trnIntegrationForm.logFolderMonitoringMessage("SIIntegrationLogOnce");
                         trnIntegrationForm.logFolderMonitoringMessage("\r\n\nCleaning Sales... (100%) \r\n\n");
 
                         trnIntegrationForm.logFolderMonitoringMessage("Clean Successful!" + "\r\n\n");
@@ -76,214 +77,142 @@ namespace EasyfisIntegrator.Controllers
                         break;
                     }
                 }
-            }
-            catch (Exception e)
-            {
-                trnIntegrationForm.logFolderMonitoringMessage("Cleaning Error: " + e.Message + "\r\n\n");
-                trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-            }
-
-            // CSV Data
-            try
-            {
-                if (SysFileControl.IsCurrentFileClosed(file))
+                catch (Exception e)
                 {
-                    using (StreamReader dataStreamReader = new StreamReader(file))
+                    if (!isExceptionErrorOccured)
                     {
-                        dataStreamReader.ReadLine();
-                        while (dataStreamReader.Peek() >= 0)
-                        {
-                            List<String> data = dataStreamReader.ReadLine().Split(',').ToList();
-                            newSalesInvoices.Add(new Entities.FolderMonitoringTrnSalesInvoice
-                            {
-                                BranchCode = data[0],
-                                SIDate = data[1],
-                                CustomerCode = data[2],
-                                ManualSINumber = data[3],
-                                DocumentReference = data[4],
-                                Remarks = data[5],
-                                UserCode = userCode,
-                                CreatedDateTime = data[6],
-                                ItemCode = data[7],
-                                Particulars = data[8],
-                                Unit = data[9],
-                                Quantity = Convert.ToDecimal(data[10]),
-                                Price = Convert.ToDecimal(data[11]),
-                                DiscountAmount = Convert.ToDecimal(data[12]),
-                                NetPrice = Convert.ToDecimal(data[13]),
-                                Amount = Convert.ToDecimal(data[14])
-                            });
-                        }
+                        isExceptionErrorOccured = true;
+
+                        trnIntegrationForm.logFolderMonitoringMessage("Cleaning Error: " + e.Message + "\r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
                     }
+
+                    Thread.Sleep(5000);
                 }
             }
-            catch (Exception e)
-            {
-                trnIntegrationForm.logFolderMonitoringMessage("CSV Error: " + e.Message + "\r\n\n");
-                trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-            }
 
-            // Send
-            if (newSalesInvoices.Any())
+            // Reading CSV Data
+            isExceptionErrorOccured = false;
+            while (true)
             {
                 try
                 {
-                    Decimal percentage = 0;
-                    trnIntegrationForm.logFolderMonitoringMessage("Sending Sales... (0%) \r\n\n");
-
-                    Boolean send = false;
-                    Int32 skip = 0;
-
-                    for (Int32 i = 1; i <= newSalesInvoices.Count(); i++)
+                    if (SysFileControl.IsCurrentFileClosed(file))
                     {
-                        if (i % 100 == 0)
+                        using (StreamReader dataStreamReader = new StreamReader(file))
                         {
-                            jsonData = serializer.Serialize(newSalesInvoices.Skip(skip).Take(100));
-                            send = true;
-
-                            skip = i;
-
-                            percentage = Convert.ToDecimal((Convert.ToDecimal(skip) / Convert.ToDecimal(newSalesInvoices.Count())) * 100);
-                        }
-                        else
-                        {
-                            if (newSalesInvoices.Count() <= 100)
+                            dataStreamReader.ReadLine();
+                            while (dataStreamReader.Peek() >= 0)
                             {
-                                jsonData = serializer.Serialize(newSalesInvoices);
+                                List<String> data = dataStreamReader.ReadLine().Split(',').ToList();
+                                newSalesInvoices.Add(new Entities.FolderMonitoringTrnSalesInvoice
+                                {
+                                    BranchCode = data[0],
+                                    SIDate = data[1],
+                                    CustomerCode = data[2],
+                                    ManualSINumber = data[3],
+                                    DocumentReference = data[4],
+                                    Remarks = data[5],
+                                    UserCode = userCode,
+                                    CreatedDateTime = data[6],
+                                    ItemCode = data[7],
+                                    Particulars = data[8],
+                                    Unit = data[9],
+                                    Quantity = Convert.ToDecimal(data[10]),
+                                    Price = Convert.ToDecimal(data[11]),
+                                    DiscountAmount = Convert.ToDecimal(data[12]),
+                                    NetPrice = Convert.ToDecimal(data[13]),
+                                    Amount = Convert.ToDecimal(data[14])
+                                });
+                            }
+                        }
+
+                        break;
+                    }
+                }
+                catch (Exception e)
+                {
+                    if (!isExceptionErrorOccured)
+                    {
+                        isExceptionErrorOccured = true;
+
+                        trnIntegrationForm.logFolderMonitoringMessage("CSV Error: " + e.Message + "\r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+                    }
+
+                    Thread.Sleep(5000);
+                }
+            }
+
+            // Sending
+            isExceptionErrorOccured = false;
+            if (newSalesInvoices.Any())
+            {
+                while (true)
+                {
+                    try
+                    {
+                        Decimal percentage = 0;
+                        trnIntegrationForm.logFolderMonitoringMessage("Sending Sales... (0%) \r\n\n");
+
+                        Boolean send = false;
+                        Int32 skip = 0;
+
+                        for (Int32 i = 1; i <= newSalesInvoices.Count(); i++)
+                        {
+                            if (i % 100 == 0)
+                            {
+                                jsonData = serializer.Serialize(newSalesInvoices.Skip(skip).Take(100));
                                 send = true;
 
-                                percentage = Convert.ToDecimal((Convert.ToDecimal(i) / Convert.ToDecimal(newSalesInvoices.Count())) * 100);
+                                skip = i;
+
+                                percentage = Convert.ToDecimal((Convert.ToDecimal(skip) / Convert.ToDecimal(newSalesInvoices.Count())) * 100);
                             }
                             else
                             {
-                                if (i == newSalesInvoices.Count())
+                                if (newSalesInvoices.Count() <= 100)
                                 {
-                                    jsonData = serializer.Serialize(newSalesInvoices.Skip(skip).Take(i - skip));
+                                    jsonData = serializer.Serialize(newSalesInvoices);
                                     send = true;
 
                                     percentage = Convert.ToDecimal((Convert.ToDecimal(i) / Convert.ToDecimal(newSalesInvoices.Count())) * 100);
                                 }
-                            }
-                        }
-
-                        if (send)
-                        {
-                            Boolean isErrorLogged = false;
-                            String previousErrorMessage = String.Empty;
-
-                            while (true)
-                            {
-                                String insertTemporarySalesInvoiceTask = await InsertTemporarySalesInvoice(domain, jsonData);
-                                if (!insertTemporarySalesInvoiceTask.Equals("Send Successful..."))
-                                {
-                                    if (previousErrorMessage.Equals(String.Empty))
-                                    {
-                                        previousErrorMessage = insertTemporarySalesInvoiceTask;
-                                    }
-                                    else
-                                    {
-                                        if (!previousErrorMessage.Equals(insertTemporarySalesInvoiceTask))
-                                        {
-                                            previousErrorMessage = insertTemporarySalesInvoiceTask;
-                                            isErrorLogged = false;
-                                        }
-                                    }
-
-                                    if (!isErrorLogged)
-                                    {
-                                        trnIntegrationForm.logFolderMonitoringMessage(previousErrorMessage);
-                                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-                                        trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
-
-                                        isErrorLogged = true;
-                                    }
-
-                                    Thread.Sleep(5000);
-                                }
                                 else
                                 {
-                                    trnIntegrationForm.logFolderMonitoringMessage("SIIntegrateSuccessful");
-                                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\nSending Sales... (" + Math.Round(percentage, 2) + "%) \r\n\n");
-
                                     if (i == newSalesInvoices.Count())
                                     {
-                                        trnIntegrationForm.logFolderMonitoringMessage("Send Successful!" + "\r\n\n");
-                                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-                                    }
+                                        jsonData = serializer.Serialize(newSalesInvoices.Skip(skip).Take(i - skip));
+                                        send = true;
 
-                                    break;
+                                        percentage = Convert.ToDecimal((Convert.ToDecimal(i) / Convert.ToDecimal(newSalesInvoices.Count())) * 100);
+                                    }
                                 }
                             }
 
-                            send = false;
-                        }
-                    }
-
-                    post = true;
-                }
-                catch (Exception e)
-                {
-                    trnIntegrationForm.logFolderMonitoringMessage("Sending Error: " + e.Message + "\r\n\n");
-                    trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-                }
-            }
-
-            // Post
-            if (post)
-            {
-                var branchCodes = from d in newSalesInvoices
-                                  group d by d.BranchCode into g
-                                  select g.Key;
-
-                var listBranchCodes = branchCodes.ToList();
-                if (listBranchCodes.Any())
-                {
-                    Int32 branchCount = 0;
-
-                    foreach (var branchCode in listBranchCodes)
-                    {
-                        branchCount += 1;
-
-                        Decimal percentage = 0;
-                        trnIntegrationForm.logFolderMonitoringMessage("Posting Sales Branch: " + branchCode + " ... (0%) \r\n\n");
-
-                        var manualSINumbers = from d in newSalesInvoices
-                                              where d.BranchCode.Equals(branchCode)
-                                              group d by d.ManualSINumber into g
-                                              select g.Key;
-
-                        var listManualSINumbers = manualSINumbers.ToList();
-                        if (listManualSINumbers.Any())
-                        {
-                            Int32 manualSINumberCount = 0;
-
-                            foreach (var manualSINumber in listManualSINumbers)
+                            if (send)
                             {
-                                manualSINumberCount += 1;
-                                percentage = Convert.ToDecimal((Convert.ToDecimal(manualSINumberCount) / Convert.ToDecimal(listManualSINumbers.Count())) * 100);
-
                                 Boolean isErrorLogged = false;
                                 String previousErrorMessage = String.Empty;
 
                                 while (true)
                                 {
-                                    String postSalesInvoiceTask = await PostSalesInvoice(domain, branchCode, manualSINumber);
-                                    if (!postSalesInvoiceTask.Equals("Post Successful..."))
+                                    String insertTemporarySalesInvoiceTask = await InsertTemporarySalesInvoice(domain, jsonData);
+                                    if (!insertTemporarySalesInvoiceTask.Equals("Send Successful..."))
                                     {
                                         if (previousErrorMessage.Equals(String.Empty))
                                         {
-                                            previousErrorMessage = postSalesInvoiceTask;
+                                            previousErrorMessage = insertTemporarySalesInvoiceTask;
                                         }
                                         else
                                         {
-                                            if (!previousErrorMessage.Equals(postSalesInvoiceTask))
+                                            if (!previousErrorMessage.Equals(insertTemporarySalesInvoiceTask))
                                             {
-                                                previousErrorMessage = postSalesInvoiceTask;
+                                                previousErrorMessage = insertTemporarySalesInvoiceTask;
                                                 isErrorLogged = false;
                                             }
                                         }
@@ -302,12 +231,12 @@ namespace EasyfisIntegrator.Controllers
                                     }
                                     else
                                     {
-                                        trnIntegrationForm.logFolderMonitoringMessage("SIIntegrateSuccessful");
-                                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\nPosting Sales Branch: " + branchCode + " ... (" + Math.Round(percentage, 2) + "%) \r\n\n");
+                                        trnIntegrationForm.logFolderMonitoringMessage("SIIntegrationLogOnce");
+                                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\nSending Sales... (" + Math.Round(percentage, 2) + "%) \r\n\n");
 
-                                        if (manualSINumberCount == listManualSINumbers.Count())
+                                        if (i == newSalesInvoices.Count())
                                         {
-                                            trnIntegrationForm.logFolderMonitoringMessage("Branch: " + branchCode + " Post Successful!" + "\r\n\n");
+                                            trnIntegrationForm.logFolderMonitoringMessage("Send Successful!" + "\r\n\n");
                                             trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                                             trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
                                         }
@@ -315,12 +244,146 @@ namespace EasyfisIntegrator.Controllers
                                         break;
                                     }
                                 }
+
+                                send = false;
                             }
                         }
+
+                        post = true;
+                        break;
+                    }
+                    catch (Exception e)
+                    {
+                        if (!isExceptionErrorOccured)
+                        {
+                            isExceptionErrorOccured = true;
+
+                            trnIntegrationForm.logFolderMonitoringMessage("Sending Error: " + e.Message + "\r\n\n");
+                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                            trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+                        }
+
+                        Thread.Sleep(5000);
                     }
                 }
+            }
 
-                // Move CSV File
+            // Posting
+            isExceptionErrorOccured = false;
+            if (post)
+            {
+                while (true)
+                {
+                    try
+                    {
+                        var branchCodes = from d in newSalesInvoices
+                                          group d by d.BranchCode into g
+                                          select g.Key;
+
+                        var listBranchCodes = branchCodes.ToList();
+                        if (listBranchCodes.Any())
+                        {
+                            Int32 branchCount = 0;
+
+                            foreach (var branchCode in listBranchCodes)
+                            {
+                                branchCount += 1;
+
+                                Decimal percentage = 0;
+                                trnIntegrationForm.logFolderMonitoringMessage("Posting Sales Branch: " + branchCode + " ... (0%) \r\n\n");
+
+                                var manualSINumbers = from d in newSalesInvoices
+                                                      where d.BranchCode.Equals(branchCode)
+                                                      group d by d.ManualSINumber into g
+                                                      select g.Key;
+
+                                var listManualSINumbers = manualSINumbers.ToList();
+                                if (listManualSINumbers.Any())
+                                {
+                                    Int32 manualSINumberCount = 0;
+
+                                    foreach (var manualSINumber in listManualSINumbers)
+                                    {
+                                        manualSINumberCount += 1;
+                                        percentage = Convert.ToDecimal((Convert.ToDecimal(manualSINumberCount) / Convert.ToDecimal(listManualSINumbers.Count())) * 100);
+
+                                        Boolean isErrorLogged = false;
+                                        String previousErrorMessage = String.Empty;
+
+                                        while (true)
+                                        {
+                                            String postSalesInvoiceTask = await PostSalesInvoice(domain, branchCode, manualSINumber);
+                                            if (!postSalesInvoiceTask.Equals("Post Successful..."))
+                                            {
+                                                if (previousErrorMessage.Equals(String.Empty))
+                                                {
+                                                    previousErrorMessage = postSalesInvoiceTask;
+                                                }
+                                                else
+                                                {
+                                                    if (!previousErrorMessage.Equals(postSalesInvoiceTask))
+                                                    {
+                                                        previousErrorMessage = postSalesInvoiceTask;
+                                                        isErrorLogged = false;
+                                                    }
+                                                }
+
+                                                if (!isErrorLogged)
+                                                {
+                                                    trnIntegrationForm.logFolderMonitoringMessage(previousErrorMessage);
+                                                    trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                                                    trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+
+                                                    isErrorLogged = true;
+                                                }
+
+                                                Thread.Sleep(5000);
+                                            }
+                                            else
+                                            {
+                                                trnIntegrationForm.logFolderMonitoringMessage("SIIntegrationLogOnce");
+                                                trnIntegrationForm.logFolderMonitoringMessage("\r\n\nPosting Sales Branch: " + branchCode + " ... (" + Math.Round(percentage, 2) + "%) \r\n\n");
+
+                                                if (manualSINumberCount == listManualSINumbers.Count())
+                                                {
+                                                    trnIntegrationForm.logFolderMonitoringMessage("Branch: " + branchCode + " Post Successful!" + "\r\n\n");
+                                                    trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                                                }
+
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        break;
+                    }
+                    catch (Exception e)
+                    {
+                        if (!isExceptionErrorOccured)
+                        {
+                            isExceptionErrorOccured = true;
+
+                            trnIntegrationForm.logFolderMonitoringMessage("Posting Error: " + e.Message + "\r\n\n");
+                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                            trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+                        }
+
+                        Thread.Sleep(5000);
+                    }
+                }
+            }
+
+            // Move CSV File
+            isExceptionErrorOccured = false;
+            while (true)
+            {
                 try
                 {
                     trnIntegrationForm.logFolderMonitoringMessage("Moving Sales File... (0%) \r\n\n");
@@ -346,18 +409,28 @@ namespace EasyfisIntegrator.Controllers
                         File.Move(file, folderForSentFiles + "SI_" + DateTime.Now.ToString("yyyyMMdd_hhmmss") + ".csv");
                     }
 
-                    trnIntegrationForm.logFolderMonitoringMessage("SIIntegrateSuccessful");
+                    trnIntegrationForm.logFolderMonitoringMessage("SIIntegrationLogOnce");
                     trnIntegrationForm.logFolderMonitoringMessage("\r\n\nMoving Sales File... (100%) \r\n\n");
 
                     trnIntegrationForm.logFolderMonitoringMessage("Move Successful!" + "\r\n\n");
                     trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                     trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+
+                    break;
                 }
                 catch (Exception e)
                 {
-                    trnIntegrationForm.logFolderMonitoringMessage("Moving File Error: " + e.Message + "\r\n\n");
-                    trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                    if (!isExceptionErrorOccured)
+                    {
+                        isExceptionErrorOccured = true;
+
+                        trnIntegrationForm.logFolderMonitoringMessage("Moving File Error: " + e.Message + "\r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+                    }
+
+                    Thread.Sleep(5000);
                 }
             }
         }

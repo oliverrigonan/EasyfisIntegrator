@@ -445,14 +445,14 @@ namespace EasyfisIntegrator.Forms
                 {
                     bool log = true;
 
-                    if (message.Equals("SIIntegrateSuccessful") ||
-                        message.Equals("ORIntegrateSuccessful") ||
-                        message.Equals("RRIntegrateSuccessful") ||
-                        message.Equals("CVIntegrateSuccessful") ||
-                        message.Equals("JVIntegrateSuccessful") ||
-                        message.Equals("INIntegrateSuccessful") ||
-                        message.Equals("OTIntegrateSuccessful") ||
-                        message.Equals("STIntegrateSuccessful"))
+                    if (message.Equals("SIIntegrationLogOnce") ||
+                        message.Equals("ORIntegrationLogOnce") ||
+                        message.Equals("RRIntegrationLogOnce") ||
+                        message.Equals("CVIntegrationLogOnce") ||
+                        message.Equals("JVIntegrationLogOnce") ||
+                        message.Equals("INIntegrationLogOnce") ||
+                        message.Equals("OTIntegrationLogOnce") ||
+                        message.Equals("STIntegrationLogOnce"))
                     {
                         log = false;
                         txtFolderMonitoringLogs.Text = txtFolderMonitoringLogs.Text.Substring(0, txtFolderMonitoringLogs.Text.Trim().LastIndexOf(Environment.NewLine));
@@ -598,7 +598,7 @@ namespace EasyfisIntegrator.Forms
             {
                 Task SITask = Task.Run(() =>
                 {
-                    folderMonitoringIntegrateSI(ext);
+                    runFolderMonitoringIntegrationSI(ext);
                 });
                 SITask.Wait();
 
@@ -606,7 +606,7 @@ namespace EasyfisIntegrator.Forms
                 {
                     Task ORTask = Task.Run(() =>
                     {
-                        folderMonitoringIntegrateOR(ext);
+                        runFolderMonitoringIntegrationOR(ext);
                     });
                     ORTask.Wait();
 
@@ -614,7 +614,7 @@ namespace EasyfisIntegrator.Forms
                     {
                         Task RRTask = Task.Run(() =>
                         {
-                            folderMonitoringIntegrateRR(ext);
+                            runFolderMonitoringIntegrationRR(ext);
                         });
                         RRTask.Wait();
 
@@ -622,7 +622,7 @@ namespace EasyfisIntegrator.Forms
                         {
                             Task CVTask = Task.Run(() =>
                             {
-                                folderMonitoringIntegrateCV(ext);
+                                runFolderMonitoringIntegrationCV(ext);
                             });
                             CVTask.Wait();
 
@@ -630,7 +630,7 @@ namespace EasyfisIntegrator.Forms
                             {
                                 Task JVTask = Task.Run(() =>
                                 {
-                                    folderMonitoringIntegrateJV(ext);
+                                    runFolderMonitoringIntegrationJV(ext);
                                 });
                                 JVTask.Wait();
 
@@ -638,7 +638,7 @@ namespace EasyfisIntegrator.Forms
                                 {
                                     Task INTask = Task.Run(() =>
                                     {
-                                        folderMonitoringIntegrateIN(ext);
+                                        runFolderMonitoringIntegrationIN(ext);
                                     });
                                     INTask.Wait();
 
@@ -646,7 +646,7 @@ namespace EasyfisIntegrator.Forms
                                     {
                                         Task OTTask = Task.Run(() =>
                                         {
-                                            folderMonitoringIntegrateOT(ext);
+                                            runFolderMonitoringIntegrationOT(ext);
                                         });
                                         OTTask.Wait();
 
@@ -654,7 +654,7 @@ namespace EasyfisIntegrator.Forms
                                         {
                                             Task STTask = Task.Run(() =>
                                             {
-                                                folderMonitoringIntegrateST(ext);
+                                                runFolderMonitoringIntegrationST(ext);
                                             });
                                             STTask.Wait();
                                         }
@@ -669,7 +669,7 @@ namespace EasyfisIntegrator.Forms
             }
         }
 
-        public void folderMonitoringIntegrateSI(List<String> ext)
+        public void runFolderMonitoringIntegrationSI(List<String> ext)
         {
             FolderMonitoringTrnSalesInvoiceController folderMonitoringSI = new FolderMonitoringTrnSalesInvoiceController();
 
@@ -690,7 +690,7 @@ namespace EasyfisIntegrator.Forms
             }
         }
 
-        public void folderMonitoringIntegrateOR(List<String> ext)
+        public void runFolderMonitoringIntegrationOR(List<String> ext)
         {
             FolderMonitoringTrnCollectionController folderMonitoringOR = new FolderMonitoringTrnCollectionController();
 
@@ -711,7 +711,7 @@ namespace EasyfisIntegrator.Forms
             }
         }
 
-        public void folderMonitoringIntegrateRR(List<String> ext)
+        public void runFolderMonitoringIntegrationRR(List<String> ext)
         {
             FolderMonitoringTrnReceivingReceiptController folderMonitoringRR = new FolderMonitoringTrnReceivingReceiptController();
 
@@ -732,7 +732,7 @@ namespace EasyfisIntegrator.Forms
             }
         }
 
-        public void folderMonitoringIntegrateCV(List<String> ext)
+        public void runFolderMonitoringIntegrationCV(List<String> ext)
         {
             FolderMonitoringTrnDisbursementController folderMonitoringCV = new FolderMonitoringTrnDisbursementController();
 
@@ -753,7 +753,7 @@ namespace EasyfisIntegrator.Forms
             }
         }
 
-        public void folderMonitoringIntegrateJV(List<String> ext)
+        public void runFolderMonitoringIntegrationJV(List<String> ext)
         {
             FolderMonitoringTrnJournalVoucherController folderMonitoringJV = new FolderMonitoringTrnJournalVoucherController();
 
@@ -774,7 +774,7 @@ namespace EasyfisIntegrator.Forms
             }
         }
 
-        public void folderMonitoringIntegrateIN(List<String> ext)
+        public void runFolderMonitoringIntegrationIN(List<String> ext)
         {
             FolderMonitoringTrnStockInController folderMonitoringIN = new FolderMonitoringTrnStockInController();
 
@@ -789,13 +789,13 @@ namespace EasyfisIntegrator.Forms
             }
             else
             {
-                logFolderMonitoringMessage("\r\n\nNo Journal Voucher CSV Files Found!" + "\r\n\n");
+                logFolderMonitoringMessage("\r\n\nNo Stock In CSV Files Found!" + "\r\n\n");
                 logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                 logFolderMonitoringMessage("\r\n\n");
             }
         }
 
-        public void folderMonitoringIntegrateOT(List<String> ext)
+        public void runFolderMonitoringIntegrationOT(List<String> ext)
         {
             FolderMonitoringTrnStockOutController folderMonitoringOT = new FolderMonitoringTrnStockOutController();
 
@@ -810,13 +810,13 @@ namespace EasyfisIntegrator.Forms
             }
             else
             {
-                logFolderMonitoringMessage("\r\n\nNo Journal Voucher CSV Files Found!" + "\r\n\n");
+                logFolderMonitoringMessage("\r\n\nNo Stock Out CSV Files Found!" + "\r\n\n");
                 logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                 logFolderMonitoringMessage("\r\n\n");
             }
         }
 
-        public void folderMonitoringIntegrateST(List<String> ext)
+        public void runFolderMonitoringIntegrationST(List<String> ext)
         {
             FolderMonitoringTrnStockTransferController folderMonitoringST = new FolderMonitoringTrnStockTransferController();
 
@@ -831,7 +831,7 @@ namespace EasyfisIntegrator.Forms
             }
             else
             {
-                logFolderMonitoringMessage("\r\n\nNo Journal Voucher CSV Files Found!" + "\r\n\n");
+                logFolderMonitoringMessage("\r\n\nNo Stock Transfer CSV Files Found!" + "\r\n\n");
                 logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                 logFolderMonitoringMessage("\r\n\n");
             }

@@ -22,22 +22,23 @@ namespace EasyfisIntegrator.Controllers
         public async void SendReceivingReceipt(Forms.TrnIntegrationForm trnIntegrationForm, String userCode, String file, String domain)
         {
             List<Entities.FolderMonitoringTrnReceivingReceipt> newReceivingReceipts = new List<Entities.FolderMonitoringTrnReceivingReceipt>();
+            Boolean isExceptionErrorOccured = false;
 
             JavaScriptSerializer serializer = new JavaScriptSerializer();
             String jsonData = "";
 
             Boolean post = false;
 
-            // Delete
-            try
+            // Cleaning
+            while (true)
             {
-                trnIntegrationForm.logFolderMonitoringMessage("Cleaning Receiving Receipt... (0%) \r\n\n");
-
-                Boolean isErrorLogged = false;
-                String previousErrorMessage = String.Empty;
-
-                while (true)
+                try
                 {
+                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\nCleaning Receiving Receipt... (0%) \r\n\n");
+
+                    Boolean isErrorLogged = false;
+                    String previousErrorMessage = String.Empty;
+
                     String deleteTemporaryReceivingReceiptTask = await DeleteTemporaryReceivingReceipt(domain);
                     if (!deleteTemporaryReceivingReceiptTask.Equals("Clean Successful..."))
                     {
@@ -68,7 +69,7 @@ namespace EasyfisIntegrator.Controllers
                     }
                     else
                     {
-                        trnIntegrationForm.logFolderMonitoringMessage("RRIntegrateSuccessful");
+                        trnIntegrationForm.logFolderMonitoringMessage("RRIntegrationLogOnce");
                         trnIntegrationForm.logFolderMonitoringMessage("\r\n\nCleaning Receiving Receipt... (100%) \r\n\n");
 
                         trnIntegrationForm.logFolderMonitoringMessage("Clean Successful!" + "\r\n\n");
@@ -78,217 +79,145 @@ namespace EasyfisIntegrator.Controllers
                         break;
                     }
                 }
-            }
-            catch (Exception e)
-            {
-                trnIntegrationForm.logFolderMonitoringMessage("Cleaning Error: " + e.Message + "\r\n\n");
-                trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-            }
-
-            // CSV Data
-            try
-            {
-                if (SysFileControl.IsCurrentFileClosed(file))
+                catch (Exception e)
                 {
-                    using (StreamReader dataStreamReader = new StreamReader(file))
+                    if (!isExceptionErrorOccured)
                     {
-                        dataStreamReader.ReadLine();
-                        while (dataStreamReader.Peek() >= 0)
-                        {
-                            List<String> data = dataStreamReader.ReadLine().Split(',').ToList();
-                            newReceivingReceipts.Add(new Entities.FolderMonitoringTrnReceivingReceipt
-                            {
-                                BranchCode = data[0],
-                                RRDate = data[1],
-                                SupplierCode = data[2],
-                                ManualRRNumber = data[3],
-                                DocumentReference = data[4],
-                                Remarks = data[5],
-                                UserCode = userCode,
-                                CreatedDateTime = data[6],
-                                PONumber = data[7],
-                                ManualPONumber = data[8],
-                                PODate = data[9],
-                                PODateNeeded = data[10],
-                                ItemCode = data[11],
-                                Particulars = data[12],
-                                Unit = data[13],
-                                Quantity = Convert.ToDecimal(data[14]),
-                                Cost = Convert.ToDecimal(data[15]),
-                                Amount = Convert.ToDecimal(data[16]),
-                                ReceivedBranchCode = data[17]
-                            });
-                        }
+                        isExceptionErrorOccured = true;
+
+                        trnIntegrationForm.logFolderMonitoringMessage("Cleaning Error: " + e.Message + "\r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
                     }
+
+                    Thread.Sleep(5000);
                 }
             }
-            catch (Exception e)
-            {
-                trnIntegrationForm.logFolderMonitoringMessage("CSV Error: " + e.Message + "\r\n\n");
-                trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-            }
 
-            // Send
-            if (newReceivingReceipts.Any())
+            // Reading CSV Data
+            isExceptionErrorOccured = false;
+            while (true)
             {
                 try
                 {
-                    Decimal percentage = 0;
-                    trnIntegrationForm.logFolderMonitoringMessage("Sending Receiving Receipt... (0%) \r\n\n");
-
-                    Boolean send = false;
-                    Int32 skip = 0;
-
-                    for (Int32 i = 1; i <= newReceivingReceipts.Count(); i++)
+                    if (SysFileControl.IsCurrentFileClosed(file))
                     {
-                        if (i % 100 == 0)
+                        using (StreamReader dataStreamReader = new StreamReader(file))
                         {
-                            jsonData = serializer.Serialize(newReceivingReceipts.Skip(skip).Take(100));
-                            send = true;
-
-                            skip = i;
-
-                            percentage = Convert.ToDecimal((Convert.ToDecimal(skip) / Convert.ToDecimal(newReceivingReceipts.Count())) * 100);
-                        }
-                        else
-                        {
-                            if (newReceivingReceipts.Count() <= 100)
+                            dataStreamReader.ReadLine();
+                            while (dataStreamReader.Peek() >= 0)
                             {
-                                jsonData = serializer.Serialize(newReceivingReceipts);
+                                List<String> data = dataStreamReader.ReadLine().Split(',').ToList();
+                                newReceivingReceipts.Add(new Entities.FolderMonitoringTrnReceivingReceipt
+                                {
+                                    BranchCode = data[0],
+                                    RRDate = data[1],
+                                    SupplierCode = data[2],
+                                    ManualRRNumber = data[3],
+                                    DocumentReference = data[4],
+                                    Remarks = data[5],
+                                    UserCode = userCode,
+                                    CreatedDateTime = data[6],
+                                    PONumber = data[7],
+                                    ManualPONumber = data[8],
+                                    PODate = data[9],
+                                    PODateNeeded = data[10],
+                                    ItemCode = data[11],
+                                    Particulars = data[12],
+                                    Unit = data[13],
+                                    Quantity = Convert.ToDecimal(data[14]),
+                                    Cost = Convert.ToDecimal(data[15]),
+                                    Amount = Convert.ToDecimal(data[16]),
+                                    ReceivedBranchCode = data[17]
+                                });
+                            }
+                        }
+
+                        break;
+                    }
+                }
+                catch (Exception e)
+                {
+                    if (!isExceptionErrorOccured)
+                    {
+                        isExceptionErrorOccured = true;
+
+                        trnIntegrationForm.logFolderMonitoringMessage("CSV Error: " + e.Message + "\r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+                    }
+
+                    Thread.Sleep(5000);
+                }
+            }
+
+            // Sending
+            isExceptionErrorOccured = false;
+            if (newReceivingReceipts.Any())
+            {
+                while (true)
+                {
+                    try
+                    {
+                        Decimal percentage = 0;
+                        trnIntegrationForm.logFolderMonitoringMessage("Sending Receiving Receipt... (0%) \r\n\n");
+
+                        Boolean send = false;
+                        Int32 skip = 0;
+
+                        for (Int32 i = 1; i <= newReceivingReceipts.Count(); i++)
+                        {
+                            if (i % 100 == 0)
+                            {
+                                jsonData = serializer.Serialize(newReceivingReceipts.Skip(skip).Take(100));
                                 send = true;
 
-                                percentage = Convert.ToDecimal((Convert.ToDecimal(i) / Convert.ToDecimal(newReceivingReceipts.Count())) * 100);
+                                skip = i;
+
+                                percentage = Convert.ToDecimal((Convert.ToDecimal(skip) / Convert.ToDecimal(newReceivingReceipts.Count())) * 100);
                             }
                             else
                             {
-                                if (i == newReceivingReceipts.Count())
+                                if (newReceivingReceipts.Count() <= 100)
                                 {
-                                    jsonData = serializer.Serialize(newReceivingReceipts.Skip(skip).Take(i - skip));
+                                    jsonData = serializer.Serialize(newReceivingReceipts);
                                     send = true;
 
                                     percentage = Convert.ToDecimal((Convert.ToDecimal(i) / Convert.ToDecimal(newReceivingReceipts.Count())) * 100);
                                 }
-                            }
-                        }
-
-                        if (send)
-                        {
-                            Boolean isErrorLogged = false;
-                            String previousErrorMessage = String.Empty;
-
-                            while (true)
-                            {
-                                String insertTemporaryReceivingReceiptTask = await InsertTemporaryReceivingReceipt(domain, jsonData);
-                                if (!insertTemporaryReceivingReceiptTask.Equals("Send Successful..."))
-                                {
-                                    if (previousErrorMessage.Equals(String.Empty))
-                                    {
-                                        previousErrorMessage = insertTemporaryReceivingReceiptTask;
-                                    }
-                                    else
-                                    {
-                                        if (!previousErrorMessage.Equals(insertTemporaryReceivingReceiptTask))
-                                        {
-                                            previousErrorMessage = insertTemporaryReceivingReceiptTask;
-                                            isErrorLogged = false;
-                                        }
-                                    }
-
-                                    if (!isErrorLogged)
-                                    {
-                                        trnIntegrationForm.logFolderMonitoringMessage(previousErrorMessage);
-                                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-                                        trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
-
-                                        isErrorLogged = true;
-                                    }
-
-                                    Thread.Sleep(5000);
-                                }
                                 else
                                 {
-                                    trnIntegrationForm.logFolderMonitoringMessage("RRIntegrateSuccessful");
-                                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\nSending Receiving Receipt... (" + Math.Round(percentage, 2) + "%) \r\n\n");
-
                                     if (i == newReceivingReceipts.Count())
                                     {
-                                        trnIntegrationForm.logFolderMonitoringMessage("Send Successful!" + "\r\n\n");
-                                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-                                    }
+                                        jsonData = serializer.Serialize(newReceivingReceipts.Skip(skip).Take(i - skip));
+                                        send = true;
 
-                                    break;
+                                        percentage = Convert.ToDecimal((Convert.ToDecimal(i) / Convert.ToDecimal(newReceivingReceipts.Count())) * 100);
+                                    }
                                 }
                             }
 
-                            send = false;
-                        }
-                    }
-
-                    post = true;
-                }
-                catch (Exception e)
-                {
-                    trnIntegrationForm.logFolderMonitoringMessage("Sending Error: " + e.Message + "\r\n\n");
-                    trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-                }
-            }
-
-            // Post
-            if (post)
-            {
-                var branchCodes = from d in newReceivingReceipts
-                                  group d by d.BranchCode into g
-                                  select g.Key;
-
-                var listBranchCodes = branchCodes.ToList();
-                if (listBranchCodes.Any())
-                {
-                    Int32 branchCount = 0;
-
-                    foreach (var branchCode in listBranchCodes)
-                    {
-                        branchCount += 1;
-
-                        Decimal percentage = 0;
-                        trnIntegrationForm.logFolderMonitoringMessage("Posting Receiving Receipt Branch: " + branchCode + " ... (0%) \r\n\n");
-
-                        var manualRRNumbers = from d in newReceivingReceipts
-                                              where d.BranchCode.Equals(branchCode)
-                                              group d by d.ManualRRNumber into g
-                                              select g.Key;
-
-                        var listManualRRNumbers = manualRRNumbers.ToList();
-                        if (listManualRRNumbers.Any())
-                        {
-                            Int32 manualRRNumberCount = 0;
-
-                            foreach (var manualRRNumber in listManualRRNumbers)
+                            if (send)
                             {
-                                manualRRNumberCount += 1;
-                                percentage = Convert.ToDecimal((Convert.ToDecimal(manualRRNumberCount) / Convert.ToDecimal(listManualRRNumbers.Count())) * 100);
-
                                 Boolean isErrorLogged = false;
                                 String previousErrorMessage = String.Empty;
 
                                 while (true)
                                 {
-                                    String postReceivingReceiptTask = await PostReceivingReceipt(domain, branchCode, manualRRNumber);
-                                    if (!postReceivingReceiptTask.Equals("Post Successful..."))
+                                    String insertTemporaryReceivingReceiptTask = await InsertTemporaryReceivingReceipt(domain, jsonData);
+                                    if (!insertTemporaryReceivingReceiptTask.Equals("Send Successful..."))
                                     {
                                         if (previousErrorMessage.Equals(String.Empty))
                                         {
-                                            previousErrorMessage = postReceivingReceiptTask;
+                                            previousErrorMessage = insertTemporaryReceivingReceiptTask;
                                         }
                                         else
                                         {
-                                            if (!previousErrorMessage.Equals(postReceivingReceiptTask))
+                                            if (!previousErrorMessage.Equals(insertTemporaryReceivingReceiptTask))
                                             {
-                                                previousErrorMessage = postReceivingReceiptTask;
+                                                previousErrorMessage = insertTemporaryReceivingReceiptTask;
                                                 isErrorLogged = false;
                                             }
                                         }
@@ -307,12 +236,12 @@ namespace EasyfisIntegrator.Controllers
                                     }
                                     else
                                     {
-                                        trnIntegrationForm.logFolderMonitoringMessage("RRIntegrateSuccessful");
-                                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\nPosting Receiving Receipt Branch: " + branchCode + " ... (" + Math.Round(percentage, 2) + "%) \r\n\n");
+                                        trnIntegrationForm.logFolderMonitoringMessage("RRIntegrationLogOnce");
+                                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\nSending Receiving Receipt... (" + Math.Round(percentage, 2) + "%) \r\n\n");
 
-                                        if (manualRRNumberCount == listManualRRNumbers.Count())
+                                        if (i == newReceivingReceipts.Count())
                                         {
-                                            trnIntegrationForm.logFolderMonitoringMessage("Branch: " + branchCode + " Post Successful!" + "\r\n\n");
+                                            trnIntegrationForm.logFolderMonitoringMessage("Send Successful!" + "\r\n\n");
                                             trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                                             trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
                                         }
@@ -320,12 +249,146 @@ namespace EasyfisIntegrator.Controllers
                                         break;
                                     }
                                 }
+
+                                send = false;
                             }
                         }
+
+                        post = true;
+                        break;
+                    }
+                    catch (Exception e)
+                    {
+                        if (!isExceptionErrorOccured)
+                        {
+                            isExceptionErrorOccured = true;
+
+                            trnIntegrationForm.logFolderMonitoringMessage("Sending Error: " + e.Message + "\r\n\n");
+                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                            trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+                        }
+
+                        Thread.Sleep(5000);
                     }
                 }
+            }
 
-                // Move CSV File
+            // Posting
+            isExceptionErrorOccured = false;
+            if (post)
+            {
+                while (true)
+                {
+                    try
+                    {
+                        var branchCodes = from d in newReceivingReceipts
+                                          group d by d.BranchCode into g
+                                          select g.Key;
+
+                        var listBranchCodes = branchCodes.ToList();
+                        if (listBranchCodes.Any())
+                        {
+                            Int32 branchCount = 0;
+
+                            foreach (var branchCode in listBranchCodes)
+                            {
+                                branchCount += 1;
+
+                                Decimal percentage = 0;
+                                trnIntegrationForm.logFolderMonitoringMessage("Posting Receiving Receipt Branch: " + branchCode + " ... (0%) \r\n\n");
+
+                                var manualRRNumbers = from d in newReceivingReceipts
+                                                      where d.BranchCode.Equals(branchCode)
+                                                      group d by d.ManualRRNumber into g
+                                                      select g.Key;
+
+                                var listManualRRNumbers = manualRRNumbers.ToList();
+                                if (listManualRRNumbers.Any())
+                                {
+                                    Int32 manualRRNumberCount = 0;
+
+                                    foreach (var manualRRNumber in listManualRRNumbers)
+                                    {
+                                        manualRRNumberCount += 1;
+                                        percentage = Convert.ToDecimal((Convert.ToDecimal(manualRRNumberCount) / Convert.ToDecimal(listManualRRNumbers.Count())) * 100);
+
+                                        Boolean isErrorLogged = false;
+                                        String previousErrorMessage = String.Empty;
+
+                                        while (true)
+                                        {
+                                            String postReceivingReceiptTask = await PostReceivingReceipt(domain, branchCode, manualRRNumber);
+                                            if (!postReceivingReceiptTask.Equals("Post Successful..."))
+                                            {
+                                                if (previousErrorMessage.Equals(String.Empty))
+                                                {
+                                                    previousErrorMessage = postReceivingReceiptTask;
+                                                }
+                                                else
+                                                {
+                                                    if (!previousErrorMessage.Equals(postReceivingReceiptTask))
+                                                    {
+                                                        previousErrorMessage = postReceivingReceiptTask;
+                                                        isErrorLogged = false;
+                                                    }
+                                                }
+
+                                                if (!isErrorLogged)
+                                                {
+                                                    trnIntegrationForm.logFolderMonitoringMessage(previousErrorMessage);
+                                                    trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                                                    trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+
+                                                    isErrorLogged = true;
+                                                }
+
+                                                Thread.Sleep(5000);
+                                            }
+                                            else
+                                            {
+                                                trnIntegrationForm.logFolderMonitoringMessage("RRIntegrationLogOnce");
+                                                trnIntegrationForm.logFolderMonitoringMessage("\r\n\nPosting Receiving Receipt Branch: " + branchCode + " ... (" + Math.Round(percentage, 2) + "%) \r\n\n");
+
+                                                if (manualRRNumberCount == listManualRRNumbers.Count())
+                                                {
+                                                    trnIntegrationForm.logFolderMonitoringMessage("Branch: " + branchCode + " Post Successful!" + "\r\n\n");
+                                                    trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                                                }
+
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        break;
+                    }
+                    catch (Exception e)
+                    {
+                        if (!isExceptionErrorOccured)
+                        {
+                            isExceptionErrorOccured = true;
+
+                            trnIntegrationForm.logFolderMonitoringMessage("Posting Error: " + e.Message + "\r\n\n");
+                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                            trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+                        }
+
+                        Thread.Sleep(5000);
+                    }
+                }
+            }
+
+            // Move CSV File
+            isExceptionErrorOccured = false;
+            while (true)
+            {
                 try
                 {
                     trnIntegrationForm.logFolderMonitoringMessage("Moving Receiving Receipt File... (0%) \r\n\n");
@@ -351,18 +414,28 @@ namespace EasyfisIntegrator.Controllers
                         File.Move(file, folderForSentFiles + "RR_" + DateTime.Now.ToString("yyyyMMdd_hhmmss") + ".csv");
                     }
 
-                    trnIntegrationForm.logFolderMonitoringMessage("RRIntegrateSuccessful");
+                    trnIntegrationForm.logFolderMonitoringMessage("RRIntegrationLogOnce");
                     trnIntegrationForm.logFolderMonitoringMessage("\r\n\nMoving Receiving Receipt File... (100%) \r\n\n");
 
                     trnIntegrationForm.logFolderMonitoringMessage("Move Successful!" + "\r\n\n");
                     trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                     trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+
+                    break;
                 }
                 catch (Exception e)
                 {
-                    trnIntegrationForm.logFolderMonitoringMessage("Moving File Error: " + e.Message + "\r\n\n");
-                    trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                    if (!isExceptionErrorOccured)
+                    {
+                        isExceptionErrorOccured = true;
+
+                        trnIntegrationForm.logFolderMonitoringMessage("Moving File Error: " + e.Message + "\r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+                    }
+
+                    Thread.Sleep(5000);
                 }
             }
         }
