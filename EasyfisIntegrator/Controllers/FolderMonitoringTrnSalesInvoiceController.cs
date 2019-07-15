@@ -29,7 +29,7 @@ namespace EasyfisIntegrator.Controllers
             // Delete
             try
             {
-                trnIntegrationForm.logFolderMonitoringMessage("Cleaning Sales... (0%) \r\n\n");
+                trnIntegrationForm.logFolderMonitoringMessage("\r\n\nCleaning Sales... (0%) \r\n\n");
 
                 Boolean isErrorLogged = false;
                 String previousErrorMessage = String.Empty;

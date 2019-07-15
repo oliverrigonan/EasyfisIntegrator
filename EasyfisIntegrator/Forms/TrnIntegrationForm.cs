@@ -50,7 +50,7 @@ namespace EasyfisIntegrator.Forms
         {
             InitializeComponent();
 
-            bgwSalesInvoice.DoWork += new DoWorkEventHandler(bgwSalesInvoice_DoWork);
+            //bgwFolderMonitoringIntegration.DoWork += new DoWorkEventHandler(bgwSalesInvoice_DoWork);
 
             isSettingsClicked = false;
 
@@ -134,7 +134,6 @@ namespace EasyfisIntegrator.Forms
             }
 
             btnStartFolderMonitoringIntegration.Enabled = true;
-            btnStopFolderMonitoringIntegration.Enabled = false;
         }
 
         private void TrnInnosoftPOSIntegrationForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -143,7 +142,6 @@ namespace EasyfisIntegrator.Forms
             Activate();
 
             btnStartFolderMonitoringIntegration.Enabled = true;
-            btnStopFolderMonitoringIntegration.Enabled = false;
 
             DialogResult dialogResult = MessageBox.Show("Are you sure you want to close this application?", "Close Integrator", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (dialogResult == DialogResult.Yes)
@@ -404,14 +402,25 @@ namespace EasyfisIntegrator.Forms
 
         private void btnStartFolderMonitoringIntegration_Click(object sender, EventArgs e)
         {
+            if (isFolderMonitoringIntegrationStarted == true)
+            {
+                Close();
+                return;
+            }
+
             btnSettings.Enabled = false;
+            btnStartFolderMonitoringIntegration.Text = "Restart";
 
-            btnStartFolderMonitoringIntegration.Enabled = false;
-            btnStopFolderMonitoringIntegration.Enabled = true;
+            //btnStartFolderMonitoringIntegration.Enabled = false;
 
-            logFolderMonitoringMessage("Started! \r\n\nTime Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n\r\n\n");
+            logFolderMonitoringMessage("File Integration Started! \r\n\nTime Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n\r\n\n");
 
             isFolderMonitoringIntegrationStarted = true;
+
+            if (bgwFolderMonitoringIntegration.IsBusy != true)
+            {
+                bgwFolderMonitoringIntegration.RunWorkerAsync();
+            }
         }
 
         private void btnStopFolderMonitoringIntegration_Click(object sender, EventArgs e)
@@ -422,16 +431,6 @@ namespace EasyfisIntegrator.Forms
             }
 
             btnStartFolderMonitoringIntegration.Enabled = true;
-            btnStopFolderMonitoringIntegration.Enabled = false;
-
-            if (bgwSalesInvoice.IsBusy) { bgwSalesInvoice.CancelAsync(); }
-            if (bgwCollection.IsBusy) { bgwCollection.CancelAsync(); }
-            if (bgwReceivingReceipt.IsBusy) { bgwReceivingReceipt.CancelAsync(); }
-            if (bgwDisbursement.IsBusy) { bgwDisbursement.CancelAsync(); }
-            if (bgwJournalVoucher.IsBusy) { bgwJournalVoucher.CancelAsync(); }
-            if (bgwStockIn.IsBusy) { bgwStockIn.CancelAsync(); }
-            if (bgwStockOut.IsBusy) { bgwStockOut.CancelAsync(); }
-            if (bgwStockTransfer.IsBusy) { bgwStockTransfer.CancelAsync(); }
 
             logFolderMonitoringMessage("Stopped! \r\n\nTime Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n\r\n\n");
 
@@ -551,369 +550,288 @@ namespace EasyfisIntegrator.Forms
 
         private void fileSystemWatcherCSVFiles_Created(object sender, FileSystemEventArgs e)
         {
-            String[] documentPrefix = e.FullPath.Split('\\');
-            monitorControllers(documentPrefix[documentPrefix.Length - 2]);
+            //String[] documentPrefix = e.FullPath.Split('\\');
+            //monitorControllers(documentPrefix[documentPrefix.Length - 2]);
         }
 
         public void monitorControllers(String documentPrefix)
         {
-            if (isFolderMonitoringIntegrationStarted)
-            {
-                switch (documentPrefix)
-                {
-                    case "SI":
-                        if (!bgwSalesInvoice.IsBusy) { bgwSalesInvoice.RunWorkerAsync(); }
-                        break;
-                    case "OR":
-                        if (!bgwCollection.IsBusy) { bgwCollection.RunWorkerAsync(); }
-                        break;
-                    case "RR":
-                        if (!bgwReceivingReceipt.IsBusy) { bgwReceivingReceipt.RunWorkerAsync(); }
-                        break;
-                    case "CV":
-                        if (!bgwDisbursement.IsBusy) { bgwDisbursement.RunWorkerAsync(); }
-                        break;
-                    case "JV":
-                        if (!bgwJournalVoucher.IsBusy) { bgwJournalVoucher.RunWorkerAsync(); }
-                        break;
-                    case "IN":
-                        if (!bgwStockIn.IsBusy) { bgwStockIn.RunWorkerAsync(); }
-                        break;
-                    case "OT":
-                        if (!bgwStockOut.IsBusy) { bgwStockOut.RunWorkerAsync(); }
-                        break;
-                    case "ST":
-                        if (!bgwStockTransfer.IsBusy) { bgwStockTransfer.RunWorkerAsync(); }
-                        break;
-                    default:
-                        break;
-                }
-            }
+            //if (isFolderMonitoringIntegrationStarted)
+            //{
+            //    switch (documentPrefix)
+            //    {
+            //        case "SI":
+            //            if (!bgwFolderMonitoringIntegration.IsBusy) { bgwFolderMonitoringIntegration.RunWorkerAsync(); }
+            //            break;
+            //        case "OR":
+            //            if (!bgwCollection.IsBusy) { bgwCollection.RunWorkerAsync(); }
+            //            break;
+            //        case "RR":
+            //            if (!bgwReceivingReceipt.IsBusy) { bgwReceivingReceipt.RunWorkerAsync(); }
+            //            break;
+            //        case "CV":
+            //            if (!bgwDisbursement.IsBusy) { bgwDisbursement.RunWorkerAsync(); }
+            //            break;
+            //        case "JV":
+            //            if (!bgwJournalVoucher.IsBusy) { bgwJournalVoucher.RunWorkerAsync(); }
+            //            break;
+            //        case "IN":
+            //            if (!bgwStockIn.IsBusy) { bgwStockIn.RunWorkerAsync(); }
+            //            break;
+            //        case "OT":
+            //            if (!bgwStockOut.IsBusy) { bgwStockOut.RunWorkerAsync(); }
+            //            break;
+            //        case "ST":
+            //            if (!bgwStockTransfer.IsBusy) { bgwStockTransfer.RunWorkerAsync(); }
+            //            break;
+            //        default:
+            //            break;
+            //    }
+            //}
         }
 
-        private void bgwSalesInvoice_DoWork(object sender, DoWorkEventArgs e)
+        private void bgwFolderMonitoringIntegration_DoWork(object sender, DoWorkEventArgs e)
         {
-            BackgroundWorker worker = sender as BackgroundWorker;
-            if (worker.CancellationPending == true)
-            {
-                e.Cancel = true;
-            }
-            else
-            {
-                String subFolderToMonitor = folderToMonitor + "\\SI\\";
+            List<String> ext = new List<String> { ".csv" };
 
-                List<String> ext = new List<String> { ".csv" };
-                List<String> files = new List<String>(Directory.EnumerateFiles(subFolderToMonitor, "*.*", SearchOption.AllDirectories).Where(f => ext.Contains(Path.GetExtension(f))));
-
-                FolderMonitoringTrnSalesInvoiceController folderMonitoringSI = new FolderMonitoringTrnSalesInvoiceController();
-                if (files.Any())
+            while (isFolderMonitoringIntegrationStarted)
+            {
+                Task SITask = Task.Run(() =>
                 {
-                    foreach (var file in files)
+                    folderMonitoringIntegrateSI(ext);
+                });
+                SITask.Wait();
+
+                if (SITask.IsCompleted)
+                {
+                    Task ORTask = Task.Run(() =>
                     {
-                        folderMonitoringSI.SendSalesInvoice(this, txtFolderMonitoringUserCode.Text, file, domain);
+                        folderMonitoringIntegrateOR(ext);
+                    });
+                    ORTask.Wait();
+
+                    if (ORTask.IsCompleted)
+                    {
+                        Task RRTask = Task.Run(() =>
+                        {
+                            folderMonitoringIntegrateRR(ext);
+                        });
+                        RRTask.Wait();
+
+                        if (RRTask.IsCompleted)
+                        {
+                            Task CVTask = Task.Run(() =>
+                            {
+                                folderMonitoringIntegrateCV(ext);
+                            });
+                            CVTask.Wait();
+
+                            if (CVTask.IsCompleted)
+                            {
+                                Task JVTask = Task.Run(() =>
+                                {
+                                    folderMonitoringIntegrateJV(ext);
+                                });
+                                JVTask.Wait();
+
+                                if (JVTask.IsCompleted)
+                                {
+                                    Task INTask = Task.Run(() =>
+                                    {
+                                        folderMonitoringIntegrateIN(ext);
+                                    });
+                                    INTask.Wait();
+
+                                    if (INTask.IsCompleted)
+                                    {
+                                        Task OTTask = Task.Run(() =>
+                                        {
+                                            folderMonitoringIntegrateOT(ext);
+                                        });
+                                        OTTask.Wait();
+
+                                        if (OTTask.IsCompleted)
+                                        {
+                                            Task STTask = Task.Run(() =>
+                                            {
+                                                folderMonitoringIntegrateST(ext);
+                                            });
+                                            STTask.Wait();
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
+
+                System.Threading.Thread.Sleep(5000);
             }
         }
 
-        private void bgwSalesInvoice_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        public void folderMonitoringIntegrateSI(List<String> ext)
         {
-            if (e.Cancelled)
-            {
-                logFolderMonitoringMessage("Sales Integration Canceled!" + "\r\n\n");
-                logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                logFolderMonitoringMessage("\r\n\n");
-            }
-            else
-            {
-                logFolderMonitoringMessage("Sales Integration Finished!" + "\r\n\n");
-                logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                logFolderMonitoringMessage("\r\n\n");
-            }
-        }
+            FolderMonitoringTrnSalesInvoiceController folderMonitoringSI = new FolderMonitoringTrnSalesInvoiceController();
 
-        private void bgwCollection_DoWork(object sender, DoWorkEventArgs e)
-        {
-            BackgroundWorker worker = sender as BackgroundWorker;
-            if (worker.CancellationPending == true)
+            logFolderMonitoringMessage("Checking Sales CSV Files..." + "\r\n\n");
+            List<String> SIFiles = new List<String>(Directory.EnumerateFiles(folderToMonitor + "\\SI\\", "*.*", SearchOption.AllDirectories).Where(f => ext.Contains(Path.GetExtension(f))));
+            if (SIFiles.Any())
             {
-                e.Cancel = true;
-            }
-            else
-            {
-                String subFolderToMonitor = folderToMonitor + "\\OR\\";
-
-                List<String> ext = new List<String> { ".csv" };
-                List<String> files = new List<String>(Directory.EnumerateFiles(subFolderToMonitor, "*.*", SearchOption.AllDirectories).Where(f => ext.Contains(Path.GetExtension(f))));
-
-                FolderMonitoringTrnCollectionController folderMonitoringOR = new FolderMonitoringTrnCollectionController();
-                if (files.Any())
+                foreach (var SIFile in SIFiles)
                 {
-                    foreach (var file in files)
-                    {
-                        folderMonitoringOR.SendCollection(this, txtFolderMonitoringUserCode.Text, file, domain);
-                    }
+                    folderMonitoringSI.SendSalesInvoice(this, txtFolderMonitoringUserCode.Text, SIFile, domain);
                 }
             }
-        }
-
-        private void bgwCollection_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            if (e.Cancelled)
-            {
-                logFolderMonitoringMessage("Collection Integration Canceled!" + "\r\n\n");
-                logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                logFolderMonitoringMessage("\r\n\n");
-            }
             else
             {
-                logFolderMonitoringMessage("Collection Integration Finished!" + "\r\n\n");
+                logFolderMonitoringMessage("\r\n\nNo Sales CSV Files Found!" + "\r\n\n");
                 logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                 logFolderMonitoringMessage("\r\n\n");
             }
         }
 
-        private void bgwReceivingReceipt_DoWork(object sender, DoWorkEventArgs e)
+        public void folderMonitoringIntegrateOR(List<String> ext)
         {
-            BackgroundWorker worker = sender as BackgroundWorker;
-            if (worker.CancellationPending == true)
-            {
-                e.Cancel = true;
-            }
-            else
-            {
-                String subFolderToMonitor = folderToMonitor + "\\RR\\";
+            FolderMonitoringTrnCollectionController folderMonitoringOR = new FolderMonitoringTrnCollectionController();
 
-                List<String> ext = new List<String> { ".csv" };
-                List<String> files = new List<String>(Directory.EnumerateFiles(subFolderToMonitor, "*.*", SearchOption.AllDirectories).Where(f => ext.Contains(Path.GetExtension(f))));
-
-                FolderMonitoringTrnReceivingReceiptController folderMonitoringRR = new FolderMonitoringTrnReceivingReceiptController();
-                if (files.Any())
+            logFolderMonitoringMessage("Checking Collection CSV Files..." + "\r\n\n");
+            List<String> ORFiles = new List<String>(Directory.EnumerateFiles(folderToMonitor + "\\OR\\", "*.*", SearchOption.AllDirectories).Where(f => ext.Contains(Path.GetExtension(f))));
+            if (ORFiles.Any())
+            {
+                foreach (var ORFile in ORFiles)
                 {
-                    foreach (var file in files)
-                    {
-                        folderMonitoringRR.SendReceivingReceipt(this, txtFolderMonitoringUserCode.Text, file, domain);
-                    }
+                    folderMonitoringOR.SendCollection(this, txtFolderMonitoringUserCode.Text, ORFile, domain);
                 }
             }
-        }
-
-        private void bgwReceivingReceipt_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            if (e.Cancelled)
-            {
-                logFolderMonitoringMessage("Receiving Receipt Integration Canceled!" + "\r\n\n");
-                logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                logFolderMonitoringMessage("\r\n\n");
-            }
             else
             {
-                logFolderMonitoringMessage("Receiving Receipt Integration Finished!" + "\r\n\n");
+                logFolderMonitoringMessage("\r\n\nNo Collection CSV Files Found!" + "\r\n\n");
                 logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                 logFolderMonitoringMessage("\r\n\n");
             }
         }
 
-        private void bgwDisbursement_DoWork(object sender, DoWorkEventArgs e)
+        public void folderMonitoringIntegrateRR(List<String> ext)
         {
-            BackgroundWorker worker = sender as BackgroundWorker;
-            if (worker.CancellationPending == true)
-            {
-                e.Cancel = true;
-            }
-            else
-            {
-                String subFolderToMonitor = folderToMonitor + "\\CV\\";
+            FolderMonitoringTrnReceivingReceiptController folderMonitoringRR = new FolderMonitoringTrnReceivingReceiptController();
 
-                List<String> ext = new List<String> { ".csv" };
-                List<String> files = new List<String>(Directory.EnumerateFiles(subFolderToMonitor, "*.*", SearchOption.AllDirectories).Where(f => ext.Contains(Path.GetExtension(f))));
-
-                FolderMonitoringTrnDisbursementController folderMonitoringCV = new FolderMonitoringTrnDisbursementController();
-                if (files.Any())
+            logFolderMonitoringMessage("Checking Receiving Receipt CSV Files..." + "\r\n\n");
+            List<String> RRFiles = new List<String>(Directory.EnumerateFiles(folderToMonitor + "\\RR\\", "*.*", SearchOption.AllDirectories).Where(f => ext.Contains(Path.GetExtension(f))));
+            if (RRFiles.Any())
+            {
+                foreach (var RRFile in RRFiles)
                 {
-                    foreach (var file in files)
-                    {
-                        folderMonitoringCV.SendDisbursement(this, txtFolderMonitoringUserCode.Text, file, domain);
-                    }
+                    folderMonitoringRR.SendReceivingReceipt(this, txtFolderMonitoringUserCode.Text, RRFile, domain);
                 }
             }
-        }
-
-        private void bgwDisbursement_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            if (e.Cancelled)
-            {
-                logFolderMonitoringMessage("Disbursement Integration Canceled!" + "\r\n\n");
-                logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                logFolderMonitoringMessage("\r\n\n");
-            }
             else
             {
-                logFolderMonitoringMessage("Disbursement Integration Finished!" + "\r\n\n");
+                logFolderMonitoringMessage("\r\n\nNo Receiving Receipt CSV Files Found!" + "\r\n\n");
                 logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                 logFolderMonitoringMessage("\r\n\n");
             }
         }
 
-        private void bgwJournalVoucher_DoWork(object sender, DoWorkEventArgs e)
+        public void folderMonitoringIntegrateCV(List<String> ext)
         {
-            BackgroundWorker worker = sender as BackgroundWorker;
-            if (worker.CancellationPending == true)
-            {
-                e.Cancel = true;
-            }
-            else
-            {
-                String subFolderToMonitor = folderToMonitor + "\\JV\\";
+            FolderMonitoringTrnDisbursementController folderMonitoringCV = new FolderMonitoringTrnDisbursementController();
 
-                List<String> ext = new List<String> { ".csv" };
-                List<String> files = new List<String>(Directory.EnumerateFiles(subFolderToMonitor, "*.*", SearchOption.AllDirectories).Where(f => ext.Contains(Path.GetExtension(f))));
-
-                FolderMonitoringTrnJournalVoucherController folderMonitoringJV = new FolderMonitoringTrnJournalVoucherController();
-                if (files.Any())
+            logFolderMonitoringMessage("Checking Disbursement CSV Files..." + "\r\n\n");
+            List<String> CVFiles = new List<String>(Directory.EnumerateFiles(folderToMonitor + "\\CV\\", "*.*", SearchOption.AllDirectories).Where(f => ext.Contains(Path.GetExtension(f))));
+            if (CVFiles.Any())
+            {
+                foreach (var CVFile in CVFiles)
                 {
-                    foreach (var file in files)
-                    {
-                        folderMonitoringJV.SendJournalVoucher(this, txtFolderMonitoringUserCode.Text, file, domain);
-                    }
+                    folderMonitoringCV.SendDisbursement(this, txtFolderMonitoringUserCode.Text, CVFile, domain);
                 }
             }
-        }
-
-        private void bgwJournalVoucher_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            if (e.Cancelled)
-            {
-                logFolderMonitoringMessage("Journal Voucher Integration Canceled!" + "\r\n\n");
-                logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                logFolderMonitoringMessage("\r\n\n");
-            }
             else
             {
-                logFolderMonitoringMessage("Journal Voucher Integration Finished!" + "\r\n\n");
+                logFolderMonitoringMessage("\r\n\nNo Disbursement CSV Files Found!" + "\r\n\n");
                 logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                 logFolderMonitoringMessage("\r\n\n");
             }
         }
 
-        private void bgwStockIn_DoWork(object sender, DoWorkEventArgs e)
+        public void folderMonitoringIntegrateJV(List<String> ext)
         {
-            BackgroundWorker worker = sender as BackgroundWorker;
-            if (worker.CancellationPending == true)
-            {
-                e.Cancel = true;
-            }
-            else
-            {
-                String subFolderToMonitor = folderToMonitor + "\\IN\\";
+            FolderMonitoringTrnJournalVoucherController folderMonitoringJV = new FolderMonitoringTrnJournalVoucherController();
 
-                List<String> ext = new List<String> { ".csv" };
-                List<String> files = new List<String>(Directory.EnumerateFiles(subFolderToMonitor, "*.*", SearchOption.AllDirectories).Where(f => ext.Contains(Path.GetExtension(f))));
-
-                FolderMonitoringTrnStockInController folderMonitoringIN = new FolderMonitoringTrnStockInController();
-                if (files.Any())
+            logFolderMonitoringMessage("Checking Journal Voucher CSV Files..." + "\r\n\n");
+            List<String> JVFiles = new List<String>(Directory.EnumerateFiles(folderToMonitor + "\\JV\\", "*.*", SearchOption.AllDirectories).Where(f => ext.Contains(Path.GetExtension(f))));
+            if (JVFiles.Any())
+            {
+                foreach (var JVFile in JVFiles)
                 {
-                    foreach (var file in files)
-                    {
-                        folderMonitoringIN.SendStockIn(this, txtFolderMonitoringUserCode.Text, file, domain);
-                    }
+                    folderMonitoringJV.SendJournalVoucher(this, txtFolderMonitoringUserCode.Text, JVFile, domain);
                 }
             }
-        }
-
-        private void bgwStockIn_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            if (e.Cancelled)
-            {
-                logFolderMonitoringMessage("Stock In Integration Canceled!" + "\r\n\n");
-                logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                logFolderMonitoringMessage("\r\n\n");
-            }
             else
             {
-                logFolderMonitoringMessage("Stock In Integration Finished!" + "\r\n\n");
+                logFolderMonitoringMessage("\r\n\nNo Journal Voucher CSV Files Found!" + "\r\n\n");
                 logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                 logFolderMonitoringMessage("\r\n\n");
             }
         }
 
-        private void bgwStockOut_DoWork(object sender, DoWorkEventArgs e)
+        public void folderMonitoringIntegrateIN(List<String> ext)
         {
-            BackgroundWorker worker = sender as BackgroundWorker;
-            if (worker.CancellationPending == true)
-            {
-                e.Cancel = true;
-            }
-            else
-            {
-                String subFolderToMonitor = folderToMonitor + "\\OT\\";
+            FolderMonitoringTrnStockInController folderMonitoringIN = new FolderMonitoringTrnStockInController();
 
-                List<String> ext = new List<String> { ".csv" };
-                List<String> files = new List<String>(Directory.EnumerateFiles(subFolderToMonitor, "*.*", SearchOption.AllDirectories).Where(f => ext.Contains(Path.GetExtension(f))));
-
-                FolderMonitoringTrnStockOutController folderMonitoringOT = new FolderMonitoringTrnStockOutController();
-                if (files.Any())
+            logFolderMonitoringMessage("Checking Stock In CSV Files..." + "\r\n\n");
+            List<String> INFiles = new List<String>(Directory.EnumerateFiles(folderToMonitor + "\\IN\\", "*.*", SearchOption.AllDirectories).Where(f => ext.Contains(Path.GetExtension(f))));
+            if (INFiles.Any())
+            {
+                foreach (var INFile in INFiles)
                 {
-                    foreach (var file in files)
-                    {
-                        folderMonitoringOT.SendStockOut(this, txtFolderMonitoringUserCode.Text, file, domain);
-                    }
+                    folderMonitoringIN.SendStockIn(this, txtFolderMonitoringUserCode.Text, INFile, domain);
                 }
             }
-        }
-
-        private void bgwStockOut_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            if (e.Cancelled)
-            {
-                logFolderMonitoringMessage("Stock Out Integration Canceled!" + "\r\n\n");
-                logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                logFolderMonitoringMessage("\r\n\n");
-            }
             else
             {
-                logFolderMonitoringMessage("Stock Out Integration Finished!" + "\r\n\n");
+                logFolderMonitoringMessage("\r\n\nNo Journal Voucher CSV Files Found!" + "\r\n\n");
                 logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                 logFolderMonitoringMessage("\r\n\n");
             }
         }
 
-        private void bgwStockTransfer_DoWork(object sender, DoWorkEventArgs e)
+        public void folderMonitoringIntegrateOT(List<String> ext)
         {
-            BackgroundWorker worker = sender as BackgroundWorker;
-            if (worker.CancellationPending == true)
-            {
-                e.Cancel = true;
-            }
-            else
-            {
-                String subFolderToMonitor = folderToMonitor + "\\ST\\";
+            FolderMonitoringTrnStockOutController folderMonitoringOT = new FolderMonitoringTrnStockOutController();
 
-                List<String> ext = new List<String> { ".csv" };
-                List<String> files = new List<String>(Directory.EnumerateFiles(subFolderToMonitor, "*.*", SearchOption.AllDirectories).Where(f => ext.Contains(Path.GetExtension(f))));
-
-                FolderMonitoringTrnStockTransferController folderMonitoringST = new FolderMonitoringTrnStockTransferController();
-                if (files.Any())
+            logFolderMonitoringMessage("Checking Stock Out CSV Files..." + "\r\n\n");
+            List<String> OTFiles = new List<String>(Directory.EnumerateFiles(folderToMonitor + "\\OT\\", "*.*", SearchOption.AllDirectories).Where(f => ext.Contains(Path.GetExtension(f))));
+            if (OTFiles.Any())
+            {
+                foreach (var OTFile in OTFiles)
                 {
-                    foreach (var file in files)
-                    {
-                        folderMonitoringST.SendStockTransfer(this, txtFolderMonitoringUserCode.Text, file, domain);
-                    }
+                    folderMonitoringOT.SendStockOut(this, txtFolderMonitoringUserCode.Text, OTFile, domain);
                 }
             }
-        }
-
-        private void bgwStockTransfer_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            if (e.Cancelled)
+            else
             {
-                logFolderMonitoringMessage("Stock Transfer Integration Canceled!" + "\r\n\n");
+                logFolderMonitoringMessage("\r\n\nNo Journal Voucher CSV Files Found!" + "\r\n\n");
                 logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                 logFolderMonitoringMessage("\r\n\n");
             }
+        }
+
+        public void folderMonitoringIntegrateST(List<String> ext)
+        {
+            FolderMonitoringTrnStockTransferController folderMonitoringST = new FolderMonitoringTrnStockTransferController();
+
+            logFolderMonitoringMessage("Checking Stock Transfer CSV Files..." + "\r\n\n");
+            List<String> STFiles = new List<String>(Directory.EnumerateFiles(folderToMonitor + "\\ST\\", "*.*", SearchOption.AllDirectories).Where(f => ext.Contains(Path.GetExtension(f))));
+            if (STFiles.Any())
+            {
+                foreach (var STFile in STFiles)
+                {
+                    folderMonitoringST.SendStockTransfer(this, txtFolderMonitoringUserCode.Text, STFile, domain);
+                }
+            }
             else
             {
-                logFolderMonitoringMessage("Stock Transfer Integration Finished!" + "\r\n\n");
+                logFolderMonitoringMessage("\r\n\nNo Journal Voucher CSV Files Found!" + "\r\n\n");
                 logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                 logFolderMonitoringMessage("\r\n\n");
             }

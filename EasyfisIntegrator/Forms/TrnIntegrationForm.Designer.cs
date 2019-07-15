@@ -71,16 +71,8 @@
             this.txtFolderMonitoringDomain = new System.Windows.Forms.TextBox();
             this.label14 = new System.Windows.Forms.Label();
             this.btnStartFolderMonitoringIntegration = new System.Windows.Forms.Button();
-            this.btnStopFolderMonitoringIntegration = new System.Windows.Forms.Button();
             this.txtFolderMonitoringLogs = new System.Windows.Forms.TextBox();
-            this.bgwSalesInvoice = new System.ComponentModel.BackgroundWorker();
-            this.bgwCollection = new System.ComponentModel.BackgroundWorker();
-            this.bgwReceivingReceipt = new System.ComponentModel.BackgroundWorker();
-            this.bgwDisbursement = new System.ComponentModel.BackgroundWorker();
-            this.bgwJournalVoucher = new System.ComponentModel.BackgroundWorker();
-            this.bgwStockIn = new System.ComponentModel.BackgroundWorker();
-            this.bgwStockOut = new System.ComponentModel.BackgroundWorker();
-            this.bgwStockTransfer = new System.ComponentModel.BackgroundWorker();
+            this.bgwFolderMonitoringIntegration = new System.ComponentModel.BackgroundWorker();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.fileSystemWatcherCSVFiles)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -498,7 +490,6 @@
             this.tabFolderMonitoring.Controls.Add(this.btnGetCSVTemplate);
             this.tabFolderMonitoring.Controls.Add(this.panel4);
             this.tabFolderMonitoring.Controls.Add(this.btnStartFolderMonitoringIntegration);
-            this.tabFolderMonitoring.Controls.Add(this.btnStopFolderMonitoringIntegration);
             this.tabFolderMonitoring.Controls.Add(this.txtFolderMonitoringLogs);
             this.tabFolderMonitoring.Location = new System.Drawing.Point(4, 25);
             this.tabFolderMonitoring.Name = "tabFolderMonitoring";
@@ -583,29 +574,13 @@
             this.btnStartFolderMonitoringIntegration.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnStartFolderMonitoringIntegration.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.btnStartFolderMonitoringIntegration.ForeColor = System.Drawing.Color.White;
-            this.btnStartFolderMonitoringIntegration.Location = new System.Drawing.Point(664, 100);
+            this.btnStartFolderMonitoringIntegration.Location = new System.Drawing.Point(763, 100);
             this.btnStartFolderMonitoringIntegration.Name = "btnStartFolderMonitoringIntegration";
             this.btnStartFolderMonitoringIntegration.Size = new System.Drawing.Size(93, 37);
             this.btnStartFolderMonitoringIntegration.TabIndex = 16;
             this.btnStartFolderMonitoringIntegration.Text = "Start";
             this.btnStartFolderMonitoringIntegration.UseVisualStyleBackColor = false;
             this.btnStartFolderMonitoringIntegration.Click += new System.EventHandler(this.btnStartFolderMonitoringIntegration_Click);
-            // 
-            // btnStopFolderMonitoringIntegration
-            // 
-            this.btnStopFolderMonitoringIntegration.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnStopFolderMonitoringIntegration.BackColor = System.Drawing.Color.IndianRed;
-            this.btnStopFolderMonitoringIntegration.FlatAppearance.BorderSize = 0;
-            this.btnStopFolderMonitoringIntegration.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnStopFolderMonitoringIntegration.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.btnStopFolderMonitoringIntegration.ForeColor = System.Drawing.Color.White;
-            this.btnStopFolderMonitoringIntegration.Location = new System.Drawing.Point(763, 100);
-            this.btnStopFolderMonitoringIntegration.Name = "btnStopFolderMonitoringIntegration";
-            this.btnStopFolderMonitoringIntegration.Size = new System.Drawing.Size(93, 37);
-            this.btnStopFolderMonitoringIntegration.TabIndex = 15;
-            this.btnStopFolderMonitoringIntegration.Text = "Stop";
-            this.btnStopFolderMonitoringIntegration.UseVisualStyleBackColor = false;
-            this.btnStopFolderMonitoringIntegration.Click += new System.EventHandler(this.btnStopFolderMonitoringIntegration_Click);
             // 
             // txtFolderMonitoringLogs
             // 
@@ -624,61 +599,11 @@
             this.txtFolderMonitoringLogs.Size = new System.Drawing.Size(848, 479);
             this.txtFolderMonitoringLogs.TabIndex = 17;
             // 
-            // bgwSalesInvoice
+            // bgwFolderMonitoringIntegration
             // 
-            this.bgwSalesInvoice.WorkerReportsProgress = true;
-            this.bgwSalesInvoice.WorkerSupportsCancellation = true;
-            this.bgwSalesInvoice.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bgwSalesInvoice_DoWork);
-            this.bgwSalesInvoice.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.bgwSalesInvoice_RunWorkerCompleted);
-            // 
-            // bgwCollection
-            // 
-            this.bgwCollection.WorkerReportsProgress = true;
-            this.bgwCollection.WorkerSupportsCancellation = true;
-            this.bgwCollection.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bgwCollection_DoWork);
-            this.bgwCollection.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.bgwCollection_RunWorkerCompleted);
-            // 
-            // bgwReceivingReceipt
-            // 
-            this.bgwReceivingReceipt.WorkerReportsProgress = true;
-            this.bgwReceivingReceipt.WorkerSupportsCancellation = true;
-            this.bgwReceivingReceipt.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bgwReceivingReceipt_DoWork);
-            this.bgwReceivingReceipt.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.bgwReceivingReceipt_RunWorkerCompleted);
-            // 
-            // bgwDisbursement
-            // 
-            this.bgwDisbursement.WorkerReportsProgress = true;
-            this.bgwDisbursement.WorkerSupportsCancellation = true;
-            this.bgwDisbursement.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bgwDisbursement_DoWork);
-            this.bgwDisbursement.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.bgwDisbursement_RunWorkerCompleted);
-            // 
-            // bgwJournalVoucher
-            // 
-            this.bgwJournalVoucher.WorkerReportsProgress = true;
-            this.bgwJournalVoucher.WorkerSupportsCancellation = true;
-            this.bgwJournalVoucher.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bgwJournalVoucher_DoWork);
-            this.bgwJournalVoucher.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.bgwJournalVoucher_RunWorkerCompleted);
-            // 
-            // bgwStockIn
-            // 
-            this.bgwStockIn.WorkerReportsProgress = true;
-            this.bgwStockIn.WorkerSupportsCancellation = true;
-            this.bgwStockIn.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bgwStockIn_DoWork);
-            this.bgwStockIn.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.bgwStockIn_RunWorkerCompleted);
-            // 
-            // bgwStockOut
-            // 
-            this.bgwStockOut.WorkerReportsProgress = true;
-            this.bgwStockOut.WorkerSupportsCancellation = true;
-            this.bgwStockOut.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bgwStockOut_DoWork);
-            this.bgwStockOut.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.bgwStockOut_RunWorkerCompleted);
-            // 
-            // bgwStockTransfer
-            // 
-            this.bgwStockTransfer.WorkerReportsProgress = true;
-            this.bgwStockTransfer.WorkerSupportsCancellation = true;
-            this.bgwStockTransfer.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bgwStockTransfer_DoWork);
-            this.bgwStockTransfer.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.bgwStockTransfer_RunWorkerCompleted);
+            this.bgwFolderMonitoringIntegration.WorkerReportsProgress = true;
+            this.bgwFolderMonitoringIntegration.WorkerSupportsCancellation = true;
+            this.bgwFolderMonitoringIntegration.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bgwFolderMonitoringIntegration_DoWork);
             // 
             // TrnIntegrationForm
             // 
@@ -742,7 +667,6 @@
         private System.Windows.Forms.TextBox txtFolderMonitoringDomain;
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Button btnStartFolderMonitoringIntegration;
-        private System.Windows.Forms.Button btnStopFolderMonitoringIntegration;
         private System.Windows.Forms.TextBox txtFolderMonitoringLogs;
         private System.Windows.Forms.TabPage tabPOSIntegration;
         private System.Windows.Forms.Panel panel3;
@@ -763,13 +687,6 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox txtLogs;
         private System.Windows.Forms.Panel panel6;
-        private System.ComponentModel.BackgroundWorker bgwSalesInvoice;
-        private System.ComponentModel.BackgroundWorker bgwCollection;
-        private System.ComponentModel.BackgroundWorker bgwReceivingReceipt;
-        private System.ComponentModel.BackgroundWorker bgwDisbursement;
-        private System.ComponentModel.BackgroundWorker bgwJournalVoucher;
-        private System.ComponentModel.BackgroundWorker bgwStockIn;
-        private System.ComponentModel.BackgroundWorker bgwStockOut;
-        private System.ComponentModel.BackgroundWorker bgwStockTransfer;
+        private System.ComponentModel.BackgroundWorker bgwFolderMonitoringIntegration;
     }
 }
