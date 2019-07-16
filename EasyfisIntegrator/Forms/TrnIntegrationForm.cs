@@ -413,7 +413,7 @@ namespace EasyfisIntegrator.Forms
 
             //btnStartFolderMonitoringIntegration.Enabled = false;
 
-            logFolderMonitoringMessage("File Integration Started! \r\n\nTime Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n\r\n\n");
+            logFolderMonitoringMessage("File Integration Started! \r\n\nTime Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
 
             isFolderMonitoringIntegrationStarted = true;
 
@@ -467,7 +467,7 @@ namespace EasyfisIntegrator.Forms
                         txtFolderMonitoringLogs.ScrollToCaret();
                     }
 
-                    if (txtFolderMonitoringLogs.Lines.Length == 1000)
+                    if (txtFolderMonitoringLogs.Lines.Length >= 1000)
                     {
                         txtFolderMonitoringLogs.Text = "";
 
@@ -673,7 +673,6 @@ namespace EasyfisIntegrator.Forms
         {
             FolderMonitoringTrnSalesInvoiceController folderMonitoringSI = new FolderMonitoringTrnSalesInvoiceController();
 
-            logFolderMonitoringMessage("Checking Sales CSV Files..." + "\r\n\n");
             List<String> SIFiles = new List<String>(Directory.EnumerateFiles(folderToMonitor + "\\SI\\", "*.*", SearchOption.AllDirectories).Where(f => ext.Contains(Path.GetExtension(f))));
             if (SIFiles.Any())
             {
@@ -682,19 +681,12 @@ namespace EasyfisIntegrator.Forms
                     folderMonitoringSI.SendSalesInvoice(this, txtFolderMonitoringUserCode.Text, SIFile, domain);
                 }
             }
-            else
-            {
-                logFolderMonitoringMessage("\r\n\nNo Sales CSV Files Found!" + "\r\n\n");
-                logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                logFolderMonitoringMessage("\r\n\n");
-            }
         }
 
         public void runFolderMonitoringIntegrationOR(List<String> ext)
         {
             FolderMonitoringTrnCollectionController folderMonitoringOR = new FolderMonitoringTrnCollectionController();
 
-            logFolderMonitoringMessage("Checking Collection CSV Files..." + "\r\n\n");
             List<String> ORFiles = new List<String>(Directory.EnumerateFiles(folderToMonitor + "\\OR\\", "*.*", SearchOption.AllDirectories).Where(f => ext.Contains(Path.GetExtension(f))));
             if (ORFiles.Any())
             {
@@ -703,19 +695,12 @@ namespace EasyfisIntegrator.Forms
                     folderMonitoringOR.SendCollection(this, txtFolderMonitoringUserCode.Text, ORFile, domain);
                 }
             }
-            else
-            {
-                logFolderMonitoringMessage("\r\n\nNo Collection CSV Files Found!" + "\r\n\n");
-                logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                logFolderMonitoringMessage("\r\n\n");
-            }
         }
 
         public void runFolderMonitoringIntegrationRR(List<String> ext)
         {
             FolderMonitoringTrnReceivingReceiptController folderMonitoringRR = new FolderMonitoringTrnReceivingReceiptController();
 
-            logFolderMonitoringMessage("Checking Receiving Receipt CSV Files..." + "\r\n\n");
             List<String> RRFiles = new List<String>(Directory.EnumerateFiles(folderToMonitor + "\\RR\\", "*.*", SearchOption.AllDirectories).Where(f => ext.Contains(Path.GetExtension(f))));
             if (RRFiles.Any())
             {
@@ -724,19 +709,12 @@ namespace EasyfisIntegrator.Forms
                     folderMonitoringRR.SendReceivingReceipt(this, txtFolderMonitoringUserCode.Text, RRFile, domain);
                 }
             }
-            else
-            {
-                logFolderMonitoringMessage("\r\n\nNo Receiving Receipt CSV Files Found!" + "\r\n\n");
-                logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                logFolderMonitoringMessage("\r\n\n");
-            }
         }
 
         public void runFolderMonitoringIntegrationCV(List<String> ext)
         {
             FolderMonitoringTrnDisbursementController folderMonitoringCV = new FolderMonitoringTrnDisbursementController();
 
-            logFolderMonitoringMessage("Checking Disbursement CSV Files..." + "\r\n\n");
             List<String> CVFiles = new List<String>(Directory.EnumerateFiles(folderToMonitor + "\\CV\\", "*.*", SearchOption.AllDirectories).Where(f => ext.Contains(Path.GetExtension(f))));
             if (CVFiles.Any())
             {
@@ -745,19 +723,12 @@ namespace EasyfisIntegrator.Forms
                     folderMonitoringCV.SendDisbursement(this, txtFolderMonitoringUserCode.Text, CVFile, domain);
                 }
             }
-            else
-            {
-                logFolderMonitoringMessage("\r\n\nNo Disbursement CSV Files Found!" + "\r\n\n");
-                logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                logFolderMonitoringMessage("\r\n\n");
-            }
         }
 
         public void runFolderMonitoringIntegrationJV(List<String> ext)
         {
             FolderMonitoringTrnJournalVoucherController folderMonitoringJV = new FolderMonitoringTrnJournalVoucherController();
 
-            logFolderMonitoringMessage("Checking Journal Voucher CSV Files..." + "\r\n\n");
             List<String> JVFiles = new List<String>(Directory.EnumerateFiles(folderToMonitor + "\\JV\\", "*.*", SearchOption.AllDirectories).Where(f => ext.Contains(Path.GetExtension(f))));
             if (JVFiles.Any())
             {
@@ -766,19 +737,12 @@ namespace EasyfisIntegrator.Forms
                     folderMonitoringJV.SendJournalVoucher(this, txtFolderMonitoringUserCode.Text, JVFile, domain);
                 }
             }
-            else
-            {
-                logFolderMonitoringMessage("\r\n\nNo Journal Voucher CSV Files Found!" + "\r\n\n");
-                logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                logFolderMonitoringMessage("\r\n\n");
-            }
         }
 
         public void runFolderMonitoringIntegrationIN(List<String> ext)
         {
             FolderMonitoringTrnStockInController folderMonitoringIN = new FolderMonitoringTrnStockInController();
 
-            logFolderMonitoringMessage("Checking Stock In CSV Files..." + "\r\n\n");
             List<String> INFiles = new List<String>(Directory.EnumerateFiles(folderToMonitor + "\\IN\\", "*.*", SearchOption.AllDirectories).Where(f => ext.Contains(Path.GetExtension(f))));
             if (INFiles.Any())
             {
@@ -787,19 +751,12 @@ namespace EasyfisIntegrator.Forms
                     folderMonitoringIN.SendStockIn(this, txtFolderMonitoringUserCode.Text, INFile, domain);
                 }
             }
-            else
-            {
-                logFolderMonitoringMessage("\r\n\nNo Stock In CSV Files Found!" + "\r\n\n");
-                logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                logFolderMonitoringMessage("\r\n\n");
-            }
         }
 
         public void runFolderMonitoringIntegrationOT(List<String> ext)
         {
             FolderMonitoringTrnStockOutController folderMonitoringOT = new FolderMonitoringTrnStockOutController();
 
-            logFolderMonitoringMessage("Checking Stock Out CSV Files..." + "\r\n\n");
             List<String> OTFiles = new List<String>(Directory.EnumerateFiles(folderToMonitor + "\\OT\\", "*.*", SearchOption.AllDirectories).Where(f => ext.Contains(Path.GetExtension(f))));
             if (OTFiles.Any())
             {
@@ -808,19 +765,12 @@ namespace EasyfisIntegrator.Forms
                     folderMonitoringOT.SendStockOut(this, txtFolderMonitoringUserCode.Text, OTFile, domain);
                 }
             }
-            else
-            {
-                logFolderMonitoringMessage("\r\n\nNo Stock Out CSV Files Found!" + "\r\n\n");
-                logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                logFolderMonitoringMessage("\r\n\n");
-            }
         }
 
         public void runFolderMonitoringIntegrationST(List<String> ext)
         {
             FolderMonitoringTrnStockTransferController folderMonitoringST = new FolderMonitoringTrnStockTransferController();
 
-            logFolderMonitoringMessage("Checking Stock Transfer CSV Files..." + "\r\n\n");
             List<String> STFiles = new List<String>(Directory.EnumerateFiles(folderToMonitor + "\\ST\\", "*.*", SearchOption.AllDirectories).Where(f => ext.Contains(Path.GetExtension(f))));
             if (STFiles.Any())
             {
@@ -828,12 +778,6 @@ namespace EasyfisIntegrator.Forms
                 {
                     folderMonitoringST.SendStockTransfer(this, txtFolderMonitoringUserCode.Text, STFile, domain);
                 }
-            }
-            else
-            {
-                logFolderMonitoringMessage("\r\n\nNo Stock Transfer CSV Files Found!" + "\r\n\n");
-                logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                logFolderMonitoringMessage("\r\n\n");
             }
         }
     }
