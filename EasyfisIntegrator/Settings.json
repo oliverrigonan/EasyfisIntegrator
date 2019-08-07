@@ -1,8 +1,8 @@
 ﻿{
   "ConnectionString": "Data Source=localhost;Initial Catalog=pos13;Persist Security Info=True;User ID=sa;Password=innosoft",
-  "Domain": "localhost:2651",
+  "Domain": "jmpls.easyfis.com",
   "LogFileLocation": "D:\\Work\\Easyfis\\Projects\\Integrations\\Easyfis Integration\\Easyfis Integrator\\Logs",
-  "FolderToMonitor": "C:\\Users\\Developer\\Desktop\\CSVTemplate_20190628_050644",
+  "FolderToMonitor": "C:\\Users\\Developer\\Desktop\\JM Poultry\\CSVTemplate_20190628_050644",
   "IsFolderMonitoringOnly": false,
   "FolderMonitoringUserCode": "jmpls",
   "FolderForSentFiles": "D:\\Work\\Easyfis\\Projects\\Integrations\\Easyfis Integration\\Easyfis Integrator\\Sent"

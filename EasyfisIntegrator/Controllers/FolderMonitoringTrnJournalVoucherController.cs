@@ -179,10 +179,13 @@ namespace EasyfisIntegrator.Controllers
                             {
                                 if (newJournalVouchers.Count() <= 100)
                                 {
-                                    jsonData = serializer.Serialize(newJournalVouchers);
-                                    send = true;
+                                    if (i == newJournalVouchers.Count())
+                                    {
+                                        jsonData = serializer.Serialize(newJournalVouchers);
+                                        send = true;
 
-                                    percentage = Convert.ToDecimal((Convert.ToDecimal(i) / Convert.ToDecimal(newJournalVouchers.Count())) * 100);
+                                        percentage = Convert.ToDecimal((Convert.ToDecimal(i) / Convert.ToDecimal(newJournalVouchers.Count())) * 100);
+                                    }
                                 }
                                 else
                                 {

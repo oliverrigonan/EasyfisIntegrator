@@ -177,10 +177,13 @@ namespace EasyfisIntegrator.Controllers
                             {
                                 if (newSalesInvoices.Count() <= 100)
                                 {
-                                    jsonData = serializer.Serialize(newSalesInvoices);
-                                    send = true;
+                                    if (i == newSalesInvoices.Count())
+                                    {
+                                        jsonData = serializer.Serialize(newSalesInvoices);
+                                        send = true;
 
-                                    percentage = Convert.ToDecimal((Convert.ToDecimal(i) / Convert.ToDecimal(newSalesInvoices.Count())) * 100);
+                                        percentage = Convert.ToDecimal((Convert.ToDecimal(i) / Convert.ToDecimal(newSalesInvoices.Count())) * 100);
+                                    }
                                 }
                                 else
                                 {
