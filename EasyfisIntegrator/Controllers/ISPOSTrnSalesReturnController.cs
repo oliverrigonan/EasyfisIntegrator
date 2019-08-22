@@ -78,7 +78,7 @@ namespace EasyfisIntegrator.Controllers
                                     CreatedBy = userCode,
                                     Term = terms.FirstOrDefault().Term,
                                     DocumentReference = stockIn.StockInNumber,
-                                    ManualSINumber = stockIn.TrnCollection.TrnSale.SalesNumber,
+                                    ManualSINumber = stockIn.TrnCollection.TrnSale.SalesNumber + "-RT",
                                     Remarks = "Return from Customer",
                                     ListPOSIntegrationTrnSalesInvoiceItem = listCollectionLines.ToList()
                                 };
