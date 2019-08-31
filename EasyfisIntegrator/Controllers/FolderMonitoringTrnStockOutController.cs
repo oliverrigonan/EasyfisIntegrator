@@ -279,85 +279,72 @@ namespace EasyfisIntegrator.Controllers
                 {
                     try
                     {
-                        var branchCodes = from d in newStockOuts
-                                          group d by d.BranchCode into g
-                                          select g.Key;
-
-                        var listBranchCodes = branchCodes.ToList();
-                        if (listBranchCodes.Any())
-                        {
-                            Int32 branchCount = 0;
-
-                            foreach (var branchCode in listBranchCodes)
-                            {
-                                branchCount += 1;
-
-                                Decimal percentage = 0;
-                                trnIntegrationForm.logFolderMonitoringMessage("Posting Stock Out Branch: " + branchCode + " ... (0%) \r\n\n");
-
-                                var manualOTNumbers = from d in newStockOuts
-                                                      where d.BranchCode.Equals(branchCode)
-                                                      group d by d.ManualOTNumber into g
-                                                      select g.Key;
-
-                                var listManualOTNumbers = manualOTNumbers.ToList();
-                                if (listManualOTNumbers.Any())
-                                {
-                                    Int32 manualOTNumberCount = 0;
-
-                                    foreach (var manualOTNumber in listManualOTNumbers)
-                                    {
-                                        manualOTNumberCount += 1;
-                                        percentage = Convert.ToDecimal((Convert.ToDecimal(manualOTNumberCount) / Convert.ToDecimal(listManualOTNumbers.Count())) * 100);
-
-                                        Boolean isErrorLogged = false;
-                                        String previousErrorMessage = String.Empty;
-
-                                        while (true)
+                        var stockOuts = from d in newStockOuts
+                                        group d by new
                                         {
-                                            String postStockOutTask = await PostStockOut(domain, branchCode, manualOTNumber);
-                                            if (!postStockOutTask.Equals("Post Successful..."))
+                                            d.BranchCode,
+                                            d.ManualOTNumber
+                                        } into g
+                                        select g;
+
+                        if (stockOuts.Any())
+                        {
+                            Decimal percentage = 0;
+                            trnIntegrationForm.logFolderMonitoringMessage("Posting Stock Out... (0%) \r\n\n");
+
+                            Int32 stockOutCount = 0;
+
+                            foreach (var stockOut in stockOuts)
+                            {
+                                stockOutCount += 1;
+                                percentage = Convert.ToDecimal((Convert.ToDecimal(stockOutCount) / Convert.ToDecimal(stockOuts.Count())) * 100);
+
+                                Boolean isErrorLogged = false;
+                                String previousErrorMessage = String.Empty;
+
+                                while (true)
+                                {
+                                    String postStockOutTask = await PostStockOut(domain, stockOut.Key.BranchCode, stockOut.Key.ManualOTNumber);
+                                    if (!postStockOutTask.Equals("Post Successful..."))
+                                    {
+                                        if (previousErrorMessage.Equals(String.Empty))
+                                        {
+                                            previousErrorMessage = postStockOutTask;
+                                        }
+                                        else
+                                        {
+                                            if (!previousErrorMessage.Equals(postStockOutTask))
                                             {
-                                                if (previousErrorMessage.Equals(String.Empty))
-                                                {
-                                                    previousErrorMessage = postStockOutTask;
-                                                }
-                                                else
-                                                {
-                                                    if (!previousErrorMessage.Equals(postStockOutTask))
-                                                    {
-                                                        previousErrorMessage = postStockOutTask;
-                                                        isErrorLogged = false;
-                                                    }
-                                                }
-
-                                                if (!isErrorLogged)
-                                                {
-                                                    trnIntegrationForm.logFolderMonitoringMessage(previousErrorMessage);
-                                                    trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-                                                    trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
-
-                                                    isErrorLogged = true;
-                                                }
-
-                                                Thread.Sleep(5000);
-                                            }
-                                            else
-                                            {
-                                                trnIntegrationForm.logFolderMonitoringMessage("OTIntegrationLogOnce");
-                                                trnIntegrationForm.logFolderMonitoringMessage("\r\n\nPosting Stock Out Branch: " + branchCode + " ... (" + Math.Round(percentage, 2) + "%) \r\n\n");
-
-                                                if (manualOTNumberCount == listManualOTNumbers.Count())
-                                                {
-                                                    trnIntegrationForm.logFolderMonitoringMessage("Branch: " + branchCode + " Post Successful!" + "\r\n\n");
-                                                    trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-                                                }
-
-                                                break;
+                                                previousErrorMessage = postStockOutTask;
+                                                isErrorLogged = false;
                                             }
                                         }
+
+                                        if (!isErrorLogged)
+                                        {
+                                            trnIntegrationForm.logFolderMonitoringMessage(previousErrorMessage);
+                                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                                            trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+
+                                            isErrorLogged = true;
+                                        }
+
+                                        Thread.Sleep(5000);
+                                    }
+                                    else
+                                    {
+                                        trnIntegrationForm.logFolderMonitoringMessage("OTIntegrationLogOnce");
+                                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\nPosting Stock Out... (" + Math.Round(percentage, 2) + "%) \r\n\n");
+
+                                        if (stockOutCount == stockOuts.Count())
+                                        {
+                                            trnIntegrationForm.logFolderMonitoringMessage("Post Successful!" + "\r\n\n");
+                                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                                        }
+
+                                        break;
                                     }
                                 }
                             }
@@ -465,9 +452,10 @@ namespace EasyfisIntegrator.Controllers
                     }
                 }
             }
-            catch (Exception e)
+            catch (WebException we)
             {
-                return Task.FromResult("Exception Error: " + e.Message + "\r\n\n");
+                var resp = new StreamReader(we.Response.GetResponseStream()).ReadToEnd();
+                return Task.FromResult("Web Exception Error: " + resp.Replace("\"", "") + "\r\n\n");
             }
         }
 
@@ -499,9 +487,10 @@ namespace EasyfisIntegrator.Controllers
                     }
                 }
             }
-            catch (Exception e)
+            catch (WebException we)
             {
-                return Task.FromResult("Exception Error: " + e.Message + "\r\n\n");
+                var resp = new StreamReader(we.Response.GetResponseStream()).ReadToEnd();
+                return Task.FromResult("Web Exception Error: " + resp.Replace("\"", "") + "\r\n\n");
             }
         }
 
@@ -543,9 +532,10 @@ namespace EasyfisIntegrator.Controllers
                     }
                 }
             }
-            catch (Exception e)
+            catch (WebException we)
             {
-                return Task.FromResult("Exception Error: " + e.Message + "\r\n\n");
+                var resp = new StreamReader(we.Response.GetResponseStream()).ReadToEnd();
+                return Task.FromResult("Web Exception Error: " + resp.Replace("\"", "") + "\r\n\n");
             }
         }
     }

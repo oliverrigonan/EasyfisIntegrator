@@ -286,85 +286,72 @@ namespace EasyfisIntegrator.Controllers
                 {
                     try
                     {
-                        var branchCodes = from d in newDisbursements
-                                          group d by d.BranchCode into g
-                                          select g.Key;
+                        var disbursements = from d in newDisbursements
+                                            group d by new
+                                            {
+                                                d.BranchCode,
+                                                d.ManualCVNumber
+                                            } into g
+                                            select g;
 
-                        var listBranchCodes = branchCodes.ToList();
-                        if (listBranchCodes.Any())
+                        if (disbursements.Any())
                         {
-                            Int32 branchCount = 0;
+                            Decimal percentage = 0;
+                            trnIntegrationForm.logFolderMonitoringMessage("Posting Disbursement... (0%) \r\n\n");
 
-                            foreach (var branchCode in listBranchCodes)
+                            Int32 disbursementCount = 0;
+
+                            foreach (var disbursement in disbursements)
                             {
-                                branchCount += 1;
+                                disbursementCount += 1;
+                                percentage = Convert.ToDecimal((Convert.ToDecimal(disbursementCount) / Convert.ToDecimal(disbursements.Count())) * 100);
 
-                                Decimal percentage = 0;
-                                trnIntegrationForm.logFolderMonitoringMessage("Posting Disbursement Branch: " + branchCode + " ... (0%) \r\n\n");
+                                Boolean isErrorLogged = false;
+                                String previousErrorMessage = String.Empty;
 
-                                var manualCVNumbers = from d in newDisbursements
-                                                      where d.BranchCode.Equals(branchCode)
-                                                      group d by d.ManualCVNumber into g
-                                                      select g.Key;
-
-                                var listManualCVNumbers = manualCVNumbers.ToList();
-                                if (listManualCVNumbers.Any())
+                                while (true)
                                 {
-                                    Int32 manualCVNumberCount = 0;
-
-                                    foreach (var manualCVNumber in listManualCVNumbers)
+                                    String postDisbursementTask = await PostDisbursement(domain, disbursement.Key.BranchCode, disbursement.Key.ManualCVNumber);
+                                    if (!postDisbursementTask.Equals("Post Successful..."))
                                     {
-                                        manualCVNumberCount += 1;
-                                        percentage = Convert.ToDecimal((Convert.ToDecimal(manualCVNumberCount) / Convert.ToDecimal(listManualCVNumbers.Count())) * 100);
-
-                                        Boolean isErrorLogged = false;
-                                        String previousErrorMessage = String.Empty;
-
-                                        while (true)
+                                        if (previousErrorMessage.Equals(String.Empty))
                                         {
-                                            String postDisbursementTask = await PostDisbursement(domain, branchCode, manualCVNumber);
-                                            if (!postDisbursementTask.Equals("Post Successful..."))
+                                            previousErrorMessage = postDisbursementTask;
+                                        }
+                                        else
+                                        {
+                                            if (!previousErrorMessage.Equals(postDisbursementTask))
                                             {
-                                                if (previousErrorMessage.Equals(String.Empty))
-                                                {
-                                                    previousErrorMessage = postDisbursementTask;
-                                                }
-                                                else
-                                                {
-                                                    if (!previousErrorMessage.Equals(postDisbursementTask))
-                                                    {
-                                                        previousErrorMessage = postDisbursementTask;
-                                                        isErrorLogged = false;
-                                                    }
-                                                }
-
-                                                if (!isErrorLogged)
-                                                {
-                                                    trnIntegrationForm.logFolderMonitoringMessage(previousErrorMessage);
-                                                    trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-                                                    trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
-
-                                                    isErrorLogged = true;
-                                                }
-
-                                                Thread.Sleep(5000);
-                                            }
-                                            else
-                                            {
-                                                trnIntegrationForm.logFolderMonitoringMessage("CVIntegrationLogOnce");
-                                                trnIntegrationForm.logFolderMonitoringMessage("\r\n\nPosting Disbursement Branch: " + branchCode + " ... (" + Math.Round(percentage, 2) + "%) \r\n\n");
-
-                                                if (manualCVNumberCount == listManualCVNumbers.Count())
-                                                {
-                                                    trnIntegrationForm.logFolderMonitoringMessage("Branch: " + branchCode + " Post Successful!" + "\r\n\n");
-                                                    trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-                                                }
-
-                                                break;
+                                                previousErrorMessage = postDisbursementTask;
+                                                isErrorLogged = false;
                                             }
                                         }
+
+                                        if (!isErrorLogged)
+                                        {
+                                            trnIntegrationForm.logFolderMonitoringMessage(previousErrorMessage);
+                                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                                            trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+
+                                            isErrorLogged = true;
+                                        }
+
+                                        Thread.Sleep(5000);
+                                    }
+                                    else
+                                    {
+                                        trnIntegrationForm.logFolderMonitoringMessage("CVIntegrationLogOnce");
+                                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\nPosting Disbursement... (" + Math.Round(percentage, 2) + "%) \r\n\n");
+
+                                        if (disbursementCount == disbursements.Count())
+                                        {
+                                            trnIntegrationForm.logFolderMonitoringMessage("Post Successful!" + "\r\n\n");
+                                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                                        }
+
+                                        break;
                                     }
                                 }
                             }
@@ -472,9 +459,10 @@ namespace EasyfisIntegrator.Controllers
                     }
                 }
             }
-            catch (Exception e)
+            catch (WebException we)
             {
-                return Task.FromResult("Exception Error: " + e.Message + "\r\n\n");
+                var resp = new StreamReader(we.Response.GetResponseStream()).ReadToEnd();
+                return Task.FromResult("Web Exception Error: " + resp.Replace("\"", "") + "\r\n\n");
             }
         }
 
@@ -506,9 +494,10 @@ namespace EasyfisIntegrator.Controllers
                     }
                 }
             }
-            catch (Exception e)
+            catch (WebException we)
             {
-                return Task.FromResult("Exception Error: " + e.Message + "\r\n\n");
+                var resp = new StreamReader(we.Response.GetResponseStream()).ReadToEnd();
+                return Task.FromResult("Web Exception Error: " + resp.Replace("\"", "") + "\r\n\n");
             }
         }
 
@@ -550,9 +539,10 @@ namespace EasyfisIntegrator.Controllers
                     }
                 }
             }
-            catch (Exception e)
+            catch (WebException we)
             {
-                return Task.FromResult("Exception Error: " + e.Message + "\r\n\n");
+                var resp = new StreamReader(we.Response.GetResponseStream()).ReadToEnd();
+                return Task.FromResult("Web Exception Error: " + resp.Replace("\"", "") + "\r\n\n");
             }
         }
     }

@@ -279,85 +279,72 @@ namespace EasyfisIntegrator.Controllers
                 {
                     try
                     {
-                        var branchCodes = from d in newStockTransfers
-                                          group d by d.BranchCode into g
-                                          select g.Key;
+                        var stockTransfers = from d in newStockTransfers
+                                             group d by new
+                                             {
+                                                 d.BranchCode,
+                                                 d.ManualSTNumber
+                                             } into g
+                                             select g;
 
-                        var listBranchCodes = branchCodes.ToList();
-                        if (listBranchCodes.Any())
+                        if (stockTransfers.Any())
                         {
-                            Int32 branchCount = 0;
+                            Decimal percentage = 0;
+                            trnIntegrationForm.logFolderMonitoringMessage("Posting Stock Transfer... (0%) \r\n\n");
 
-                            foreach (var branchCode in listBranchCodes)
+                            Int32 stockTransferCount = 0;
+
+                            foreach (var stockTransfer in stockTransfers)
                             {
-                                branchCount += 1;
+                                stockTransferCount += 1;
+                                percentage = Convert.ToDecimal((Convert.ToDecimal(stockTransferCount) / Convert.ToDecimal(stockTransfers.Count())) * 100);
 
-                                Decimal percentage = 0;
-                                trnIntegrationForm.logFolderMonitoringMessage("Posting Stock Transfer Branch: " + branchCode + " ... (0%) \r\n\n");
+                                Boolean isErrorLogged = false;
+                                String previousErrorMessage = String.Empty;
 
-                                var manualSTNumbers = from d in newStockTransfers
-                                                      where d.BranchCode.Equals(branchCode)
-                                                      group d by d.ManualSTNumber into g
-                                                      select g.Key;
-
-                                var listManualSTNumbers = manualSTNumbers.ToList();
-                                if (listManualSTNumbers.Any())
+                                while (true)
                                 {
-                                    Int32 manualSTNumberCount = 0;
-
-                                    foreach (var manualSTNumber in listManualSTNumbers)
+                                    String postStockTransferTask = await PostStockTransfer(domain, stockTransfer.Key.BranchCode, stockTransfer.Key.ManualSTNumber);
+                                    if (!postStockTransferTask.Equals("Post Successful..."))
                                     {
-                                        manualSTNumberCount += 1;
-                                        percentage = Convert.ToDecimal((Convert.ToDecimal(manualSTNumberCount) / Convert.ToDecimal(listManualSTNumbers.Count())) * 100);
-
-                                        Boolean isErrorLogged = false;
-                                        String previousErrorMessage = String.Empty;
-
-                                        while (true)
+                                        if (previousErrorMessage.Equals(String.Empty))
                                         {
-                                            String postStockTransferTask = await PostStockTransfer(domain, branchCode, manualSTNumber);
-                                            if (!postStockTransferTask.Equals("Post Successful..."))
+                                            previousErrorMessage = postStockTransferTask;
+                                        }
+                                        else
+                                        {
+                                            if (!previousErrorMessage.Equals(postStockTransferTask))
                                             {
-                                                if (previousErrorMessage.Equals(String.Empty))
-                                                {
-                                                    previousErrorMessage = postStockTransferTask;
-                                                }
-                                                else
-                                                {
-                                                    if (!previousErrorMessage.Equals(postStockTransferTask))
-                                                    {
-                                                        previousErrorMessage = postStockTransferTask;
-                                                        isErrorLogged = false;
-                                                    }
-                                                }
-
-                                                if (!isErrorLogged)
-                                                {
-                                                    trnIntegrationForm.logFolderMonitoringMessage(previousErrorMessage);
-                                                    trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-                                                    trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
-
-                                                    isErrorLogged = true;
-                                                }
-
-                                                Thread.Sleep(5000);
-                                            }
-                                            else
-                                            {
-                                                trnIntegrationForm.logFolderMonitoringMessage("STIntegrationLogOnce");
-                                                trnIntegrationForm.logFolderMonitoringMessage("\r\n\nPosting Stock Transfer Branch: " + branchCode + " ... (" + Math.Round(percentage, 2) + "%) \r\n\n");
-
-                                                if (manualSTNumberCount == listManualSTNumbers.Count())
-                                                {
-                                                    trnIntegrationForm.logFolderMonitoringMessage("Branch: " + branchCode + " Post Successful!" + "\r\n\n");
-                                                    trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-                                                }
-
-                                                break;
+                                                previousErrorMessage = postStockTransferTask;
+                                                isErrorLogged = false;
                                             }
                                         }
+
+                                        if (!isErrorLogged)
+                                        {
+                                            trnIntegrationForm.logFolderMonitoringMessage(previousErrorMessage);
+                                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                                            trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+
+                                            isErrorLogged = true;
+                                        }
+
+                                        Thread.Sleep(5000);
+                                    }
+                                    else
+                                    {
+                                        trnIntegrationForm.logFolderMonitoringMessage("STIntegrationLogOnce");
+                                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\nPosting Stock Transfer... (" + Math.Round(percentage, 2) + "%) \r\n\n");
+
+                                        if (stockTransferCount == stockTransfers.Count())
+                                        {
+                                            trnIntegrationForm.logFolderMonitoringMessage("Post Successful!" + "\r\n\n");
+                                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                                        }
+
+                                        break;
                                     }
                                 }
                             }
@@ -465,9 +452,10 @@ namespace EasyfisIntegrator.Controllers
                     }
                 }
             }
-            catch (Exception e)
+            catch (WebException we)
             {
-                return Task.FromResult("Exception Error: " + e.Message + "\r\n\n");
+                var resp = new StreamReader(we.Response.GetResponseStream()).ReadToEnd();
+                return Task.FromResult("Web Exception Error: " + resp.Replace("\"", "") + "\r\n\n");
             }
         }
 
@@ -499,9 +487,10 @@ namespace EasyfisIntegrator.Controllers
                     }
                 }
             }
-            catch (Exception e)
+            catch (WebException we)
             {
-                return Task.FromResult("Exception Error: " + e.Message + "\r\n\n");
+                var resp = new StreamReader(we.Response.GetResponseStream()).ReadToEnd();
+                return Task.FromResult("Web Exception Error: " + resp.Replace("\"", "") + "\r\n\n");
             }
         }
 
@@ -543,9 +532,10 @@ namespace EasyfisIntegrator.Controllers
                     }
                 }
             }
-            catch (Exception e)
+            catch (WebException we)
             {
-                return Task.FromResult("Exception Error: " + e.Message + "\r\n\n");
+                var resp = new StreamReader(we.Response.GetResponseStream()).ReadToEnd();
+                return Task.FromResult("Web Exception Error: " + resp.Replace("\"", "") + "\r\n\n");
             }
         }
     }

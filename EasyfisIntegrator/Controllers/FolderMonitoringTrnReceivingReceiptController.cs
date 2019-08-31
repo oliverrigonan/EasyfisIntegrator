@@ -285,85 +285,72 @@ namespace EasyfisIntegrator.Controllers
                 {
                     try
                     {
-                        var branchCodes = from d in newReceivingReceipts
-                                          group d by d.BranchCode into g
-                                          select g.Key;
+                        var receivingReceipts = from d in newReceivingReceipts
+                                                group d by new
+                                                {
+                                                    d.BranchCode,
+                                                    d.ManualRRNumber
+                                                } into g
+                                                select g;
 
-                        var listBranchCodes = branchCodes.ToList();
-                        if (listBranchCodes.Any())
+                        if (receivingReceipts.Any())
                         {
-                            Int32 branchCount = 0;
+                            Decimal percentage = 0;
+                            trnIntegrationForm.logFolderMonitoringMessage("Posting Receiving Receipt... (0%) \r\n\n");
 
-                            foreach (var branchCode in listBranchCodes)
+                            Int32 receivingReceiptCount = 0;
+
+                            foreach (var receivingReceipt in receivingReceipts)
                             {
-                                branchCount += 1;
+                                receivingReceiptCount += 1;
+                                percentage = Convert.ToDecimal((Convert.ToDecimal(receivingReceiptCount) / Convert.ToDecimal(receivingReceipts.Count())) * 100);
 
-                                Decimal percentage = 0;
-                                trnIntegrationForm.logFolderMonitoringMessage("Posting Receiving Receipt Branch: " + branchCode + " ... (0%) \r\n\n");
+                                Boolean isErrorLogged = false;
+                                String previousErrorMessage = String.Empty;
 
-                                var manualRRNumbers = from d in newReceivingReceipts
-                                                      where d.BranchCode.Equals(branchCode)
-                                                      group d by d.ManualRRNumber into g
-                                                      select g.Key;
-
-                                var listManualRRNumbers = manualRRNumbers.ToList();
-                                if (listManualRRNumbers.Any())
+                                while (true)
                                 {
-                                    Int32 manualRRNumberCount = 0;
-
-                                    foreach (var manualRRNumber in listManualRRNumbers)
+                                    String postReceivingReceiptTask = await PostReceivingReceipt(domain, receivingReceipt.Key.BranchCode, receivingReceipt.Key.ManualRRNumber);
+                                    if (!postReceivingReceiptTask.Equals("Post Successful..."))
                                     {
-                                        manualRRNumberCount += 1;
-                                        percentage = Convert.ToDecimal((Convert.ToDecimal(manualRRNumberCount) / Convert.ToDecimal(listManualRRNumbers.Count())) * 100);
-
-                                        Boolean isErrorLogged = false;
-                                        String previousErrorMessage = String.Empty;
-
-                                        while (true)
+                                        if (previousErrorMessage.Equals(String.Empty))
                                         {
-                                            String postReceivingReceiptTask = await PostReceivingReceipt(domain, branchCode, manualRRNumber);
-                                            if (!postReceivingReceiptTask.Equals("Post Successful..."))
+                                            previousErrorMessage = postReceivingReceiptTask;
+                                        }
+                                        else
+                                        {
+                                            if (!previousErrorMessage.Equals(postReceivingReceiptTask))
                                             {
-                                                if (previousErrorMessage.Equals(String.Empty))
-                                                {
-                                                    previousErrorMessage = postReceivingReceiptTask;
-                                                }
-                                                else
-                                                {
-                                                    if (!previousErrorMessage.Equals(postReceivingReceiptTask))
-                                                    {
-                                                        previousErrorMessage = postReceivingReceiptTask;
-                                                        isErrorLogged = false;
-                                                    }
-                                                }
-
-                                                if (!isErrorLogged)
-                                                {
-                                                    trnIntegrationForm.logFolderMonitoringMessage(previousErrorMessage);
-                                                    trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-                                                    trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
-
-                                                    isErrorLogged = true;
-                                                }
-
-                                                Thread.Sleep(5000);
-                                            }
-                                            else
-                                            {
-                                                trnIntegrationForm.logFolderMonitoringMessage("RRIntegrationLogOnce");
-                                                trnIntegrationForm.logFolderMonitoringMessage("\r\n\nPosting Receiving Receipt Branch: " + branchCode + " ... (" + Math.Round(percentage, 2) + "%) \r\n\n");
-
-                                                if (manualRRNumberCount == listManualRRNumbers.Count())
-                                                {
-                                                    trnIntegrationForm.logFolderMonitoringMessage("Branch: " + branchCode + " Post Successful!" + "\r\n\n");
-                                                    trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-                                                }
-
-                                                break;
+                                                previousErrorMessage = postReceivingReceiptTask;
+                                                isErrorLogged = false;
                                             }
                                         }
+
+                                        if (!isErrorLogged)
+                                        {
+                                            trnIntegrationForm.logFolderMonitoringMessage(previousErrorMessage);
+                                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                                            trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+
+                                            isErrorLogged = true;
+                                        }
+
+                                        Thread.Sleep(5000);
+                                    }
+                                    else
+                                    {
+                                        trnIntegrationForm.logFolderMonitoringMessage("RRIntegrationLogOnce");
+                                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\nPosting Receiving Receipt... (" + Math.Round(percentage, 2) + "%) \r\n\n");
+
+                                        if (receivingReceiptCount == receivingReceipts.Count())
+                                        {
+                                            trnIntegrationForm.logFolderMonitoringMessage("Post Successful!" + "\r\n\n");
+                                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                                        }
+
+                                        break;
                                     }
                                 }
                             }
@@ -471,9 +458,10 @@ namespace EasyfisIntegrator.Controllers
                     }
                 }
             }
-            catch (Exception e)
+            catch (WebException we)
             {
-                return Task.FromResult("Exception Error: " + e.Message + "\r\n\n");
+                var resp = new StreamReader(we.Response.GetResponseStream()).ReadToEnd();
+                return Task.FromResult("Web Exception Error: " + resp.Replace("\"", "") + "\r\n\n");
             }
         }
 
@@ -505,9 +493,10 @@ namespace EasyfisIntegrator.Controllers
                     }
                 }
             }
-            catch (Exception e)
+            catch (WebException we)
             {
-                return Task.FromResult("Exception Error: " + e.Message + "\r\n\n");
+                var resp = new StreamReader(we.Response.GetResponseStream()).ReadToEnd();
+                return Task.FromResult("Web Exception Error: " + resp.Replace("\"", "") + "\r\n\n");
             }
         }
 
@@ -549,9 +538,10 @@ namespace EasyfisIntegrator.Controllers
                     }
                 }
             }
-            catch (Exception e)
+            catch (WebException we)
             {
-                return Task.FromResult("Exception Error: " + e.Message + "\r\n\n");
+                var resp = new StreamReader(we.Response.GetResponseStream()).ReadToEnd();
+                return Task.FromResult("Web Exception Error: " + resp.Replace("\"", "") + "\r\n\n");
             }
         }
     }

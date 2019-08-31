@@ -280,85 +280,72 @@ namespace EasyfisIntegrator.Controllers
                 {
                     try
                     {
-                        var branchCodes = from d in newStockIns
-                                          group d by d.BranchCode into g
-                                          select g.Key;
+                        var stockIns = from d in newStockIns
+                                       group d by new
+                                       {
+                                           d.BranchCode,
+                                           d.ManualINNumber
+                                       } into g
+                                       select g;
 
-                        var listBranchCodes = branchCodes.ToList();
-                        if (listBranchCodes.Any())
+                        if (stockIns.Any())
                         {
-                            Int32 branchCount = 0;
+                            Decimal percentage = 0;
+                            trnIntegrationForm.logFolderMonitoringMessage("Posting Stock In... (0%) \r\n\n");
 
-                            foreach (var branchCode in listBranchCodes)
+                            Int32 stockInCount = 0;
+
+                            foreach (var stockIn in stockIns)
                             {
-                                branchCount += 1;
+                                stockInCount += 1;
+                                percentage = Convert.ToDecimal((Convert.ToDecimal(stockInCount) / Convert.ToDecimal(stockIns.Count())) * 100);
 
-                                Decimal percentage = 0;
-                                trnIntegrationForm.logFolderMonitoringMessage("Posting Stock In Branch: " + branchCode + " ... (0%) \r\n\n");
+                                Boolean isErrorLogged = false;
+                                String previousErrorMessage = String.Empty;
 
-                                var manualINNumbers = from d in newStockIns
-                                                      where d.BranchCode.Equals(branchCode)
-                                                      group d by d.ManualINNumber into g
-                                                      select g.Key;
-
-                                var listManualINNumbers = manualINNumbers.ToList();
-                                if (listManualINNumbers.Any())
+                                while (true)
                                 {
-                                    Int32 manualINNumberCount = 0;
-
-                                    foreach (var manualINNumber in listManualINNumbers)
+                                    String postStockInTask = await PostStockIn(domain, stockIn.Key.BranchCode, stockIn.Key.ManualINNumber);
+                                    if (!postStockInTask.Equals("Post Successful..."))
                                     {
-                                        manualINNumberCount += 1;
-                                        percentage = Convert.ToDecimal((Convert.ToDecimal(manualINNumberCount) / Convert.ToDecimal(listManualINNumbers.Count())) * 100);
-
-                                        Boolean isErrorLogged = false;
-                                        String previousErrorMessage = String.Empty;
-
-                                        while (true)
+                                        if (previousErrorMessage.Equals(String.Empty))
                                         {
-                                            String postStockInTask = await PostStockIn(domain, branchCode, manualINNumber);
-                                            if (!postStockInTask.Equals("Post Successful..."))
+                                            previousErrorMessage = postStockInTask;
+                                        }
+                                        else
+                                        {
+                                            if (!previousErrorMessage.Equals(postStockInTask))
                                             {
-                                                if (previousErrorMessage.Equals(String.Empty))
-                                                {
-                                                    previousErrorMessage = postStockInTask;
-                                                }
-                                                else
-                                                {
-                                                    if (!previousErrorMessage.Equals(postStockInTask))
-                                                    {
-                                                        previousErrorMessage = postStockInTask;
-                                                        isErrorLogged = false;
-                                                    }
-                                                }
-
-                                                if (!isErrorLogged)
-                                                {
-                                                    trnIntegrationForm.logFolderMonitoringMessage(previousErrorMessage);
-                                                    trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-                                                    trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
-
-                                                    isErrorLogged = true;
-                                                }
-
-                                                Thread.Sleep(5000);
-                                            }
-                                            else
-                                            {
-                                                trnIntegrationForm.logFolderMonitoringMessage("INIntegrationLogOnce");
-                                                trnIntegrationForm.logFolderMonitoringMessage("\r\n\nPosting Stock In Branch: " + branchCode + " ... (" + Math.Round(percentage, 2) + "%) \r\n\n");
-
-                                                if (manualINNumberCount == listManualINNumbers.Count())
-                                                {
-                                                    trnIntegrationForm.logFolderMonitoringMessage("Branch: " + branchCode + " Post Successful!" + "\r\n\n");
-                                                    trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-                                                }
-
-                                                break;
+                                                previousErrorMessage = postStockInTask;
+                                                isErrorLogged = false;
                                             }
                                         }
+
+                                        if (!isErrorLogged)
+                                        {
+                                            trnIntegrationForm.logFolderMonitoringMessage(previousErrorMessage);
+                                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                                            trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+
+                                            isErrorLogged = true;
+                                        }
+
+                                        Thread.Sleep(5000);
+                                    }
+                                    else
+                                    {
+                                        trnIntegrationForm.logFolderMonitoringMessage("INIntegrationLogOnce");
+                                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\nPosting Stock In... (" + Math.Round(percentage, 2) + "%) \r\n\n");
+
+                                        if (stockInCount == stockIns.Count())
+                                        {
+                                            trnIntegrationForm.logFolderMonitoringMessage("Post Successful!" + "\r\n\n");
+                                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                                        }
+
+                                        break;
                                     }
                                 }
                             }
@@ -466,9 +453,10 @@ namespace EasyfisIntegrator.Controllers
                     }
                 }
             }
-            catch (Exception e)
+            catch (WebException we)
             {
-                return Task.FromResult("Exception Error: " + e.Message + "\r\n\n");
+                var resp = new StreamReader(we.Response.GetResponseStream()).ReadToEnd();
+                return Task.FromResult("Web Exception Error: " + resp.Replace("\"", "") + "\r\n\n");
             }
         }
 
@@ -500,9 +488,10 @@ namespace EasyfisIntegrator.Controllers
                     }
                 }
             }
-            catch (Exception e)
+            catch (WebException we)
             {
-                return Task.FromResult("Exception Error: " + e.Message + "\r\n\n");
+                var resp = new StreamReader(we.Response.GetResponseStream()).ReadToEnd();
+                return Task.FromResult("Web Exception Error: " + resp.Replace("\"", "") + "\r\n\n");
             }
         }
 
@@ -544,9 +533,10 @@ namespace EasyfisIntegrator.Controllers
                     }
                 }
             }
-            catch (Exception e)
+            catch (WebException we)
             {
-                return Task.FromResult("Exception Error: " + e.Message + "\r\n\n");
+                var resp = new StreamReader(we.Response.GetResponseStream()).ReadToEnd();
+                return Task.FromResult("Web Exception Error: " + resp.Replace("\"", "") + "\r\n\n");
             }
         }
     }
