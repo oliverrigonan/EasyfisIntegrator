@@ -404,12 +404,16 @@ namespace EasyfisIntegrator.Forms
         {
             if (isFolderMonitoringIntegrationStarted == true)
             {
-                Close();
-                return;
+                DialogResult dialogResult = MessageBox.Show("Are you sure you want to close all application? This will close all running threads.", "Close Thread", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    Environment.Exit(Environment.ExitCode);
+                }
             }
 
             btnSettings.Enabled = false;
-            btnStartFolderMonitoringIntegration.Text = "Restart";
+            btnStartFolderMonitoringIntegration.BackColor = Color.IndianRed;
+            btnStartFolderMonitoringIntegration.Text = "Close";
 
             //btnStartFolderMonitoringIntegration.Enabled = false;
 

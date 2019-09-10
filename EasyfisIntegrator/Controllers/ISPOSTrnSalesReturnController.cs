@@ -32,76 +32,57 @@ namespace EasyfisIntegrator.Controllers
         {
             try
             {
-                var discounts = from d in posdb.MstDiscounts select d;
-                if (discounts.Any())
+                var stockIns = from d in posdb.TrnStockIns
+                               where d.IsReturn == true
+                               && d.CollectionId != null
+                               && d.PostCode == null
+                               && d.IsLocked == true
+                               select d;
+
+                if (stockIns.Any())
                 {
-                    var taxes = from d in posdb.MstTaxes select d;
-                    if (taxes.Any())
+                    if (stockIns.FirstOrDefault().TrnStockInLines.Any())
                     {
-                        var terms = from d in posdb.MstTerms select d;
-                        if (terms.Any())
+                        var stockIn = stockIns.FirstOrDefault();
+                        List<Entities.ISPOSTrnCollectionLines> listCollectionLines = new List<Entities.ISPOSTrnCollectionLines>();
+
+                        var stockInLines = from d in stockIn.TrnStockInLines select d;
+                        foreach (var stockInLine in stockInLines)
                         {
-                            var stockIns = from d in posdb.TrnStockIns where d.IsReturn == true && d.CollectionId != null && d.PostCode == null && d.IsLocked == true select d;
-                            if (stockIns.Any())
+                            listCollectionLines.Add(new Entities.ISPOSTrnCollectionLines()
                             {
-                                var stockIn = stockIns.FirstOrDefault();
-
-                                List<Entities.ISPOSTrnCollectionLines> listCollectionLines = new List<Entities.ISPOSTrnCollectionLines>();
-
-                                var stockInLines = from d in posdb.TrnStockInLines where d.StockInId == stockIn.Id select d;
-                                if (stockInLines.Any())
-                                {
-                                    foreach (var stockInLine in stockInLines)
-                                    {
-                                        listCollectionLines.Add(new Entities.ISPOSTrnCollectionLines()
-                                        {
-                                            ItemManualArticleCode = stockInLine.MstItem.BarCode,
-                                            Particulars = stockInLine.MstItem.ItemDescription,
-                                            Unit = stockInLine.MstUnit.Unit,
-                                            Quantity = stockInLine.Quantity * -1,
-                                            Price = stockInLine.Cost * -1,
-                                            Discount = discounts.FirstOrDefault().Discount,
-                                            DiscountAmount = 0,
-                                            NetPrice = (stockInLine.Cost * -1),
-                                            Amount = ((stockInLine.Quantity * -1) * (stockInLine.Cost * -1)) * -1,
-                                            VAT = taxes.FirstOrDefault().Tax,
-                                            SalesItemTimeStamp = DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss.fff", CultureInfo.InvariantCulture)
-                                        });
-                                    }
-                                }
-
-                                var collectionData = new Entities.ISPOSTrnCollection()
-                                {
-                                    SIDate = stockIn.StockInDate.ToShortDateString(),
-                                    BranchCode = branchCode,
-                                    CustomerManualArticleCode = stockIn.TrnCollection.TrnSale.MstCustomer.CustomerCode,
-                                    CreatedBy = userCode,
-                                    Term = terms.FirstOrDefault().Term,
-                                    DocumentReference = stockIn.TrnCollection.TrnSale.SalesNumber,
-                                    ManualSINumber = "IN: " + stockIn.StockInNumber,
-                                    Remarks = "Return from Customer",
-                                    ListPOSIntegrationTrnSalesInvoiceItem = listCollectionLines.ToList()
-                                };
-
-                                String json = new JavaScriptSerializer().Serialize(collectionData);
-
-                                trnIntegrationForm.logMessages("Sending Returned Sales: " + collectionData.DocumentReference + "\r\n\n");
-                                trnIntegrationForm.logMessages("Amount: " + collectionData.ListPOSIntegrationTrnSalesInvoiceItem.Sum(d => d.Amount).ToString("#,##0.00") + "\r\n\n");
-                                SendSalesReturn(apiUrlHost, json);
-                            }
-                            else
-                            {
-                                trnIntegrationForm.logMessages("Sales Return Integration Done.");
-                            }
+                                ItemManualArticleCode = stockInLine.MstItem.BarCode,
+                                Particulars = stockInLine.MstItem.ItemDescription,
+                                Unit = stockInLine.MstUnit.Unit,
+                                Quantity = stockInLine.Quantity * -1,
+                                Price = stockInLine.Cost * -1,
+                                Discount = "Zero Discount",
+                                DiscountAmount = 0,
+                                NetPrice = (stockInLine.Cost * -1),
+                                Amount = ((stockInLine.Quantity * -1) * (stockInLine.Cost * -1)) * -1,
+                                VAT = stockInLine.MstItem.MstTax.Tax,
+                                SalesItemTimeStamp = DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss.fff", CultureInfo.InvariantCulture)
+                            });
                         }
-                        else
+
+                        var collectionData = new Entities.ISPOSTrnCollection()
                         {
-                            trnIntegrationForm.logMessages("Sales Return Integration Done.");
-                        }
-                    }
-                    else
-                    {
-                        trnIntegrationForm.logMessages("Sales Return Integration Done.");
+                            SIDate = stockIn.StockInDate.ToShortDateString(),
+                            BranchCode = branchCode,
+                            CustomerManualArticleCode = stockIn.TrnCollection.TrnSale.MstCustomer.CustomerCode,
+                            CreatedBy = userCode,
+                            Term = stockIn.TrnCollection.TrnSale.MstTerm.Term,
+                            DocumentReference = stockIn.StockInNumber,
+                            ManualSINumber = "IN-" + stockIn.StockInNumber,
+                            Remarks = "Return from Customer, OR-" + stockIn.TrnCollection.CollectionNumber + ", SI-" + stockIn.TrnCollection.TrnSale.SalesNumber,
+                            ListPOSIntegrationTrnSalesInvoiceItem = listCollectionLines.ToList()
+                        };
+
+                        String json = new JavaScriptSerializer().Serialize(collectionData);
+
+                        trnIntegrationForm.logMessages("Sending Sales Return: " + collectionData.ManualSINumber + "\r\n\n");
+                        trnIntegrationForm.logMessages("Amount: " + collectionData.ListPOSIntegrationTrnSalesInvoiceItem.Sum(d => d.Amount).ToString("#,##0.00") + "\r\n\n");
+                        SendSalesReturn(apiUrlHost, json);
                     }
                 }
                 else

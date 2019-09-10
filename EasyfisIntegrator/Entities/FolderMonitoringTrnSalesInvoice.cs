@@ -23,5 +23,6 @@ namespace EasyfisIntegrator.Entities
         public Decimal DiscountAmount { get; set; }
         public Decimal NetPrice { get; set; }
         public Decimal Amount { get; set; }
+        public Int32 No { get; set; }
     }
 }
