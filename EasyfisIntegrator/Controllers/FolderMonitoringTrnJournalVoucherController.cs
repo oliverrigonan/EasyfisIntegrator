@@ -20,57 +20,36 @@ namespace EasyfisIntegrator.Controllers
         // ====================
         public async void SendJournalVoucher(Forms.TrnIntegrationForm trnIntegrationForm, String userCode, String file, String domain)
         {
-            List<Entities.FolderMonitoringTrnJournalVoucher> newJournalVouchers = new List<Entities.FolderMonitoringTrnJournalVoucher>();
-            Boolean isExceptionErrorOccured = false;
+            trnIntegrationForm.logFolderMonitoringMessage("\r\n\nOpening File: " + file + " \r\n\n");
 
+            List<Entities.FolderMonitoringTrnJournalVoucher> newJournalVouchers = new List<Entities.FolderMonitoringTrnJournalVoucher>();
             JavaScriptSerializer serializer = new JavaScriptSerializer();
             String jsonData = "";
 
-            Boolean post = false;
-
+            // ========
             // Cleaning
+            // ========
+            trnIntegrationForm.logFolderMonitoringMessage("\r\n\nCleaning Journal Voucher... (0%) \r\n\n");
             while (true)
             {
                 try
                 {
-                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\nCleaning Journal Voucher... (0%) \r\n\n");
-
-                    Boolean isErrorLogged = false;
-                    String previousErrorMessage = String.Empty;
-
                     String deleteTemporaryJournalVoucherTask = await DeleteTemporaryJournalVoucher(domain);
                     if (!deleteTemporaryJournalVoucherTask.Equals("Clean Successful..."))
                     {
-                        if (previousErrorMessage.Equals(String.Empty))
-                        {
-                            previousErrorMessage = deleteTemporaryJournalVoucherTask;
-                        }
-                        else
-                        {
-                            if (!previousErrorMessage.Equals(deleteTemporaryJournalVoucherTask))
-                            {
-                                previousErrorMessage = deleteTemporaryJournalVoucherTask;
-                                isErrorLogged = false;
-                            }
-                        }
+                        trnIntegrationForm.logFolderMonitoringMessage(deleteTemporaryJournalVoucherTask);
+                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
 
-                        if (!isErrorLogged)
-                        {
-                            trnIntegrationForm.logFolderMonitoringMessage(previousErrorMessage);
-                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-                            trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
-
-                            isErrorLogged = true;
-                        }
+                        trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
 
                         Thread.Sleep(5000);
                     }
                     else
                     {
                         trnIntegrationForm.logFolderMonitoringMessage("JVIntegrationLogOnce");
-                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\nCleaning Journal Voucher... (100%) \r\n\n");
 
+                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\nCleaning Journal Voucher... (100%) \r\n\n");
                         trnIntegrationForm.logFolderMonitoringMessage("Clean Successful!" + "\r\n\n");
                         trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                         trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
@@ -80,33 +59,37 @@ namespace EasyfisIntegrator.Controllers
                 }
                 catch (Exception e)
                 {
-                    if (!isExceptionErrorOccured)
-                    {
-                        isExceptionErrorOccured = true;
+                    trnIntegrationForm.logFolderMonitoringMessage("Error: " + e.Message + "\r\n\n");
+                    trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
 
-                        trnIntegrationForm.logFolderMonitoringMessage("Cleaning Error: " + e.Message + "\r\n\n");
-                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-                        trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
-                    }
+                    trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
 
                     Thread.Sleep(5000);
                 }
             }
 
+            // ================
             // Reading CSV Data
-            isExceptionErrorOccured = false;
+            // ================
+            trnIntegrationForm.logFolderMonitoringMessage("Reading CSV Data... (0%) \r\n\n");
             while (true)
             {
+                newJournalVouchers = new List<Entities.FolderMonitoringTrnJournalVoucher>();
+
                 try
                 {
                     if (SysFileControl.IsCurrentFileClosed(file))
                     {
+                        Int32 count = 0;
+
                         using (StreamReader dataStreamReader = new StreamReader(file))
                         {
                             dataStreamReader.ReadLine();
                             while (dataStreamReader.Peek() >= 0)
                             {
+                                count += 1;
+
                                 List<String> data = dataStreamReader.ReadLine().Split(',').ToList();
                                 newJournalVouchers.Add(new Entities.FolderMonitoringTrnJournalVoucher
                                 {
@@ -126,40 +109,102 @@ namespace EasyfisIntegrator.Controllers
                                     APManualRRNumber = data[12],
                                     ARSINumber = data[13],
                                     ARManualSINumber = data[14],
-                                    IsClear = Convert.ToBoolean(data[15])
+                                    IsClear = Convert.ToBoolean(data[15]),
+                                    No = count
                                 });
                             }
                         }
 
+                        trnIntegrationForm.logFolderMonitoringMessage("JVIntegrationLogOnce");
+
+                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\nReading CSV Data... (100%) \r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("Read Successful!" + "\r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+
                         break;
+                    }
+                    else
+                    {
+                        trnIntegrationForm.logFolderMonitoringMessage("Error: File: " + file + " is currently open. \r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+
+                        trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+
+                        Thread.Sleep(5000);
                     }
                 }
                 catch (Exception e)
                 {
-                    if (!isExceptionErrorOccured)
-                    {
-                        isExceptionErrorOccured = true;
+                    trnIntegrationForm.logFolderMonitoringMessage("Error: " + e.Message + "\r\n\n");
+                    trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
 
-                        trnIntegrationForm.logFolderMonitoringMessage("CSV Error: " + e.Message + "\r\n\n");
-                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-                        trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
-                    }
+                    trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
 
                     Thread.Sleep(5000);
                 }
             }
 
-            // Sending
-            isExceptionErrorOccured = false;
             if (newJournalVouchers.Any())
             {
+                // =========================
+                // Checking Muliple JV Dates
+                // =========================
+                trnIntegrationForm.logFolderMonitoringMessage("Checking Multiple JV Dates... (0%) \r\n\n");
+                while (true)
+                {
+                    try
+                    {
+                        var groupedJVDates = from d in newJournalVouchers group d by d.JVDate into g select g.Key;
+
+                        var JVDates = from d in groupedJVDates.ToList() select d;
+                        if (JVDates.Count() > 1)
+                        {
+                            trnIntegrationForm.logFolderMonitoringMessage("Checking Error: Cannot integrate multiple JV Dates. \r\n\n");
+                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+
+                            trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+
+                            Thread.Sleep(5000);
+                        }
+                        else
+                        {
+                            trnIntegrationForm.logFolderMonitoringMessage("JVIntegrationLogOnce");
+
+                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\nChecking Multiple JV Dates... (100%) \r\n\n");
+                            trnIntegrationForm.logFolderMonitoringMessage("Check Successful!" + "\r\n\n");
+                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+
+                            break;
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        trnIntegrationForm.logFolderMonitoringMessage("Error: " + e.Message + "\r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+
+                        trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+
+                        Thread.Sleep(5000);
+                    }
+                }
+
+                Boolean post = false;
+
+                // =======
+                // Sending
+                // =======
+                trnIntegrationForm.logFolderMonitoringMessage("Sending Journal Voucher... (0%) \r\n\n");
                 while (true)
                 {
                     try
                     {
                         Decimal percentage = 0;
-                        trnIntegrationForm.logFolderMonitoringMessage("Sending Journal Voucher... (0%) \r\n\n");
 
                         Boolean send = false;
                         Int32 skip = 0;
@@ -169,68 +214,41 @@ namespace EasyfisIntegrator.Controllers
                             if (i % 100 == 0)
                             {
                                 jsonData = serializer.Serialize(newJournalVouchers.Skip(skip).Take(100));
-                                send = true;
-
                                 skip = i;
 
+                                send = true;
                                 percentage = Convert.ToDecimal((Convert.ToDecimal(skip) / Convert.ToDecimal(newJournalVouchers.Count())) * 100);
                             }
                             else
                             {
-                                if (newJournalVouchers.Count() <= 100)
+                                if (i == newJournalVouchers.Count())
                                 {
-                                    if (i == newJournalVouchers.Count())
+                                    if (newJournalVouchers.Count() <= 100)
                                     {
                                         jsonData = serializer.Serialize(newJournalVouchers);
-                                        send = true;
-
-                                        percentage = Convert.ToDecimal((Convert.ToDecimal(i) / Convert.ToDecimal(newJournalVouchers.Count())) * 100);
                                     }
-                                }
-                                else
-                                {
-                                    if (i == newJournalVouchers.Count())
+                                    else
                                     {
                                         jsonData = serializer.Serialize(newJournalVouchers.Skip(skip).Take(i - skip));
-                                        send = true;
-
-                                        percentage = Convert.ToDecimal((Convert.ToDecimal(i) / Convert.ToDecimal(newJournalVouchers.Count())) * 100);
                                     }
+
+                                    send = true;
+                                    percentage = Convert.ToDecimal((Convert.ToDecimal(i) / Convert.ToDecimal(newJournalVouchers.Count())) * 100);
                                 }
                             }
 
                             if (send)
                             {
-                                Boolean isErrorLogged = false;
-                                String previousErrorMessage = String.Empty;
-
                                 while (true)
                                 {
                                     String insertTemporaryJournalVoucherTask = await InsertTemporaryJournalVoucher(domain, jsonData);
                                     if (!insertTemporaryJournalVoucherTask.Equals("Send Successful..."))
                                     {
-                                        if (previousErrorMessage.Equals(String.Empty))
-                                        {
-                                            previousErrorMessage = insertTemporaryJournalVoucherTask;
-                                        }
-                                        else
-                                        {
-                                            if (!previousErrorMessage.Equals(insertTemporaryJournalVoucherTask))
-                                            {
-                                                previousErrorMessage = insertTemporaryJournalVoucherTask;
-                                                isErrorLogged = false;
-                                            }
-                                        }
+                                        trnIntegrationForm.logFolderMonitoringMessage(insertTemporaryJournalVoucherTask);
+                                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
 
-                                        if (!isErrorLogged)
-                                        {
-                                            trnIntegrationForm.logFolderMonitoringMessage(previousErrorMessage);
-                                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-                                            trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
-
-                                            isErrorLogged = true;
-                                        }
+                                        trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
 
                                         Thread.Sleep(5000);
                                     }
@@ -259,127 +277,106 @@ namespace EasyfisIntegrator.Controllers
                     }
                     catch (Exception e)
                     {
-                        if (!isExceptionErrorOccured)
-                        {
-                            isExceptionErrorOccured = true;
+                        trnIntegrationForm.logFolderMonitoringMessage("Error: " + e.Message + "\r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
 
-                            trnIntegrationForm.logFolderMonitoringMessage("Sending Error: " + e.Message + "\r\n\n");
-                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-                            trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
-                        }
+                        trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
 
                         Thread.Sleep(5000);
                     }
                 }
-            }
 
-            // Posting
-            isExceptionErrorOccured = false;
-            if (post)
-            {
-                while (true)
+                // =======
+                // Posting
+                // =======
+                if (post)
                 {
-                    try
+                    trnIntegrationForm.logFolderMonitoringMessage("Posting Journal Voucher... (0%) \r\n\n");
+                    while (true)
                     {
-                        var journalVouchers = from d in newJournalVouchers
-                                              group d by new
-                                              {
-                                                  d.BranchCode,
-                                                  d.ManualJVNumber
-                                              } into g
-                                              select g;
-
-                        if (journalVouchers.Any())
+                        try
                         {
-                            Decimal percentage = 0;
-                            trnIntegrationForm.logFolderMonitoringMessage("Posting Journal Voucher... (0%) \r\n\n");
+                            var groupedJournalVouchers = from d in newJournalVouchers
+                                                         group d by new
+                                                         {
+                                                             d.BranchCode,
+                                                             d.ManualJVNumber
+                                                         } into g
+                                                         select g.Key;
 
-                            Int32 journalVoucherCount = 0;
-
-                            foreach (var journalVoucher in journalVouchers)
+                            var journalVouchers = from d in groupedJournalVouchers.ToList() select d;
+                            if (journalVouchers.Any())
                             {
-                                journalVoucherCount += 1;
-                                percentage = Convert.ToDecimal((Convert.ToDecimal(journalVoucherCount) / Convert.ToDecimal(journalVouchers.Count())) * 100);
+                                Decimal percentage = 0;
+                                Int32 count = 0;
 
-                                Boolean isErrorLogged = false;
-                                String previousErrorMessage = String.Empty;
-
-                                while (true)
+                                foreach (var journalVoucher in journalVouchers.ToList())
                                 {
-                                    String postJournalVoucherTask = await PostJournalVoucher(domain, journalVoucher.Key.BranchCode, journalVoucher.Key.ManualJVNumber);
-                                    if (!postJournalVoucherTask.Equals("Post Successful..."))
+                                    count += 1;
+                                    percentage = Convert.ToDecimal((Convert.ToDecimal(count) / Convert.ToDecimal(journalVouchers.Count())) * 100);
+
+                                    while (true)
                                     {
-                                        if (previousErrorMessage.Equals(String.Empty))
+                                        String postJournalVoucherTask = await PostJournalVoucher(domain, journalVoucher.BranchCode, journalVoucher.ManualJVNumber);
+                                        if (!postJournalVoucherTask.Equals("Post Successful..."))
                                         {
-                                            previousErrorMessage = postJournalVoucherTask;
+                                            trnIntegrationForm.logFolderMonitoringMessage(postJournalVoucherTask);
+                                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+
+                                            trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+
+                                            Thread.Sleep(5000);
                                         }
                                         else
                                         {
-                                            if (!previousErrorMessage.Equals(postJournalVoucherTask))
+                                            trnIntegrationForm.logFolderMonitoringMessage("JVIntegrationLogOnce");
+                                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\nPosting Journal Voucher... (" + Math.Round(percentage, 2) + "%) \r\n\n");
+
+                                            if (count == journalVouchers.Count())
                                             {
-                                                previousErrorMessage = postJournalVoucherTask;
-                                                isErrorLogged = false;
+                                                trnIntegrationForm.logFolderMonitoringMessage("Post Successful!" + "\r\n\n");
+                                                trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                                trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
                                             }
+
+                                            break;
                                         }
-
-                                        if (!isErrorLogged)
-                                        {
-                                            trnIntegrationForm.logFolderMonitoringMessage(previousErrorMessage);
-                                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-                                            trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
-
-                                            isErrorLogged = true;
-                                        }
-
-                                        Thread.Sleep(5000);
-                                    }
-                                    else
-                                    {
-                                        trnIntegrationForm.logFolderMonitoringMessage("JVIntegrationLogOnce");
-                                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\nPosting Journal Voucher... (" + Math.Round(percentage, 2) + "%) \r\n\n");
-
-                                        if (journalVoucherCount == journalVouchers.Count())
-                                        {
-                                            trnIntegrationForm.logFolderMonitoringMessage("Post Successful!" + "\r\n\n");
-                                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-                                        }
-
-                                        break;
                                     }
                                 }
                             }
+
+                            break;
                         }
-
-                        break;
-                    }
-                    catch (Exception e)
-                    {
-                        if (!isExceptionErrorOccured)
+                        catch (Exception e)
                         {
-                            isExceptionErrorOccured = true;
-
-                            trnIntegrationForm.logFolderMonitoringMessage("Posting Error: " + e.Message + "\r\n\n");
+                            trnIntegrationForm.logFolderMonitoringMessage("Error: " + e.Message + "\r\n\n");
                             trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                             trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-                            trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
-                        }
 
-                        Thread.Sleep(5000);
+                            trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+
+                            Thread.Sleep(5000);
+                        }
                     }
                 }
             }
+            else
+            {
+                trnIntegrationForm.logFolderMonitoringMessage("Erorr: Data Source Empty \r\n\n");
+                trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+            }
 
+            // =============
             // Move CSV File
-            isExceptionErrorOccured = false;
+            // =============
+            trnIntegrationForm.logFolderMonitoringMessage("Moving Journal Voucher File... (0%) \r\n\n");
             while (true)
             {
                 try
                 {
-                    trnIntegrationForm.logFolderMonitoringMessage("Moving Journal Voucher File... (0%) \r\n\n");
-
                     String settingsPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Settings.json");
                     using (StreamReader trmRead = new StreamReader(settingsPath))
                     {
@@ -402,8 +399,8 @@ namespace EasyfisIntegrator.Controllers
                     }
 
                     trnIntegrationForm.logFolderMonitoringMessage("JVIntegrationLogOnce");
-                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\nMoving Journal Voucher File... (100%) \r\n\n");
 
+                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\nMoving JournalVoucher File... (100%) \r\n\n");
                     trnIntegrationForm.logFolderMonitoringMessage("Move Successful!" + "\r\n\n");
                     trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                     trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
@@ -412,15 +409,11 @@ namespace EasyfisIntegrator.Controllers
                 }
                 catch (Exception e)
                 {
-                    if (!isExceptionErrorOccured)
-                    {
-                        isExceptionErrorOccured = true;
+                    trnIntegrationForm.logFolderMonitoringMessage("Moving File Error: " + e.Message + "\r\n\n");
+                    trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
 
-                        trnIntegrationForm.logFolderMonitoringMessage("Moving File Error: " + e.Message + "\r\n\n");
-                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-                        trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
-                    }
+                    trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
 
                     Thread.Sleep(5000);
                 }

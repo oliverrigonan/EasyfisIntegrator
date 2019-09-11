@@ -24,5 +24,6 @@ namespace EasyfisIntegrator.Entities
         public String ARSINumber { get; set; }
         public String ARManualSINumber { get; set; }
         public Boolean IsClear { get; set; }
+        public Int32 No { get; set; }
     }
 }

@@ -21,57 +21,36 @@ namespace EasyfisIntegrator.Controllers
         // ======================
         public async void SendReceivingReceipt(Forms.TrnIntegrationForm trnIntegrationForm, String userCode, String file, String domain)
         {
-            List<Entities.FolderMonitoringTrnReceivingReceipt> newReceivingReceipts = new List<Entities.FolderMonitoringTrnReceivingReceipt>();
-            Boolean isExceptionErrorOccured = false;
+            trnIntegrationForm.logFolderMonitoringMessage("\r\n\nOpening File: " + file + " \r\n\n");
 
+            List<Entities.FolderMonitoringTrnReceivingReceipt> newReceivingReceipts = new List<Entities.FolderMonitoringTrnReceivingReceipt>();
             JavaScriptSerializer serializer = new JavaScriptSerializer();
             String jsonData = "";
 
-            Boolean post = false;
-
+            // ========
             // Cleaning
+            // ========
+            trnIntegrationForm.logFolderMonitoringMessage("\r\n\nCleaning Receiving Receipt... (0%) \r\n\n");
             while (true)
             {
                 try
                 {
-                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\nCleaning Receiving Receipt... (0%) \r\n\n");
-
-                    Boolean isErrorLogged = false;
-                    String previousErrorMessage = String.Empty;
-
                     String deleteTemporaryReceivingReceiptTask = await DeleteTemporaryReceivingReceipt(domain);
                     if (!deleteTemporaryReceivingReceiptTask.Equals("Clean Successful..."))
                     {
-                        if (previousErrorMessage.Equals(String.Empty))
-                        {
-                            previousErrorMessage = deleteTemporaryReceivingReceiptTask;
-                        }
-                        else
-                        {
-                            if (!previousErrorMessage.Equals(deleteTemporaryReceivingReceiptTask))
-                            {
-                                previousErrorMessage = deleteTemporaryReceivingReceiptTask;
-                                isErrorLogged = false;
-                            }
-                        }
+                        trnIntegrationForm.logFolderMonitoringMessage(deleteTemporaryReceivingReceiptTask);
+                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
 
-                        if (!isErrorLogged)
-                        {
-                            trnIntegrationForm.logFolderMonitoringMessage(previousErrorMessage);
-                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-                            trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
-
-                            isErrorLogged = true;
-                        }
+                        trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
 
                         Thread.Sleep(5000);
                     }
                     else
                     {
                         trnIntegrationForm.logFolderMonitoringMessage("RRIntegrationLogOnce");
-                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\nCleaning Receiving Receipt... (100%) \r\n\n");
 
+                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\nCleaning Receiving Receipt... (100%) \r\n\n");
                         trnIntegrationForm.logFolderMonitoringMessage("Clean Successful!" + "\r\n\n");
                         trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                         trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
@@ -81,33 +60,37 @@ namespace EasyfisIntegrator.Controllers
                 }
                 catch (Exception e)
                 {
-                    if (!isExceptionErrorOccured)
-                    {
-                        isExceptionErrorOccured = true;
+                    trnIntegrationForm.logFolderMonitoringMessage("Error: " + e.Message + "\r\n\n");
+                    trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
 
-                        trnIntegrationForm.logFolderMonitoringMessage("Cleaning Error: " + e.Message + "\r\n\n");
-                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-                        trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
-                    }
+                    trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
 
                     Thread.Sleep(5000);
                 }
             }
 
+            // ================
             // Reading CSV Data
-            isExceptionErrorOccured = false;
+            // ================
+            trnIntegrationForm.logFolderMonitoringMessage("Reading CSV Data... (0%) \r\n\n");
             while (true)
             {
+                newReceivingReceipts = new List<Entities.FolderMonitoringTrnReceivingReceipt>();
+
                 try
                 {
                     if (SysFileControl.IsCurrentFileClosed(file))
                     {
+                        Int32 count = 0;
+
                         using (StreamReader dataStreamReader = new StreamReader(file))
                         {
                             dataStreamReader.ReadLine();
                             while (dataStreamReader.Peek() >= 0)
                             {
+                                count += 1;
+
                                 List<String> data = dataStreamReader.ReadLine().Split(',').ToList();
                                 newReceivingReceipts.Add(new Entities.FolderMonitoringTrnReceivingReceipt
                                 {
@@ -129,40 +112,102 @@ namespace EasyfisIntegrator.Controllers
                                     Quantity = Convert.ToDecimal(data[14]),
                                     Cost = Convert.ToDecimal(data[15]),
                                     Amount = Convert.ToDecimal(data[16]),
-                                    ReceivedBranchCode = data[17]
+                                    ReceivedBranchCode = data[17],
+                                    No = count
                                 });
                             }
                         }
 
+                        trnIntegrationForm.logFolderMonitoringMessage("RRIntegrationLogOnce");
+
+                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\nReading CSV Data... (100%) \r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("Read Successful!" + "\r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+
                         break;
+                    }
+                    else
+                    {
+                        trnIntegrationForm.logFolderMonitoringMessage("Error: File: " + file + " is currently open. \r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+
+                        trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+
+                        Thread.Sleep(5000);
                     }
                 }
                 catch (Exception e)
                 {
-                    if (!isExceptionErrorOccured)
-                    {
-                        isExceptionErrorOccured = true;
+                    trnIntegrationForm.logFolderMonitoringMessage("Error: " + e.Message + "\r\n\n");
+                    trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
 
-                        trnIntegrationForm.logFolderMonitoringMessage("CSV Error: " + e.Message + "\r\n\n");
-                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-                        trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
-                    }
+                    trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
 
                     Thread.Sleep(5000);
                 }
             }
 
-            // Sending
-            isExceptionErrorOccured = false;
             if (newReceivingReceipts.Any())
             {
+                // =========================
+                // Checking Muliple RR Dates
+                // =========================
+                trnIntegrationForm.logFolderMonitoringMessage("Checking Multiple RR Dates... (0%) \r\n\n");
+                while (true)
+                {
+                    try
+                    {
+                        var groupedRRDates = from d in newReceivingReceipts group d by d.RRDate into g select g.Key;
+
+                        var RRDates = from d in groupedRRDates.ToList() select d;
+                        if (RRDates.Count() > 1)
+                        {
+                            trnIntegrationForm.logFolderMonitoringMessage("Checking Error: Cannot integrate multiple RR Dates. \r\n\n");
+                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+
+                            trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+
+                            Thread.Sleep(5000);
+                        }
+                        else
+                        {
+                            trnIntegrationForm.logFolderMonitoringMessage("RRIntegrationLogOnce");
+
+                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\nChecking Multiple RR Dates... (100%) \r\n\n");
+                            trnIntegrationForm.logFolderMonitoringMessage("Check Successful!" + "\r\n\n");
+                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+
+                            break;
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        trnIntegrationForm.logFolderMonitoringMessage("Error: " + e.Message + "\r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+
+                        trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+
+                        Thread.Sleep(5000);
+                    }
+                }
+
+                Boolean post = false;
+
+                // =======
+                // Sending
+                // =======
+                trnIntegrationForm.logFolderMonitoringMessage("Sending Receiving Receipt... (0%) \r\n\n");
                 while (true)
                 {
                     try
                     {
                         Decimal percentage = 0;
-                        trnIntegrationForm.logFolderMonitoringMessage("Sending Receiving Receipt... (0%) \r\n\n");
 
                         Boolean send = false;
                         Int32 skip = 0;
@@ -172,68 +217,41 @@ namespace EasyfisIntegrator.Controllers
                             if (i % 100 == 0)
                             {
                                 jsonData = serializer.Serialize(newReceivingReceipts.Skip(skip).Take(100));
-                                send = true;
-
                                 skip = i;
 
+                                send = true;
                                 percentage = Convert.ToDecimal((Convert.ToDecimal(skip) / Convert.ToDecimal(newReceivingReceipts.Count())) * 100);
                             }
                             else
                             {
-                                if (newReceivingReceipts.Count() <= 100)
+                                if (i == newReceivingReceipts.Count())
                                 {
-                                    if (i == newReceivingReceipts.Count())
+                                    if (newReceivingReceipts.Count() <= 100)
                                     {
                                         jsonData = serializer.Serialize(newReceivingReceipts);
-                                        send = true;
-
-                                        percentage = Convert.ToDecimal((Convert.ToDecimal(i) / Convert.ToDecimal(newReceivingReceipts.Count())) * 100);
                                     }
-                                }
-                                else
-                                {
-                                    if (i == newReceivingReceipts.Count())
+                                    else
                                     {
                                         jsonData = serializer.Serialize(newReceivingReceipts.Skip(skip).Take(i - skip));
-                                        send = true;
-
-                                        percentage = Convert.ToDecimal((Convert.ToDecimal(i) / Convert.ToDecimal(newReceivingReceipts.Count())) * 100);
                                     }
+
+                                    send = true;
+                                    percentage = Convert.ToDecimal((Convert.ToDecimal(i) / Convert.ToDecimal(newReceivingReceipts.Count())) * 100);
                                 }
                             }
 
                             if (send)
                             {
-                                Boolean isErrorLogged = false;
-                                String previousErrorMessage = String.Empty;
-
                                 while (true)
                                 {
                                     String insertTemporaryReceivingReceiptTask = await InsertTemporaryReceivingReceipt(domain, jsonData);
                                     if (!insertTemporaryReceivingReceiptTask.Equals("Send Successful..."))
                                     {
-                                        if (previousErrorMessage.Equals(String.Empty))
-                                        {
-                                            previousErrorMessage = insertTemporaryReceivingReceiptTask;
-                                        }
-                                        else
-                                        {
-                                            if (!previousErrorMessage.Equals(insertTemporaryReceivingReceiptTask))
-                                            {
-                                                previousErrorMessage = insertTemporaryReceivingReceiptTask;
-                                                isErrorLogged = false;
-                                            }
-                                        }
+                                        trnIntegrationForm.logFolderMonitoringMessage(insertTemporaryReceivingReceiptTask);
+                                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
 
-                                        if (!isErrorLogged)
-                                        {
-                                            trnIntegrationForm.logFolderMonitoringMessage(previousErrorMessage);
-                                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-                                            trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
-
-                                            isErrorLogged = true;
-                                        }
+                                        trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
 
                                         Thread.Sleep(5000);
                                     }
@@ -262,127 +280,106 @@ namespace EasyfisIntegrator.Controllers
                     }
                     catch (Exception e)
                     {
-                        if (!isExceptionErrorOccured)
-                        {
-                            isExceptionErrorOccured = true;
+                        trnIntegrationForm.logFolderMonitoringMessage("Error: " + e.Message + "\r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
 
-                            trnIntegrationForm.logFolderMonitoringMessage("Sending Error: " + e.Message + "\r\n\n");
-                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-                            trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
-                        }
+                        trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
 
                         Thread.Sleep(5000);
                     }
                 }
-            }
 
-            // Posting
-            isExceptionErrorOccured = false;
-            if (post)
-            {
-                while (true)
+                // =======
+                // Posting
+                // =======
+                if (post)
                 {
-                    try
+                    trnIntegrationForm.logFolderMonitoringMessage("Posting Receiving Receipt... (0%) \r\n\n");
+                    while (true)
                     {
-                        var receivingReceipts = from d in newReceivingReceipts
-                                                group d by new
-                                                {
-                                                    d.BranchCode,
-                                                    d.ManualRRNumber
-                                                } into g
-                                                select g;
-
-                        if (receivingReceipts.Any())
+                        try
                         {
-                            Decimal percentage = 0;
-                            trnIntegrationForm.logFolderMonitoringMessage("Posting Receiving Receipt... (0%) \r\n\n");
+                            var groupedReceivingReceipts = from d in newReceivingReceipts
+                                                           group d by new
+                                                           {
+                                                               d.BranchCode,
+                                                               d.ManualRRNumber
+                                                           } into g
+                                                           select g.Key;
 
-                            Int32 receivingReceiptCount = 0;
-
-                            foreach (var receivingReceipt in receivingReceipts)
+                            var receivingReceipts = from d in groupedReceivingReceipts.ToList() select d;
+                            if (receivingReceipts.Any())
                             {
-                                receivingReceiptCount += 1;
-                                percentage = Convert.ToDecimal((Convert.ToDecimal(receivingReceiptCount) / Convert.ToDecimal(receivingReceipts.Count())) * 100);
+                                Decimal percentage = 0;
+                                Int32 count = 0;
 
-                                Boolean isErrorLogged = false;
-                                String previousErrorMessage = String.Empty;
-
-                                while (true)
+                                foreach (var receivingReceipt in receivingReceipts.ToList())
                                 {
-                                    String postReceivingReceiptTask = await PostReceivingReceipt(domain, receivingReceipt.Key.BranchCode, receivingReceipt.Key.ManualRRNumber);
-                                    if (!postReceivingReceiptTask.Equals("Post Successful..."))
+                                    count += 1;
+                                    percentage = Convert.ToDecimal((Convert.ToDecimal(count) / Convert.ToDecimal(receivingReceipts.Count())) * 100);
+
+                                    while (true)
                                     {
-                                        if (previousErrorMessage.Equals(String.Empty))
+                                        String postReceivingReceiptTask = await PostReceivingReceipt(domain, receivingReceipt.BranchCode, receivingReceipt.ManualRRNumber);
+                                        if (!postReceivingReceiptTask.Equals("Post Successful..."))
                                         {
-                                            previousErrorMessage = postReceivingReceiptTask;
+                                            trnIntegrationForm.logFolderMonitoringMessage(postReceivingReceiptTask);
+                                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+
+                                            trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+
+                                            Thread.Sleep(5000);
                                         }
                                         else
                                         {
-                                            if (!previousErrorMessage.Equals(postReceivingReceiptTask))
+                                            trnIntegrationForm.logFolderMonitoringMessage("RRIntegrationLogOnce");
+                                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\nPosting Receiving Receipt... (" + Math.Round(percentage, 2) + "%) \r\n\n");
+
+                                            if (count == receivingReceipts.Count())
                                             {
-                                                previousErrorMessage = postReceivingReceiptTask;
-                                                isErrorLogged = false;
+                                                trnIntegrationForm.logFolderMonitoringMessage("Post Successful!" + "\r\n\n");
+                                                trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                                trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
                                             }
+
+                                            break;
                                         }
-
-                                        if (!isErrorLogged)
-                                        {
-                                            trnIntegrationForm.logFolderMonitoringMessage(previousErrorMessage);
-                                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-                                            trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
-
-                                            isErrorLogged = true;
-                                        }
-
-                                        Thread.Sleep(5000);
-                                    }
-                                    else
-                                    {
-                                        trnIntegrationForm.logFolderMonitoringMessage("RRIntegrationLogOnce");
-                                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\nPosting Receiving Receipt... (" + Math.Round(percentage, 2) + "%) \r\n\n");
-
-                                        if (receivingReceiptCount == receivingReceipts.Count())
-                                        {
-                                            trnIntegrationForm.logFolderMonitoringMessage("Post Successful!" + "\r\n\n");
-                                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-                                        }
-
-                                        break;
                                     }
                                 }
                             }
+
+                            break;
                         }
-
-                        break;
-                    }
-                    catch (Exception e)
-                    {
-                        if (!isExceptionErrorOccured)
+                        catch (Exception e)
                         {
-                            isExceptionErrorOccured = true;
-
-                            trnIntegrationForm.logFolderMonitoringMessage("Posting Error: " + e.Message + "\r\n\n");
+                            trnIntegrationForm.logFolderMonitoringMessage("Error: " + e.Message + "\r\n\n");
                             trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                             trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-                            trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
-                        }
 
-                        Thread.Sleep(5000);
+                            trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+
+                            Thread.Sleep(5000);
+                        }
                     }
                 }
             }
+            else
+            {
+                trnIntegrationForm.logFolderMonitoringMessage("Erorr: Data Source Empty \r\n\n");
+                trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+            }
 
+            // =============
             // Move CSV File
-            isExceptionErrorOccured = false;
+            // =============
+            trnIntegrationForm.logFolderMonitoringMessage("Moving Receiving Receipt File... (0%) \r\n\n");
             while (true)
             {
                 try
                 {
-                    trnIntegrationForm.logFolderMonitoringMessage("Moving Receiving Receipt File... (0%) \r\n\n");
-
                     String settingsPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Settings.json");
                     using (StreamReader trmRead = new StreamReader(settingsPath))
                     {
@@ -405,8 +402,8 @@ namespace EasyfisIntegrator.Controllers
                     }
 
                     trnIntegrationForm.logFolderMonitoringMessage("RRIntegrationLogOnce");
-                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\nMoving Receiving Receipt File... (100%) \r\n\n");
 
+                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\nMoving Receiving Receipt File... (100%) \r\n\n");
                     trnIntegrationForm.logFolderMonitoringMessage("Move Successful!" + "\r\n\n");
                     trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                     trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
@@ -415,15 +412,11 @@ namespace EasyfisIntegrator.Controllers
                 }
                 catch (Exception e)
                 {
-                    if (!isExceptionErrorOccured)
-                    {
-                        isExceptionErrorOccured = true;
+                    trnIntegrationForm.logFolderMonitoringMessage("Moving File Error: " + e.Message + "\r\n\n");
+                    trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
 
-                        trnIntegrationForm.logFolderMonitoringMessage("Moving File Error: " + e.Message + "\r\n\n");
-                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-                        trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
-                    }
+                    trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
 
                     Thread.Sleep(5000);
                 }

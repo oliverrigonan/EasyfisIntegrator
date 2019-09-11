@@ -20,57 +20,36 @@ namespace EasyfisIntegrator.Controllers
         // =============
         public async void SendStockIn(Forms.TrnIntegrationForm trnIntegrationForm, String userCode, String file, String domain)
         {
-            List<Entities.FolderMonitoringTrnStockIn> newStockIns = new List<Entities.FolderMonitoringTrnStockIn>();
-            Boolean isExceptionErrorOccured = false;
+            trnIntegrationForm.logFolderMonitoringMessage("\r\n\nOpening File: " + file + " \r\n\n");
 
+            List<Entities.FolderMonitoringTrnStockIn> newStockIns = new List<Entities.FolderMonitoringTrnStockIn>();
             JavaScriptSerializer serializer = new JavaScriptSerializer();
             String jsonData = "";
 
-            Boolean post = false;
-
+            // ========
             // Cleaning
+            // ========
+            trnIntegrationForm.logFolderMonitoringMessage("\r\n\nCleaning Stock In... (0%) \r\n\n");
             while (true)
             {
                 try
                 {
-                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\nCleaning Stock In... (0%) \r\n\n");
-
-                    Boolean isErrorLogged = false;
-                    String previousErrorMessage = String.Empty;
-
                     String deleteTemporaryStockInTask = await DeleteTemporaryStockIn(domain);
                     if (!deleteTemporaryStockInTask.Equals("Clean Successful..."))
                     {
-                        if (previousErrorMessage.Equals(String.Empty))
-                        {
-                            previousErrorMessage = deleteTemporaryStockInTask;
-                        }
-                        else
-                        {
-                            if (!previousErrorMessage.Equals(deleteTemporaryStockInTask))
-                            {
-                                previousErrorMessage = deleteTemporaryStockInTask;
-                                isErrorLogged = false;
-                            }
-                        }
+                        trnIntegrationForm.logFolderMonitoringMessage(deleteTemporaryStockInTask);
+                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
 
-                        if (!isErrorLogged)
-                        {
-                            trnIntegrationForm.logFolderMonitoringMessage(previousErrorMessage);
-                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-                            trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
-
-                            isErrorLogged = true;
-                        }
+                        trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
 
                         Thread.Sleep(5000);
                     }
                     else
                     {
                         trnIntegrationForm.logFolderMonitoringMessage("INIntegrationLogOnce");
-                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\nCleaning Stock In... (100%) \r\n\n");
 
+                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\nCleaning Stock In... (100%) \r\n\n");
                         trnIntegrationForm.logFolderMonitoringMessage("Clean Successful!" + "\r\n\n");
                         trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                         trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
@@ -80,33 +59,37 @@ namespace EasyfisIntegrator.Controllers
                 }
                 catch (Exception e)
                 {
-                    if (!isExceptionErrorOccured)
-                    {
-                        isExceptionErrorOccured = true;
+                    trnIntegrationForm.logFolderMonitoringMessage("Error: " + e.Message + "\r\n\n");
+                    trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
 
-                        trnIntegrationForm.logFolderMonitoringMessage("Cleaning Error: " + e.Message + "\r\n\n");
-                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-                        trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
-                    }
+                    trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
 
                     Thread.Sleep(5000);
                 }
             }
 
+            // ================
             // Reading CSV Data
-            isExceptionErrorOccured = false;
+            // ================
+            trnIntegrationForm.logFolderMonitoringMessage("Reading CSV Data... (0%) \r\n\n");
             while (true)
             {
+                newStockIns = new List<Entities.FolderMonitoringTrnStockIn>();
+
                 try
                 {
                     if (SysFileControl.IsCurrentFileClosed(file))
                     {
+                        Int32 count = 0;
+
                         using (StreamReader dataStreamReader = new StreamReader(file))
                         {
                             dataStreamReader.ReadLine();
                             while (dataStreamReader.Peek() >= 0)
                             {
+                                count += 1;
+
                                 List<String> data = dataStreamReader.ReadLine().Split(',').ToList();
                                 newStockIns.Add(new Entities.FolderMonitoringTrnStockIn
                                 {
@@ -124,40 +107,102 @@ namespace EasyfisIntegrator.Controllers
                                     Unit = data[10],
                                     Quantity = Convert.ToDecimal(data[11]),
                                     Cost = Convert.ToDecimal(data[12]),
-                                    Amount = Convert.ToDecimal(data[13])
+                                    Amount = Convert.ToDecimal(data[13]),
+                                    No = count
                                 });
                             }
                         }
 
+                        trnIntegrationForm.logFolderMonitoringMessage("INIntegrationLogOnce");
+
+                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\nReading CSV Data... (100%) \r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("Read Successful!" + "\r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+
                         break;
+                    }
+                    else
+                    {
+                        trnIntegrationForm.logFolderMonitoringMessage("Error: File: " + file + " is currently open. \r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+
+                        trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+
+                        Thread.Sleep(5000);
                     }
                 }
                 catch (Exception e)
                 {
-                    if (!isExceptionErrorOccured)
-                    {
-                        isExceptionErrorOccured = true;
+                    trnIntegrationForm.logFolderMonitoringMessage("Error: " + e.Message + "\r\n\n");
+                    trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
 
-                        trnIntegrationForm.logFolderMonitoringMessage("CSV Error: " + e.Message + "\r\n\n");
-                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-                        trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
-                    }
+                    trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
 
                     Thread.Sleep(5000);
                 }
             }
 
-            // Sending
-            isExceptionErrorOccured = false;
             if (newStockIns.Any())
             {
+                // =========================
+                // Checking Muliple IN Dates
+                // =========================
+                trnIntegrationForm.logFolderMonitoringMessage("Checking Multiple IN Dates... (0%) \r\n\n");
+                while (true)
+                {
+                    try
+                    {
+                        var groupedINDates = from d in newStockIns group d by d.INDate into g select g.Key;
+
+                        var INDates = from d in groupedINDates.ToList() select d;
+                        if (INDates.Count() > 1)
+                        {
+                            trnIntegrationForm.logFolderMonitoringMessage("Checking Error: Cannot integrate multiple IN Dates. \r\n\n");
+                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+
+                            trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+
+                            Thread.Sleep(5000);
+                        }
+                        else
+                        {
+                            trnIntegrationForm.logFolderMonitoringMessage("INIntegrationLogOnce");
+
+                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\nChecking Multiple IN Dates... (100%) \r\n\n");
+                            trnIntegrationForm.logFolderMonitoringMessage("Check Successful!" + "\r\n\n");
+                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+
+                            break;
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        trnIntegrationForm.logFolderMonitoringMessage("Error: " + e.Message + "\r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+
+                        trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+
+                        Thread.Sleep(5000);
+                    }
+                }
+
+                Boolean post = false;
+
+                // =======
+                // Sending
+                // =======
+                trnIntegrationForm.logFolderMonitoringMessage("Sending Stock In... (0%) \r\n\n");
                 while (true)
                 {
                     try
                     {
                         Decimal percentage = 0;
-                        trnIntegrationForm.logFolderMonitoringMessage("Sending Stock In... (0%) \r\n\n");
 
                         Boolean send = false;
                         Int32 skip = 0;
@@ -167,68 +212,41 @@ namespace EasyfisIntegrator.Controllers
                             if (i % 100 == 0)
                             {
                                 jsonData = serializer.Serialize(newStockIns.Skip(skip).Take(100));
-                                send = true;
-
                                 skip = i;
 
+                                send = true;
                                 percentage = Convert.ToDecimal((Convert.ToDecimal(skip) / Convert.ToDecimal(newStockIns.Count())) * 100);
                             }
                             else
                             {
-                                if (newStockIns.Count() <= 100)
+                                if (i == newStockIns.Count())
                                 {
-                                    if (i == newStockIns.Count())
+                                    if (newStockIns.Count() <= 100)
                                     {
                                         jsonData = serializer.Serialize(newStockIns);
-                                        send = true;
-
-                                        percentage = Convert.ToDecimal((Convert.ToDecimal(i) / Convert.ToDecimal(newStockIns.Count())) * 100);
                                     }
-                                }
-                                else
-                                {
-                                    if (i == newStockIns.Count())
+                                    else
                                     {
                                         jsonData = serializer.Serialize(newStockIns.Skip(skip).Take(i - skip));
-                                        send = true;
-
-                                        percentage = Convert.ToDecimal((Convert.ToDecimal(i) / Convert.ToDecimal(newStockIns.Count())) * 100);
                                     }
+
+                                    send = true;
+                                    percentage = Convert.ToDecimal((Convert.ToDecimal(i) / Convert.ToDecimal(newStockIns.Count())) * 100);
                                 }
                             }
 
                             if (send)
                             {
-                                Boolean isErrorLogged = false;
-                                String previousErrorMessage = String.Empty;
-
                                 while (true)
                                 {
                                     String insertTemporaryStockInTask = await InsertTemporaryStockIn(domain, jsonData);
                                     if (!insertTemporaryStockInTask.Equals("Send Successful..."))
                                     {
-                                        if (previousErrorMessage.Equals(String.Empty))
-                                        {
-                                            previousErrorMessage = insertTemporaryStockInTask;
-                                        }
-                                        else
-                                        {
-                                            if (!previousErrorMessage.Equals(insertTemporaryStockInTask))
-                                            {
-                                                previousErrorMessage = insertTemporaryStockInTask;
-                                                isErrorLogged = false;
-                                            }
-                                        }
+                                        trnIntegrationForm.logFolderMonitoringMessage(insertTemporaryStockInTask);
+                                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
 
-                                        if (!isErrorLogged)
-                                        {
-                                            trnIntegrationForm.logFolderMonitoringMessage(previousErrorMessage);
-                                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-                                            trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
-
-                                            isErrorLogged = true;
-                                        }
+                                        trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
 
                                         Thread.Sleep(5000);
                                     }
@@ -257,127 +275,106 @@ namespace EasyfisIntegrator.Controllers
                     }
                     catch (Exception e)
                     {
-                        if (!isExceptionErrorOccured)
-                        {
-                            isExceptionErrorOccured = true;
+                        trnIntegrationForm.logFolderMonitoringMessage("Error: " + e.Message + "\r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
 
-                            trnIntegrationForm.logFolderMonitoringMessage("Sending Error: " + e.Message + "\r\n\n");
-                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-                            trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
-                        }
+                        trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
 
                         Thread.Sleep(5000);
                     }
                 }
-            }
 
-            // Posting
-            isExceptionErrorOccured = false;
-            if (post)
-            {
-                while (true)
+                // =======
+                // Posting
+                // =======
+                if (post)
                 {
-                    try
+                    trnIntegrationForm.logFolderMonitoringMessage("Posting Stock In... (0%) \r\n\n");
+                    while (true)
                     {
-                        var stockIns = from d in newStockIns
-                                       group d by new
-                                       {
-                                           d.BranchCode,
-                                           d.ManualINNumber
-                                       } into g
-                                       select g;
-
-                        if (stockIns.Any())
+                        try
                         {
-                            Decimal percentage = 0;
-                            trnIntegrationForm.logFolderMonitoringMessage("Posting Stock In... (0%) \r\n\n");
+                            var groupedStockIns = from d in newStockIns
+                                                  group d by new
+                                                  {
+                                                      d.BranchCode,
+                                                      d.ManualINNumber
+                                                  } into g
+                                                  select g.Key;
 
-                            Int32 stockInCount = 0;
-
-                            foreach (var stockIn in stockIns)
+                            var stockIns = from d in groupedStockIns.ToList() select d;
+                            if (stockIns.Any())
                             {
-                                stockInCount += 1;
-                                percentage = Convert.ToDecimal((Convert.ToDecimal(stockInCount) / Convert.ToDecimal(stockIns.Count())) * 100);
+                                Decimal percentage = 0;
+                                Int32 count = 0;
 
-                                Boolean isErrorLogged = false;
-                                String previousErrorMessage = String.Empty;
-
-                                while (true)
+                                foreach (var stockIn in stockIns.ToList())
                                 {
-                                    String postStockInTask = await PostStockIn(domain, stockIn.Key.BranchCode, stockIn.Key.ManualINNumber);
-                                    if (!postStockInTask.Equals("Post Successful..."))
+                                    count += 1;
+                                    percentage = Convert.ToDecimal((Convert.ToDecimal(count) / Convert.ToDecimal(stockIns.Count())) * 100);
+
+                                    while (true)
                                     {
-                                        if (previousErrorMessage.Equals(String.Empty))
+                                        String postStockInTask = await PostStockIn(domain, stockIn.BranchCode, stockIn.ManualINNumber);
+                                        if (!postStockInTask.Equals("Post Successful..."))
                                         {
-                                            previousErrorMessage = postStockInTask;
+                                            trnIntegrationForm.logFolderMonitoringMessage(postStockInTask);
+                                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+
+                                            trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+
+                                            Thread.Sleep(5000);
                                         }
                                         else
                                         {
-                                            if (!previousErrorMessage.Equals(postStockInTask))
+                                            trnIntegrationForm.logFolderMonitoringMessage("INIntegrationLogOnce");
+                                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\nPosting Stock In... (" + Math.Round(percentage, 2) + "%) \r\n\n");
+
+                                            if (count == stockIns.Count())
                                             {
-                                                previousErrorMessage = postStockInTask;
-                                                isErrorLogged = false;
+                                                trnIntegrationForm.logFolderMonitoringMessage("Post Successful!" + "\r\n\n");
+                                                trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                                trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
                                             }
+
+                                            break;
                                         }
-
-                                        if (!isErrorLogged)
-                                        {
-                                            trnIntegrationForm.logFolderMonitoringMessage(previousErrorMessage);
-                                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-                                            trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
-
-                                            isErrorLogged = true;
-                                        }
-
-                                        Thread.Sleep(5000);
-                                    }
-                                    else
-                                    {
-                                        trnIntegrationForm.logFolderMonitoringMessage("INIntegrationLogOnce");
-                                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\nPosting Stock In... (" + Math.Round(percentage, 2) + "%) \r\n\n");
-
-                                        if (stockInCount == stockIns.Count())
-                                        {
-                                            trnIntegrationForm.logFolderMonitoringMessage("Post Successful!" + "\r\n\n");
-                                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-                                        }
-
-                                        break;
                                     }
                                 }
                             }
+
+                            break;
                         }
-
-                        break;
-                    }
-                    catch (Exception e)
-                    {
-                        if (!isExceptionErrorOccured)
+                        catch (Exception e)
                         {
-                            isExceptionErrorOccured = true;
-
-                            trnIntegrationForm.logFolderMonitoringMessage("Posting Error: " + e.Message + "\r\n\n");
+                            trnIntegrationForm.logFolderMonitoringMessage("Error: " + e.Message + "\r\n\n");
                             trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                             trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-                            trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
-                        }
 
-                        Thread.Sleep(5000);
+                            trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+
+                            Thread.Sleep(5000);
+                        }
                     }
                 }
             }
+            else
+            {
+                trnIntegrationForm.logFolderMonitoringMessage("Erorr: Data Source Empty \r\n\n");
+                trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+            }
 
+            // =============
             // Move CSV File
-            isExceptionErrorOccured = false;
+            // =============
+            trnIntegrationForm.logFolderMonitoringMessage("Moving Stock In File... (0%) \r\n\n");
             while (true)
             {
                 try
                 {
-                    trnIntegrationForm.logFolderMonitoringMessage("Moving Stock In File... (0%) \r\n\n");
-
                     String settingsPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Settings.json");
                     using (StreamReader trmRead = new StreamReader(settingsPath))
                     {
@@ -400,8 +397,8 @@ namespace EasyfisIntegrator.Controllers
                     }
 
                     trnIntegrationForm.logFolderMonitoringMessage("INIntegrationLogOnce");
-                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\nMoving Stock In File... (100%) \r\n\n");
 
+                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\nMoving Stock In File... (100%) \r\n\n");
                     trnIntegrationForm.logFolderMonitoringMessage("Move Successful!" + "\r\n\n");
                     trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                     trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
@@ -410,15 +407,11 @@ namespace EasyfisIntegrator.Controllers
                 }
                 catch (Exception e)
                 {
-                    if (!isExceptionErrorOccured)
-                    {
-                        isExceptionErrorOccured = true;
+                    trnIntegrationForm.logFolderMonitoringMessage("Moving File Error: " + e.Message + "\r\n\n");
+                    trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
 
-                        trnIntegrationForm.logFolderMonitoringMessage("Moving File Error: " + e.Message + "\r\n\n");
-                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-                        trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
-                    }
+                    trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
 
                     Thread.Sleep(5000);
                 }

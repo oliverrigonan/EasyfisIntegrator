@@ -27,5 +27,6 @@ namespace EasyfisIntegrator.Entities
         public String CheckBank { get; set; }
         public String DepositoryBankCode { get; set; }
         public Boolean IsClear { get; set; }
+        public Int32 No { get; set; }
     }
 }

@@ -22,5 +22,6 @@ namespace EasyfisIntegrator.Entities
         public Decimal Quantity { get; set; }
         public Decimal Cost { get; set; }
         public Decimal Amount { get; set; }
+        public Int32 No { get; set; }
     }
 }

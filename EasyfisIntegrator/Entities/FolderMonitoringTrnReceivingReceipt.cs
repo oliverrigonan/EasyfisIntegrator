@@ -26,5 +26,6 @@ namespace EasyfisIntegrator.Entities
         public Decimal Cost { get; set; }
         public Decimal Amount { get; set; }
         public String ReceivedBranchCode { get; set; }
+        public Int32 No { get; set; }
     }
 }

@@ -28,5 +28,6 @@ namespace EasyfisIntegrator.Entities
         public String ManualRRNumber { get; set; }
         public String Particulars { get; set; }
         public Decimal Amount { get; set; }
+        public Int32 No { get; set; }
     }
 }

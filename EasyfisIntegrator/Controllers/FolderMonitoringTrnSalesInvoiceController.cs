@@ -194,9 +194,9 @@ namespace EasyfisIntegrator.Controllers
 
                 Boolean post = false;
 
-                // =============
-                // Sending Sales
-                // =============
+                // =======
+                // Sending
+                // =======
                 trnIntegrationForm.logFolderMonitoringMessage("Sending Sales... (0%) \r\n\n");
                 while (true)
                 {
@@ -285,9 +285,9 @@ namespace EasyfisIntegrator.Controllers
                     }
                 }
 
-                // =============
-                // Posting Sales
-                // =============
+                // =======
+                // Posting
+                // =======
                 if (post)
                 {
                     trnIntegrationForm.logFolderMonitoringMessage("Posting Sales... (0%) \r\n\n");
