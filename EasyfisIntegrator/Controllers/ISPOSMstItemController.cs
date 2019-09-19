@@ -179,16 +179,23 @@ namespace EasyfisIntegrator.Controllers
                                                         var posItemPrices = from d in posdb.MstItemPrices where d.MstItem.BarCode.Equals(item.ManualArticleCode) select d;
                                                         if (posItemPrices.Any())
                                                         {
-                                                            foreach (var itemPrice in item.ListItemPrice)
+                                                            if (item.ListItemPrice.Count() == posItemPrices.Count())
                                                             {
-                                                                if (!foundChanges)
+                                                                foreach (var itemPrice in item.ListItemPrice)
                                                                 {
-                                                                    var currentPOSItemPrices = from d in posItemPrices where d.PriceDescription.Equals(itemPrice.PriceDescription) && d.Price == itemPrice.Price select d;
-                                                                    if (!currentPOSItemPrices.Any())
+                                                                    if (!foundChanges)
                                                                     {
-                                                                        foundChanges = true;
+                                                                        var currentPOSItemPrices = from d in posItemPrices where d.PriceDescription.Equals(itemPrice.PriceDescription) && d.Price == itemPrice.Price select d;
+                                                                        if (!currentPOSItemPrices.Any())
+                                                                        {
+                                                                            foundChanges = true;
+                                                                        }
                                                                     }
                                                                 }
+                                                            }
+                                                            else
+                                                            {
+                                                                foundChanges = true;
                                                             }
                                                         }
                                                     }
