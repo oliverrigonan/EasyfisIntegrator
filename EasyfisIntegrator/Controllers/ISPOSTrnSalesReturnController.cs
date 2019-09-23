@@ -84,6 +84,10 @@ namespace EasyfisIntegrator.Controllers
                         trnIntegrationForm.logMessages("Amount: " + collectionData.ListPOSIntegrationTrnSalesInvoiceItem.Sum(d => d.Amount).ToString("#,##0.00") + "\r\n\n");
                         SendSalesReturn(apiUrlHost, json);
                     }
+                    else
+                    {
+                        trnIntegrationForm.logMessages("Sales Return Integration Done.");
+                    }
                 }
                 else
                 {
