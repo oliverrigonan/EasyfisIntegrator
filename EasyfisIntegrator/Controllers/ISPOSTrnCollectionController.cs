@@ -31,7 +31,13 @@ namespace EasyfisIntegrator.Controllers
         {
             try
             {
-                var collections = from d in posdb.TrnCollections where d.SalesId != null && d.PostCode == null && d.IsLocked == true select d;
+                var collections = from d in posdb.TrnCollections
+                                  where (d.CollectionNumber.Equals("NA") == false || d.CollectionNumber.Equals("na") == false)
+                                  && d.SalesId != null
+                                  && d.PostCode == null
+                                  && d.IsLocked == true
+                                  select d;
+
                 if (collections.Any())
                 {
                     var collection = collections.FirstOrDefault();
@@ -138,7 +144,14 @@ namespace EasyfisIntegrator.Controllers
                     if (result != null)
                     {
                         Entities.ISPOSTrnCollection collection = new JavaScriptSerializer().Deserialize<Entities.ISPOSTrnCollection>(json);
-                        var currentCollection = from d in posdb.TrnCollections where d.CollectionNumber.Equals(collection.DocumentReference) select d;
+                        var currentCollection = from d in posdb.TrnCollections
+                                                where d.CollectionNumber.Equals(collection.DocumentReference)
+                                                && (d.CollectionNumber.Equals("NA") == false || d.CollectionNumber.Equals("na") == false)
+                                                && d.SalesId != null
+                                                && d.PostCode == null
+                                                && d.IsLocked == true
+                                                select d;
+
                         if (currentCollection.Any())
                         {
                             var updateCollection = currentCollection.FirstOrDefault();
