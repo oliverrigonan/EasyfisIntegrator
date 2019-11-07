@@ -238,30 +238,43 @@ namespace EasyfisIntegrator.Controllers
                             {
                                 while (true)
                                 {
-                                    String insertTemporaryStockTransferTask = await InsertTemporaryStockTransfer(domain, jsonData);
-                                    if (!insertTemporaryStockTransferTask.Equals("Send Successful..."))
+                                    try
                                     {
-                                        trnIntegrationForm.logFolderMonitoringMessage(insertTemporaryStockTransferTask);
+                                        String insertTemporaryStockTransferTask = await InsertTemporaryStockTransfer(domain, jsonData);
+                                        if (!insertTemporaryStockTransferTask.Equals("Send Successful..."))
+                                        {
+                                            trnIntegrationForm.logFolderMonitoringMessage(insertTemporaryStockTransferTask);
+                                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+
+                                            trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+
+                                            Thread.Sleep(5000);
+                                        }
+                                        else
+                                        {
+                                            trnIntegrationForm.logFolderMonitoringMessage("STIntegrationLogOnce");
+                                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\nSending Stock Transfer... (" + Math.Round(percentage, 2) + "%) \r\n\n");
+
+                                            if (i == newStockTransfers.Count())
+                                            {
+                                                trnIntegrationForm.logFolderMonitoringMessage("Send Successful!" + "\r\n\n");
+                                                trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                                trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                                            }
+
+                                            break;
+                                        }
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        trnIntegrationForm.logFolderMonitoringMessage("Sending Error: " + e.Message + "\r\n\n");
                                         trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                                         trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
 
                                         trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
 
                                         Thread.Sleep(5000);
-                                    }
-                                    else
-                                    {
-                                        trnIntegrationForm.logFolderMonitoringMessage("STIntegrationLogOnce");
-                                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\nSending Stock Transfer... (" + Math.Round(percentage, 2) + "%) \r\n\n");
-
-                                        if (i == newStockTransfers.Count())
-                                        {
-                                            trnIntegrationForm.logFolderMonitoringMessage("Send Successful!" + "\r\n\n");
-                                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-                                        }
-
-                                        break;
                                     }
                                 }
 
@@ -315,30 +328,43 @@ namespace EasyfisIntegrator.Controllers
 
                                     while (true)
                                     {
-                                        String postStockTransferTask = await PostStockTransfer(domain, stockTransfer.BranchCode, stockTransfer.ManualSTNumber);
-                                        if (!postStockTransferTask.Equals("Post Successful..."))
+                                        try
                                         {
-                                            trnIntegrationForm.logFolderMonitoringMessage(postStockTransferTask);
+                                            String postStockTransferTask = await PostStockTransfer(domain, stockTransfer.BranchCode, stockTransfer.ManualSTNumber);
+                                            if (!postStockTransferTask.Equals("Post Successful..."))
+                                            {
+                                                trnIntegrationForm.logFolderMonitoringMessage(postStockTransferTask);
+                                                trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                                trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+
+                                                trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+
+                                                Thread.Sleep(5000);
+                                            }
+                                            else
+                                            {
+                                                trnIntegrationForm.logFolderMonitoringMessage("STIntegrationLogOnce");
+                                                trnIntegrationForm.logFolderMonitoringMessage("\r\n\nPosting Stock Transfer... (" + Math.Round(percentage, 2) + "%) \r\n\n");
+
+                                                if (count == stockTransfers.Count())
+                                                {
+                                                    trnIntegrationForm.logFolderMonitoringMessage("Post Successful!" + "\r\n\n");
+                                                    trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                                                }
+
+                                                break;
+                                            }
+                                        }
+                                        catch (Exception e)
+                                        {
+                                            trnIntegrationForm.logFolderMonitoringMessage("Posting Error: " + e.Message + "\r\n\n");
                                             trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                                             trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
 
                                             trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
 
                                             Thread.Sleep(5000);
-                                        }
-                                        else
-                                        {
-                                            trnIntegrationForm.logFolderMonitoringMessage("STIntegrationLogOnce");
-                                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\nPosting Stock Transfer... (" + Math.Round(percentage, 2) + "%) \r\n\n");
-
-                                            if (count == stockTransfers.Count())
-                                            {
-                                                trnIntegrationForm.logFolderMonitoringMessage("Post Successful!" + "\r\n\n");
-                                                trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                                trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-                                            }
-
-                                            break;
                                         }
                                     }
                                 }

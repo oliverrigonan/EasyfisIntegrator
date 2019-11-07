@@ -245,30 +245,43 @@ namespace EasyfisIntegrator.Controllers
                             {
                                 while (true)
                                 {
-                                    String insertTemporaryDisbursementTask = await InsertTemporaryDisbursement(domain, jsonData);
-                                    if (!insertTemporaryDisbursementTask.Equals("Send Successful..."))
+                                    try
                                     {
-                                        trnIntegrationForm.logFolderMonitoringMessage(insertTemporaryDisbursementTask);
+                                        String insertTemporaryDisbursementTask = await InsertTemporaryDisbursement(domain, jsonData);
+                                        if (!insertTemporaryDisbursementTask.Equals("Send Successful..."))
+                                        {
+                                            trnIntegrationForm.logFolderMonitoringMessage(insertTemporaryDisbursementTask);
+                                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+
+                                            trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+
+                                            Thread.Sleep(5000);
+                                        }
+                                        else
+                                        {
+                                            trnIntegrationForm.logFolderMonitoringMessage("CVIntegrationLogOnce");
+                                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\nSending Disbursement... (" + Math.Round(percentage, 2) + "%) \r\n\n");
+
+                                            if (i == newDisbursements.Count())
+                                            {
+                                                trnIntegrationForm.logFolderMonitoringMessage("Send Successful!" + "\r\n\n");
+                                                trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                                trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                                            }
+
+                                            break;
+                                        }
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        trnIntegrationForm.logFolderMonitoringMessage("Sending Error: " + e.Message + "\r\n\n");
                                         trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                                         trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
 
                                         trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
 
                                         Thread.Sleep(5000);
-                                    }
-                                    else
-                                    {
-                                        trnIntegrationForm.logFolderMonitoringMessage("CVIntegrationLogOnce");
-                                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\nSending Disbursement... (" + Math.Round(percentage, 2) + "%) \r\n\n");
-
-                                        if (i == newDisbursements.Count())
-                                        {
-                                            trnIntegrationForm.logFolderMonitoringMessage("Send Successful!" + "\r\n\n");
-                                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-                                        }
-
-                                        break;
                                     }
                                 }
 
@@ -322,30 +335,43 @@ namespace EasyfisIntegrator.Controllers
 
                                     while (true)
                                     {
-                                        String postDisbursementTask = await PostDisbursement(domain, disbursement.BranchCode, disbursement.ManualCVNumber);
-                                        if (!postDisbursementTask.Equals("Post Successful..."))
+                                        try
                                         {
-                                            trnIntegrationForm.logFolderMonitoringMessage(postDisbursementTask);
+                                            String postDisbursementTask = await PostDisbursement(domain, disbursement.BranchCode, disbursement.ManualCVNumber);
+                                            if (!postDisbursementTask.Equals("Post Successful..."))
+                                            {
+                                                trnIntegrationForm.logFolderMonitoringMessage(postDisbursementTask);
+                                                trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                                trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+
+                                                trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+
+                                                Thread.Sleep(5000);
+                                            }
+                                            else
+                                            {
+                                                trnIntegrationForm.logFolderMonitoringMessage("CVIntegrationLogOnce");
+                                                trnIntegrationForm.logFolderMonitoringMessage("\r\n\nPosting Disbursement... (" + Math.Round(percentage, 2) + "%) \r\n\n");
+
+                                                if (count == disbursements.Count())
+                                                {
+                                                    trnIntegrationForm.logFolderMonitoringMessage("Post Successful!" + "\r\n\n");
+                                                    trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                                                }
+
+                                                break;
+                                            }
+                                        }
+                                        catch (Exception e)
+                                        {
+                                            trnIntegrationForm.logFolderMonitoringMessage("Posting Error: " + e.Message + "\r\n\n");
                                             trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                                             trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
 
                                             trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
 
                                             Thread.Sleep(5000);
-                                        }
-                                        else
-                                        {
-                                            trnIntegrationForm.logFolderMonitoringMessage("CVIntegrationLogOnce");
-                                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\nPosting Disbursement... (" + Math.Round(percentage, 2) + "%) \r\n\n");
-
-                                            if (count == disbursements.Count())
-                                            {
-                                                trnIntegrationForm.logFolderMonitoringMessage("Post Successful!" + "\r\n\n");
-                                                trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                                trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-                                            }
-
-                                            break;
                                         }
                                     }
                                 }

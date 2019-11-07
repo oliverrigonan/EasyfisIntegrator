@@ -239,30 +239,43 @@ namespace EasyfisIntegrator.Controllers
                             {
                                 while (true)
                                 {
-                                    String insertTemporaryStockInTask = await InsertTemporaryStockIn(domain, jsonData);
-                                    if (!insertTemporaryStockInTask.Equals("Send Successful..."))
+                                    try
                                     {
-                                        trnIntegrationForm.logFolderMonitoringMessage(insertTemporaryStockInTask);
+                                        String insertTemporaryStockInTask = await InsertTemporaryStockIn(domain, jsonData);
+                                        if (!insertTemporaryStockInTask.Equals("Send Successful..."))
+                                        {
+                                            trnIntegrationForm.logFolderMonitoringMessage(insertTemporaryStockInTask);
+                                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+
+                                            trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+
+                                            Thread.Sleep(5000);
+                                        }
+                                        else
+                                        {
+                                            trnIntegrationForm.logFolderMonitoringMessage("INIntegrationLogOnce");
+                                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\nSending Stock In... (" + Math.Round(percentage, 2) + "%) \r\n\n");
+
+                                            if (i == newStockIns.Count())
+                                            {
+                                                trnIntegrationForm.logFolderMonitoringMessage("Send Successful!" + "\r\n\n");
+                                                trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                                trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                                            }
+
+                                            break;
+                                        }
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        trnIntegrationForm.logFolderMonitoringMessage("Sending Error: " + e.Message + "\r\n\n");
                                         trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                                         trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
 
                                         trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
 
                                         Thread.Sleep(5000);
-                                    }
-                                    else
-                                    {
-                                        trnIntegrationForm.logFolderMonitoringMessage("INIntegrationLogOnce");
-                                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\nSending Stock In... (" + Math.Round(percentage, 2) + "%) \r\n\n");
-
-                                        if (i == newStockIns.Count())
-                                        {
-                                            trnIntegrationForm.logFolderMonitoringMessage("Send Successful!" + "\r\n\n");
-                                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-                                        }
-
-                                        break;
                                     }
                                 }
 
@@ -316,30 +329,43 @@ namespace EasyfisIntegrator.Controllers
 
                                     while (true)
                                     {
-                                        String postStockInTask = await PostStockIn(domain, stockIn.BranchCode, stockIn.ManualINNumber);
-                                        if (!postStockInTask.Equals("Post Successful..."))
+                                        try
                                         {
-                                            trnIntegrationForm.logFolderMonitoringMessage(postStockInTask);
+                                            String postStockInTask = await PostStockIn(domain, stockIn.BranchCode, stockIn.ManualINNumber);
+                                            if (!postStockInTask.Equals("Post Successful..."))
+                                            {
+                                                trnIntegrationForm.logFolderMonitoringMessage(postStockInTask);
+                                                trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                                trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+
+                                                trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+
+                                                Thread.Sleep(5000);
+                                            }
+                                            else
+                                            {
+                                                trnIntegrationForm.logFolderMonitoringMessage("INIntegrationLogOnce");
+                                                trnIntegrationForm.logFolderMonitoringMessage("\r\n\nPosting Stock In... (" + Math.Round(percentage, 2) + "%) \r\n\n");
+
+                                                if (count == stockIns.Count())
+                                                {
+                                                    trnIntegrationForm.logFolderMonitoringMessage("Post Successful!" + "\r\n\n");
+                                                    trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                                                }
+
+                                                break;
+                                            }
+                                        }
+                                        catch (Exception e)
+                                        {
+                                            trnIntegrationForm.logFolderMonitoringMessage("Posting Error: " + e.Message + "\r\n\n");
                                             trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                                             trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
 
                                             trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
 
                                             Thread.Sleep(5000);
-                                        }
-                                        else
-                                        {
-                                            trnIntegrationForm.logFolderMonitoringMessage("INIntegrationLogOnce");
-                                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\nPosting Stock In... (" + Math.Round(percentage, 2) + "%) \r\n\n");
-
-                                            if (count == stockIns.Count())
-                                            {
-                                                trnIntegrationForm.logFolderMonitoringMessage("Post Successful!" + "\r\n\n");
-                                                trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                                trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-                                            }
-
-                                            break;
                                         }
                                     }
                                 }

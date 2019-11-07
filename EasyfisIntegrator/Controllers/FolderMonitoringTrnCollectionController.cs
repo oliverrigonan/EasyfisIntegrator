@@ -245,30 +245,43 @@ namespace EasyfisIntegrator.Controllers
                             {
                                 while (true)
                                 {
-                                    String insertTemporaryCollectionTask = await InsertTemporaryCollection(domain, jsonData);
-                                    if (!insertTemporaryCollectionTask.Equals("Send Successful..."))
+                                    try
                                     {
-                                        trnIntegrationForm.logFolderMonitoringMessage(insertTemporaryCollectionTask);
+                                        String insertTemporaryCollectionTask = await InsertTemporaryCollection(domain, jsonData);
+                                        if (!insertTemporaryCollectionTask.Equals("Send Successful..."))
+                                        {
+                                            trnIntegrationForm.logFolderMonitoringMessage(insertTemporaryCollectionTask);
+                                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+
+                                            trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+
+                                            Thread.Sleep(5000);
+                                        }
+                                        else
+                                        {
+                                            trnIntegrationForm.logFolderMonitoringMessage("ORIntegrationLogOnce");
+                                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\nSending Collection... (" + Math.Round(percentage, 2) + "%) \r\n\n");
+
+                                            if (i == newCollections.Count())
+                                            {
+                                                trnIntegrationForm.logFolderMonitoringMessage("Send Successful!" + "\r\n\n");
+                                                trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                                trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                                            }
+
+                                            break;
+                                        }
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        trnIntegrationForm.logFolderMonitoringMessage("Sending Error: " + e.Message + "\r\n\n");
                                         trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                                         trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
 
                                         trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
 
                                         Thread.Sleep(5000);
-                                    }
-                                    else
-                                    {
-                                        trnIntegrationForm.logFolderMonitoringMessage("ORIntegrationLogOnce");
-                                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\nSending Collection... (" + Math.Round(percentage, 2) + "%) \r\n\n");
-
-                                        if (i == newCollections.Count())
-                                        {
-                                            trnIntegrationForm.logFolderMonitoringMessage("Send Successful!" + "\r\n\n");
-                                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-                                        }
-
-                                        break;
                                     }
                                 }
 
@@ -322,30 +335,43 @@ namespace EasyfisIntegrator.Controllers
 
                                     while (true)
                                     {
-                                        String postCollectionTask = await PostCollection(domain, collection.BranchCode, collection.ManualORNumber);
-                                        if (!postCollectionTask.Equals("Post Successful..."))
+                                        try
                                         {
-                                            trnIntegrationForm.logFolderMonitoringMessage(postCollectionTask);
+                                            String postCollectionTask = await PostCollection(domain, collection.BranchCode, collection.ManualORNumber);
+                                            if (!postCollectionTask.Equals("Post Successful..."))
+                                            {
+                                                trnIntegrationForm.logFolderMonitoringMessage(postCollectionTask);
+                                                trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                                trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+
+                                                trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+
+                                                Thread.Sleep(5000);
+                                            }
+                                            else
+                                            {
+                                                trnIntegrationForm.logFolderMonitoringMessage("ORIntegrationLogOnce");
+                                                trnIntegrationForm.logFolderMonitoringMessage("\r\n\nPosting Collection... (" + Math.Round(percentage, 2) + "%) \r\n\n");
+
+                                                if (count == collections.Count())
+                                                {
+                                                    trnIntegrationForm.logFolderMonitoringMessage("Post Successful!" + "\r\n\n");
+                                                    trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                                                }
+
+                                                break;
+                                            }
+                                        }
+                                        catch (Exception e)
+                                        {
+                                            trnIntegrationForm.logFolderMonitoringMessage("Posting Error: " + e.Message + "\r\n\n");
                                             trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                                             trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
 
                                             trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
 
                                             Thread.Sleep(5000);
-                                        }
-                                        else
-                                        {
-                                            trnIntegrationForm.logFolderMonitoringMessage("ORIntegrationLogOnce");
-                                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\nPosting Collection... (" + Math.Round(percentage, 2) + "%) \r\n\n");
-
-                                            if (count == collections.Count())
-                                            {
-                                                trnIntegrationForm.logFolderMonitoringMessage("Post Successful!" + "\r\n\n");
-                                                trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                                trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-                                            }
-
-                                            break;
                                         }
                                     }
                                 }

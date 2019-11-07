@@ -241,30 +241,43 @@ namespace EasyfisIntegrator.Controllers
                             {
                                 while (true)
                                 {
-                                    String insertTemporaryJournalVoucherTask = await InsertTemporaryJournalVoucher(domain, jsonData);
-                                    if (!insertTemporaryJournalVoucherTask.Equals("Send Successful..."))
+                                    try
                                     {
-                                        trnIntegrationForm.logFolderMonitoringMessage(insertTemporaryJournalVoucherTask);
+                                        String insertTemporaryJournalVoucherTask = await InsertTemporaryJournalVoucher(domain, jsonData);
+                                        if (!insertTemporaryJournalVoucherTask.Equals("Send Successful..."))
+                                        {
+                                            trnIntegrationForm.logFolderMonitoringMessage(insertTemporaryJournalVoucherTask);
+                                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+
+                                            trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+
+                                            Thread.Sleep(5000);
+                                        }
+                                        else
+                                        {
+                                            trnIntegrationForm.logFolderMonitoringMessage("JVIntegrationLogOnce");
+                                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\nSending Journal Voucher... (" + Math.Round(percentage, 2) + "%) \r\n\n");
+
+                                            if (i == newJournalVouchers.Count())
+                                            {
+                                                trnIntegrationForm.logFolderMonitoringMessage("Send Successful!" + "\r\n\n");
+                                                trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                                trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                                            }
+
+                                            break;
+                                        }
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        trnIntegrationForm.logFolderMonitoringMessage("Sending Error: " + e.Message + "\r\n\n");
                                         trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                                         trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
 
                                         trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
 
                                         Thread.Sleep(5000);
-                                    }
-                                    else
-                                    {
-                                        trnIntegrationForm.logFolderMonitoringMessage("JVIntegrationLogOnce");
-                                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\nSending Journal Voucher... (" + Math.Round(percentage, 2) + "%) \r\n\n");
-
-                                        if (i == newJournalVouchers.Count())
-                                        {
-                                            trnIntegrationForm.logFolderMonitoringMessage("Send Successful!" + "\r\n\n");
-                                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-                                        }
-
-                                        break;
                                     }
                                 }
 
@@ -318,30 +331,43 @@ namespace EasyfisIntegrator.Controllers
 
                                     while (true)
                                     {
-                                        String postJournalVoucherTask = await PostJournalVoucher(domain, journalVoucher.BranchCode, journalVoucher.ManualJVNumber);
-                                        if (!postJournalVoucherTask.Equals("Post Successful..."))
+                                        try
                                         {
-                                            trnIntegrationForm.logFolderMonitoringMessage(postJournalVoucherTask);
+                                            String postJournalVoucherTask = await PostJournalVoucher(domain, journalVoucher.BranchCode, journalVoucher.ManualJVNumber);
+                                            if (!postJournalVoucherTask.Equals("Post Successful..."))
+                                            {
+                                                trnIntegrationForm.logFolderMonitoringMessage(postJournalVoucherTask);
+                                                trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                                trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+
+                                                trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+
+                                                Thread.Sleep(5000);
+                                            }
+                                            else
+                                            {
+                                                trnIntegrationForm.logFolderMonitoringMessage("JVIntegrationLogOnce");
+                                                trnIntegrationForm.logFolderMonitoringMessage("\r\n\nPosting Journal Voucher... (" + Math.Round(percentage, 2) + "%) \r\n\n");
+
+                                                if (count == journalVouchers.Count())
+                                                {
+                                                    trnIntegrationForm.logFolderMonitoringMessage("Post Successful!" + "\r\n\n");
+                                                    trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                                                }
+
+                                                break;
+                                            }
+                                        }
+                                        catch (Exception e)
+                                        {
+                                            trnIntegrationForm.logFolderMonitoringMessage("Posting Error: " + e.Message + "\r\n\n");
                                             trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                                             trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
 
                                             trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
 
                                             Thread.Sleep(5000);
-                                        }
-                                        else
-                                        {
-                                            trnIntegrationForm.logFolderMonitoringMessage("JVIntegrationLogOnce");
-                                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\nPosting Journal Voucher... (" + Math.Round(percentage, 2) + "%) \r\n\n");
-
-                                            if (count == journalVouchers.Count())
-                                            {
-                                                trnIntegrationForm.logFolderMonitoringMessage("Post Successful!" + "\r\n\n");
-                                                trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                                trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
-                                            }
-
-                                            break;
                                         }
                                     }
                                 }
