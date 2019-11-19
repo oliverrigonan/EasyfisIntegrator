@@ -19,6 +19,9 @@ namespace EasyfisIntegrator.Entities
         public String ManualPONumber { get; set; }
         public String PODate { get; set; }
         public String PODateNeeded { get; set; }
+        public Decimal POQuantity { get; set; }
+        public Decimal POCost { get; set; }
+        public Decimal POAmount { get; set; }
         public String ItemCode { get; set; }
         public String Particulars { get; set; }
         public String Unit { get; set; }

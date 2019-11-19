@@ -106,13 +106,16 @@ namespace EasyfisIntegrator.Controllers
                                     ManualPONumber = data[8],
                                     PODate = data[9],
                                     PODateNeeded = data[10],
-                                    ItemCode = data[11],
-                                    Particulars = data[12],
-                                    Unit = data[13],
-                                    Quantity = Convert.ToDecimal(data[14]),
-                                    Cost = Convert.ToDecimal(data[15]),
-                                    Amount = Convert.ToDecimal(data[16]),
-                                    ReceivedBranchCode = data[17],
+                                    POQuantity = Convert.ToDecimal(data[11]),
+                                    POCost = Convert.ToDecimal(data[12]),
+                                    POAmount = Convert.ToDecimal(data[13]),
+                                    ItemCode = data[14],
+                                    Particulars = data[15],
+                                    Unit = data[16],
+                                    Quantity = Convert.ToDecimal(data[17]),
+                                    Cost = Convert.ToDecimal(data[18]),
+                                    Amount = Convert.ToDecimal(data[19]),
+                                    ReceivedBranchCode = data[20],
                                     No = count
                                 });
                             }
