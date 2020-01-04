@@ -63,6 +63,14 @@
             this.lblCurrentUser = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.txtLogs = new System.Windows.Forms.TextBox();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.textBoxPOSManualSalesIntegrationLogs = new System.Windows.Forms.TextBox();
+            this.buttonPOSManualSalesIntegrationStart = new System.Windows.Forms.Button();
+            this.buttonPOSManualSalesIntegrationStop = new System.Windows.Forms.Button();
+            this.panel7 = new System.Windows.Forms.Panel();
+            this.label12 = new System.Windows.Forms.Label();
+            this.dateTimePickerPOSManualSalesIntegrationDate = new System.Windows.Forms.DateTimePicker();
+            this.label17 = new System.Windows.Forms.Label();
             this.tabFolderMonitoring = new System.Windows.Forms.TabPage();
             this.btnGetCSVTemplate = new System.Windows.Forms.Button();
             this.panel4 = new System.Windows.Forms.Panel();
@@ -83,6 +91,8 @@
             this.tabPOSIntegration.SuspendLayout();
             this.panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
+            this.tabPage1.SuspendLayout();
+            this.panel7.SuspendLayout();
             this.tabFolderMonitoring.SuspendLayout();
             this.panel4.SuspendLayout();
             this.SuspendLayout();
@@ -263,6 +273,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tabIntegration.Controls.Add(this.tabPOSIntegration);
+            this.tabIntegration.Controls.Add(this.tabPage1);
             this.tabIntegration.Controls.Add(this.tabFolderMonitoring);
             this.tabIntegration.Location = new System.Drawing.Point(0, 0);
             this.tabIntegration.Name = "tabIntegration";
@@ -485,6 +496,111 @@
             this.txtLogs.Size = new System.Drawing.Size(848, 394);
             this.txtLogs.TabIndex = 14;
             // 
+            // tabPage1
+            // 
+            this.tabPage1.Controls.Add(this.textBoxPOSManualSalesIntegrationLogs);
+            this.tabPage1.Controls.Add(this.buttonPOSManualSalesIntegrationStart);
+            this.tabPage1.Controls.Add(this.buttonPOSManualSalesIntegrationStop);
+            this.tabPage1.Controls.Add(this.panel7);
+            this.tabPage1.Location = new System.Drawing.Point(4, 25);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(864, 628);
+            this.tabPage1.TabIndex = 2;
+            this.tabPage1.Text = "POS - Manual Sales Integration";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // textBoxPOSManualSalesIntegrationLogs
+            // 
+            this.textBoxPOSManualSalesIntegrationLogs.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxPOSManualSalesIntegrationLogs.BackColor = System.Drawing.Color.Black;
+            this.textBoxPOSManualSalesIntegrationLogs.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.textBoxPOSManualSalesIntegrationLogs.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.textBoxPOSManualSalesIntegrationLogs.ForeColor = System.Drawing.Color.White;
+            this.textBoxPOSManualSalesIntegrationLogs.Location = new System.Drawing.Point(8, 112);
+            this.textBoxPOSManualSalesIntegrationLogs.MaxLength = 0;
+            this.textBoxPOSManualSalesIntegrationLogs.Multiline = true;
+            this.textBoxPOSManualSalesIntegrationLogs.Name = "textBoxPOSManualSalesIntegrationLogs";
+            this.textBoxPOSManualSalesIntegrationLogs.ReadOnly = true;
+            this.textBoxPOSManualSalesIntegrationLogs.Size = new System.Drawing.Size(848, 510);
+            this.textBoxPOSManualSalesIntegrationLogs.TabIndex = 25;
+            // 
+            // buttonPOSManualSalesIntegrationStart
+            // 
+            this.buttonPOSManualSalesIntegrationStart.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonPOSManualSalesIntegrationStart.BackColor = System.Drawing.Color.SeaGreen;
+            this.buttonPOSManualSalesIntegrationStart.FlatAppearance.BorderSize = 0;
+            this.buttonPOSManualSalesIntegrationStart.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttonPOSManualSalesIntegrationStart.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.buttonPOSManualSalesIntegrationStart.ForeColor = System.Drawing.Color.White;
+            this.buttonPOSManualSalesIntegrationStart.Location = new System.Drawing.Point(666, 69);
+            this.buttonPOSManualSalesIntegrationStart.Name = "buttonPOSManualSalesIntegrationStart";
+            this.buttonPOSManualSalesIntegrationStart.Size = new System.Drawing.Size(93, 37);
+            this.buttonPOSManualSalesIntegrationStart.TabIndex = 24;
+            this.buttonPOSManualSalesIntegrationStart.Text = "Start";
+            this.buttonPOSManualSalesIntegrationStart.UseVisualStyleBackColor = false;
+            // 
+            // buttonPOSManualSalesIntegrationStop
+            // 
+            this.buttonPOSManualSalesIntegrationStop.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonPOSManualSalesIntegrationStop.BackColor = System.Drawing.Color.IndianRed;
+            this.buttonPOSManualSalesIntegrationStop.FlatAppearance.BorderSize = 0;
+            this.buttonPOSManualSalesIntegrationStop.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttonPOSManualSalesIntegrationStop.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.buttonPOSManualSalesIntegrationStop.ForeColor = System.Drawing.Color.White;
+            this.buttonPOSManualSalesIntegrationStop.Location = new System.Drawing.Point(765, 69);
+            this.buttonPOSManualSalesIntegrationStop.Name = "buttonPOSManualSalesIntegrationStop";
+            this.buttonPOSManualSalesIntegrationStop.Size = new System.Drawing.Size(93, 37);
+            this.buttonPOSManualSalesIntegrationStop.TabIndex = 23;
+            this.buttonPOSManualSalesIntegrationStop.Text = "Stop";
+            this.buttonPOSManualSalesIntegrationStop.UseVisualStyleBackColor = false;
+            // 
+            // panel7
+            // 
+            this.panel7.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel7.BackColor = System.Drawing.SystemColors.Control;
+            this.panel7.Controls.Add(this.label12);
+            this.panel7.Controls.Add(this.dateTimePickerPOSManualSalesIntegrationDate);
+            this.panel7.Controls.Add(this.label17);
+            this.panel7.Location = new System.Drawing.Point(8, 6);
+            this.panel7.Name = "panel7";
+            this.panel7.Size = new System.Drawing.Size(848, 57);
+            this.panel7.TabIndex = 22;
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label12.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.label12.Location = new System.Drawing.Point(347, 17);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(447, 17);
+            this.label12.TabIndex = 26;
+            this.label12.Text = "This will disabled the real-time sales integration from the previous tab.";
+            // 
+            // dateTimePickerPOSManualSalesIntegrationDate
+            // 
+            this.dateTimePickerPOSManualSalesIntegrationDate.CalendarFont = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.dateTimePickerPOSManualSalesIntegrationDate.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.dateTimePickerPOSManualSalesIntegrationDate.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dateTimePickerPOSManualSalesIntegrationDate.Location = new System.Drawing.Point(167, 12);
+            this.dateTimePickerPOSManualSalesIntegrationDate.Name = "dateTimePickerPOSManualSalesIntegrationDate";
+            this.dateTimePickerPOSManualSalesIntegrationDate.Size = new System.Drawing.Size(152, 26);
+            this.dateTimePickerPOSManualSalesIntegrationDate.TabIndex = 18;
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.label17.Location = new System.Drawing.Point(93, 17);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(50, 20);
+            this.label17.TabIndex = 17;
+            this.label17.Text = "Date:";
+            // 
             // tabFolderMonitoring
             // 
             this.tabFolderMonitoring.Controls.Add(this.btnGetCSVTemplate);
@@ -635,6 +751,10 @@
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
+            this.tabPage1.ResumeLayout(false);
+            this.tabPage1.PerformLayout();
+            this.panel7.ResumeLayout(false);
+            this.panel7.PerformLayout();
             this.tabFolderMonitoring.ResumeLayout(false);
             this.tabFolderMonitoring.PerformLayout();
             this.panel4.ResumeLayout(false);
@@ -688,5 +808,13 @@
         private System.Windows.Forms.TextBox txtLogs;
         private System.Windows.Forms.Panel panel6;
         private System.ComponentModel.BackgroundWorker bgwFolderMonitoringIntegration;
+        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.TextBox textBoxPOSManualSalesIntegrationLogs;
+        private System.Windows.Forms.Button buttonPOSManualSalesIntegrationStart;
+        private System.Windows.Forms.Button buttonPOSManualSalesIntegrationStop;
+        private System.Windows.Forms.Panel panel7;
+        private System.Windows.Forms.DateTimePicker dateTimePickerPOSManualSalesIntegrationDate;
+        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.Label label12;
     }
 }

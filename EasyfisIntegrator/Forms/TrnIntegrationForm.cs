@@ -235,6 +235,8 @@ namespace EasyfisIntegrator.Forms
 
             logMessages("Started! \r\n\nTime Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n\r\n\n");
 
+            isIntegrating = false;
+
             integrationTimer = new Timer();
             integrationTimer.Interval = 5000;
             integrationTimer.Tick += new EventHandler(integrationTimerTick);
@@ -284,8 +286,8 @@ namespace EasyfisIntegrator.Forms
                     Controllers.ISPOSTrnStockInController objTrnStockIn = new Controllers.ISPOSTrnStockInController(this, dtpIntegrationDate.Text);
                     Controllers.ISPOSTrnStockOutController objTrnStockOut = new Controllers.ISPOSTrnStockOutController(this, dtpIntegrationDate.Text);
                     Controllers.ISPOSTrnReceivingReceiptController objTrnReceivingReceipt = new Controllers.ISPOSTrnReceivingReceiptController(this, dtpIntegrationDate.Text);
-                    Controllers.ISPOSTrnCollectionController objTrnCollection = new Controllers.ISPOSTrnCollectionController(this);
-                    Controllers.ISPOSTrnSalesReturnController objTrnSalesReturn = new Controllers.ISPOSTrnSalesReturnController(this);
+                    //Controllers.ISPOSTrnCollectionController objTrnCollection = new Controllers.ISPOSTrnCollectionController(this);
+                    //Controllers.ISPOSTrnSalesReturnController objTrnSalesReturn = new Controllers.ISPOSTrnSalesReturnController(this);
                     Controllers.ISPOSTrnItemPriceController objTrnItemPrice = new Controllers.ISPOSTrnItemPriceController(this, dtpIntegrationDate.Text);
 
                     objMstCustomer.GetCustomer(apiUrlHost);
@@ -296,8 +298,8 @@ namespace EasyfisIntegrator.Forms
                     objTrnStockOut.GetStockOut(apiUrlHost, branchCode);
                     objTrnStockTransferIn.GetStockTransferIN(apiUrlHost, branchCode);
                     objTrnStockTransferOut.GetStockTransferOT(apiUrlHost, branchCode);
-                    objTrnCollection.GetCollection(apiUrlHost, branchCode, userCode);
-                    objTrnSalesReturn.GetSalesReturn(apiUrlHost, branchCode, userCode);
+                    //objTrnCollection.GetCollection(apiUrlHost, branchCode, userCode);
+                    //objTrnSalesReturn.GetSalesReturn(apiUrlHost, branchCode, userCode);
                     if (useItemPrice) { objTrnItemPrice.GetItemPrice(apiUrlHost, branchCode); }
                 }
             }
@@ -608,6 +610,7 @@ namespace EasyfisIntegrator.Forms
 
                 if (SITask.IsCompleted)
                 {
+
                     Task ORTask = Task.Run(() =>
                     {
                         runFolderMonitoringIntegrationOR(ext);
@@ -667,9 +670,9 @@ namespace EasyfisIntegrator.Forms
                             }
                         }
                     }
-                }
 
-                System.Threading.Thread.Sleep(5000);
+                    System.Threading.Thread.Sleep(5000);
+                }
             }
         }
 
