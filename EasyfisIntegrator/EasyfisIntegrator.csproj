@@ -89,6 +89,7 @@
     <Compile Include="Controllers\FolderMonitoringTrnStockInController.cs" />
     <Compile Include="Controllers\FolderMonitoringTrnStockOutController.cs" />
     <Compile Include="Controllers\FolderMonitoringTrnStockTransferController.cs" />
+    <Compile Include="Controllers\ISPOSManualSalesIntegrationTrnCollectionController.cs" />
     <Compile Include="Controllers\ISPOSMstCustomerController.cs" />
     <Compile Include="Controllers\ISPOSMstItemController.cs" />
     <Compile Include="Controllers\ISPOSMstSupplierController.cs" />

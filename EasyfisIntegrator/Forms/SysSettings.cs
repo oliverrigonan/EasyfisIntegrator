@@ -49,6 +49,7 @@ namespace EasyfisIntegrator.Forms
             txtFMUserCode.Text = sysSettings.FolderMonitoringUserCode;
             isFolderMonitoringOnly = sysSettings.IsFolderMonitoringOnly;
             txtFolderForSentFiles.Text = sysSettings.FolderForSentFiles;
+            cbxManualSalesIntegration.Checked = sysSettings.ManualSalesIntegration;
 
             if (isFolderMonitoringOnly)
             {
@@ -117,7 +118,8 @@ namespace EasyfisIntegrator.Forms
                     FolderToMonitor = txtFolderToMonitor.Text,
                     IsFolderMonitoringOnly = isFolderMonitoringOnly,
                     FolderMonitoringUserCode = txtFMUserCode.Text,
-                    FolderForSentFiles = txtFolderForSentFiles.Text
+                    FolderForSentFiles = txtFolderForSentFiles.Text,
+                    ManualSalesIntegration = cbxManualSalesIntegration.Checked
                 };
 
                 String settingsPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Settings.json");

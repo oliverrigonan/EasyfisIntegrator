@@ -1,9 +1,10 @@
 ﻿{
-  "ConnectionString": "Data Source=localhost;Initial Catalog=pos13;Persist Security Info=True;User ID=sa;Password=innosoft",
-  "Domain": "jmpls.easyfis.com",
+  "ConnectionString": "Data Source=localhost;Initial Catalog=pos17;Persist Security Info=True;User ID=sa;Password=innosoft",
+  "Domain": "localhost:2651",
   "LogFileLocation": "C:\\Users\\Developer\\Desktop\\JM Poultry\\Integrator\\Logs",
   "FolderToMonitor": "C:\\Users\\Developer\\Desktop\\JM Poultry\\Integrator\\Modules",
   "IsFolderMonitoringOnly": false,
-  "FolderMonitoringUserCode": "jmpls",
-  "FolderForSentFiles": "C:\\Users\\Developer\\Desktop\\JM Poultry\\Integrator\\Sent"
+  "FolderMonitoringUserCode": "admin",
+  "FolderForSentFiles": "C:\\Users\\Developer\\Desktop\\JM Poultry\\Integrator\\Sent",
+  "ManualSalesIntegration": false
 }

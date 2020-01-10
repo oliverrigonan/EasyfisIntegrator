@@ -63,10 +63,9 @@
             this.lblCurrentUser = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.txtLogs = new System.Windows.Forms.TextBox();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.tabPageManualSalesIntegration = new System.Windows.Forms.TabPage();
             this.textBoxPOSManualSalesIntegrationLogs = new System.Windows.Forms.TextBox();
             this.buttonPOSManualSalesIntegrationStart = new System.Windows.Forms.Button();
-            this.buttonPOSManualSalesIntegrationStop = new System.Windows.Forms.Button();
             this.panel7 = new System.Windows.Forms.Panel();
             this.label12 = new System.Windows.Forms.Label();
             this.dateTimePickerPOSManualSalesIntegrationDate = new System.Windows.Forms.DateTimePicker();
@@ -81,6 +80,7 @@
             this.btnStartFolderMonitoringIntegration = new System.Windows.Forms.Button();
             this.txtFolderMonitoringLogs = new System.Windows.Forms.TextBox();
             this.bgwFolderMonitoringIntegration = new System.ComponentModel.BackgroundWorker();
+            this.backgroundWorkerManualSalesIntegration = new System.ComponentModel.BackgroundWorker();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.fileSystemWatcherCSVFiles)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -91,7 +91,7 @@
             this.tabPOSIntegration.SuspendLayout();
             this.panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
-            this.tabPage1.SuspendLayout();
+            this.tabPageManualSalesIntegration.SuspendLayout();
             this.panel7.SuspendLayout();
             this.tabFolderMonitoring.SuspendLayout();
             this.panel4.SuspendLayout();
@@ -273,7 +273,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tabIntegration.Controls.Add(this.tabPOSIntegration);
-            this.tabIntegration.Controls.Add(this.tabPage1);
+            this.tabIntegration.Controls.Add(this.tabPageManualSalesIntegration);
             this.tabIntegration.Controls.Add(this.tabFolderMonitoring);
             this.tabIntegration.Location = new System.Drawing.Point(0, 0);
             this.tabIntegration.Name = "tabIntegration";
@@ -496,19 +496,18 @@
             this.txtLogs.Size = new System.Drawing.Size(848, 394);
             this.txtLogs.TabIndex = 14;
             // 
-            // tabPage1
+            // tabPageManualSalesIntegration
             // 
-            this.tabPage1.Controls.Add(this.textBoxPOSManualSalesIntegrationLogs);
-            this.tabPage1.Controls.Add(this.buttonPOSManualSalesIntegrationStart);
-            this.tabPage1.Controls.Add(this.buttonPOSManualSalesIntegrationStop);
-            this.tabPage1.Controls.Add(this.panel7);
-            this.tabPage1.Location = new System.Drawing.Point(4, 25);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(864, 628);
-            this.tabPage1.TabIndex = 2;
-            this.tabPage1.Text = "POS - Manual Sales Integration";
-            this.tabPage1.UseVisualStyleBackColor = true;
+            this.tabPageManualSalesIntegration.Controls.Add(this.textBoxPOSManualSalesIntegrationLogs);
+            this.tabPageManualSalesIntegration.Controls.Add(this.buttonPOSManualSalesIntegrationStart);
+            this.tabPageManualSalesIntegration.Controls.Add(this.panel7);
+            this.tabPageManualSalesIntegration.Location = new System.Drawing.Point(4, 25);
+            this.tabPageManualSalesIntegration.Name = "tabPageManualSalesIntegration";
+            this.tabPageManualSalesIntegration.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageManualSalesIntegration.Size = new System.Drawing.Size(864, 628);
+            this.tabPageManualSalesIntegration.TabIndex = 2;
+            this.tabPageManualSalesIntegration.Text = "POS - Manual Sales Integration";
+            this.tabPageManualSalesIntegration.UseVisualStyleBackColor = true;
             // 
             // textBoxPOSManualSalesIntegrationLogs
             // 
@@ -535,27 +534,13 @@
             this.buttonPOSManualSalesIntegrationStart.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonPOSManualSalesIntegrationStart.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.buttonPOSManualSalesIntegrationStart.ForeColor = System.Drawing.Color.White;
-            this.buttonPOSManualSalesIntegrationStart.Location = new System.Drawing.Point(666, 69);
+            this.buttonPOSManualSalesIntegrationStart.Location = new System.Drawing.Point(680, 69);
             this.buttonPOSManualSalesIntegrationStart.Name = "buttonPOSManualSalesIntegrationStart";
-            this.buttonPOSManualSalesIntegrationStart.Size = new System.Drawing.Size(93, 37);
+            this.buttonPOSManualSalesIntegrationStart.Size = new System.Drawing.Size(176, 37);
             this.buttonPOSManualSalesIntegrationStart.TabIndex = 24;
-            this.buttonPOSManualSalesIntegrationStart.Text = "Start";
+            this.buttonPOSManualSalesIntegrationStart.Text = "Integrate";
             this.buttonPOSManualSalesIntegrationStart.UseVisualStyleBackColor = false;
-            // 
-            // buttonPOSManualSalesIntegrationStop
-            // 
-            this.buttonPOSManualSalesIntegrationStop.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonPOSManualSalesIntegrationStop.BackColor = System.Drawing.Color.IndianRed;
-            this.buttonPOSManualSalesIntegrationStop.FlatAppearance.BorderSize = 0;
-            this.buttonPOSManualSalesIntegrationStop.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonPOSManualSalesIntegrationStop.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.buttonPOSManualSalesIntegrationStop.ForeColor = System.Drawing.Color.White;
-            this.buttonPOSManualSalesIntegrationStop.Location = new System.Drawing.Point(765, 69);
-            this.buttonPOSManualSalesIntegrationStop.Name = "buttonPOSManualSalesIntegrationStop";
-            this.buttonPOSManualSalesIntegrationStop.Size = new System.Drawing.Size(93, 37);
-            this.buttonPOSManualSalesIntegrationStop.TabIndex = 23;
-            this.buttonPOSManualSalesIntegrationStop.Text = "Stop";
-            this.buttonPOSManualSalesIntegrationStop.UseVisualStyleBackColor = false;
+            this.buttonPOSManualSalesIntegrationStart.Click += new System.EventHandler(this.buttonPOSManualSalesIntegrationStart_Click);
             // 
             // panel7
             // 
@@ -721,6 +706,12 @@
             this.bgwFolderMonitoringIntegration.WorkerSupportsCancellation = true;
             this.bgwFolderMonitoringIntegration.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bgwFolderMonitoringIntegration_DoWork);
             // 
+            // backgroundWorkerManualSalesIntegration
+            // 
+            this.backgroundWorkerManualSalesIntegration.WorkerReportsProgress = true;
+            this.backgroundWorkerManualSalesIntegration.WorkerSupportsCancellation = true;
+            this.backgroundWorkerManualSalesIntegration.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerManualSalesIntegration_DoWork);
+            // 
             // TrnIntegrationForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(120F, 120F);
@@ -751,8 +742,8 @@
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
-            this.tabPage1.ResumeLayout(false);
-            this.tabPage1.PerformLayout();
+            this.tabPageManualSalesIntegration.ResumeLayout(false);
+            this.tabPageManualSalesIntegration.PerformLayout();
             this.panel7.ResumeLayout(false);
             this.panel7.PerformLayout();
             this.tabFolderMonitoring.ResumeLayout(false);
@@ -808,13 +799,13 @@
         private System.Windows.Forms.TextBox txtLogs;
         private System.Windows.Forms.Panel panel6;
         private System.ComponentModel.BackgroundWorker bgwFolderMonitoringIntegration;
-        private System.Windows.Forms.TabPage tabPage1;
-        private System.Windows.Forms.TextBox textBoxPOSManualSalesIntegrationLogs;
+        private System.Windows.Forms.TabPage tabPageManualSalesIntegration;
         private System.Windows.Forms.Button buttonPOSManualSalesIntegrationStart;
-        private System.Windows.Forms.Button buttonPOSManualSalesIntegrationStop;
         private System.Windows.Forms.Panel panel7;
         private System.Windows.Forms.DateTimePicker dateTimePickerPOSManualSalesIntegrationDate;
         private System.Windows.Forms.Label label17;
         private System.Windows.Forms.Label label12;
+        private System.ComponentModel.BackgroundWorker backgroundWorkerManualSalesIntegration;
+        private System.Windows.Forms.TextBox textBoxPOSManualSalesIntegrationLogs;
     }
 }

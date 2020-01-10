@@ -46,6 +46,8 @@ namespace EasyfisIntegrator.Forms
         public String domain = "";
         public Boolean isFolderMonitoringIntegrationStarted = false;
 
+        public Boolean ManualSalesIntegration = false;
+
         public TrnIntegrationForm()
         {
             InitializeComponent();
@@ -104,6 +106,7 @@ namespace EasyfisIntegrator.Forms
             folderToMonitor = sysSettings.FolderToMonitor;
             fileSystemWatcherCSVFiles.Path = folderToMonitor;
             domain = sysSettings.Domain;
+            ManualSalesIntegration = sysSettings.ManualSalesIntegration;
 
             if (isFolderMonitoringOnly)
             {
@@ -111,6 +114,7 @@ namespace EasyfisIntegrator.Forms
                 tabFolderMonitoring.Enabled = true;
                 tabIntegration.SelectedTab = tabFolderMonitoring;
                 tabIntegration.TabPages.Remove(tabPOSIntegration);
+                tabIntegration.TabPages.Remove(tabPageManualSalesIntegration);
 
                 btnLogout.Visible = false;
             }
@@ -134,6 +138,15 @@ namespace EasyfisIntegrator.Forms
             }
 
             btnStartFolderMonitoringIntegration.Enabled = true;
+
+            if (ManualSalesIntegration == false)
+            {
+                buttonPOSManualSalesIntegrationStart.Enabled = false;
+            }
+            else
+            {
+                buttonPOSManualSalesIntegrationStart.Enabled = true;
+            }
         }
 
         private void TrnInnosoftPOSIntegrationForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -286,8 +299,6 @@ namespace EasyfisIntegrator.Forms
                     Controllers.ISPOSTrnStockInController objTrnStockIn = new Controllers.ISPOSTrnStockInController(this, dtpIntegrationDate.Text);
                     Controllers.ISPOSTrnStockOutController objTrnStockOut = new Controllers.ISPOSTrnStockOutController(this, dtpIntegrationDate.Text);
                     Controllers.ISPOSTrnReceivingReceiptController objTrnReceivingReceipt = new Controllers.ISPOSTrnReceivingReceiptController(this, dtpIntegrationDate.Text);
-                    //Controllers.ISPOSTrnCollectionController objTrnCollection = new Controllers.ISPOSTrnCollectionController(this);
-                    //Controllers.ISPOSTrnSalesReturnController objTrnSalesReturn = new Controllers.ISPOSTrnSalesReturnController(this);
                     Controllers.ISPOSTrnItemPriceController objTrnItemPrice = new Controllers.ISPOSTrnItemPriceController(this, dtpIntegrationDate.Text);
 
                     objMstCustomer.GetCustomer(apiUrlHost);
@@ -298,9 +309,16 @@ namespace EasyfisIntegrator.Forms
                     objTrnStockOut.GetStockOut(apiUrlHost, branchCode);
                     objTrnStockTransferIn.GetStockTransferIN(apiUrlHost, branchCode);
                     objTrnStockTransferOut.GetStockTransferOT(apiUrlHost, branchCode);
-                    //objTrnCollection.GetCollection(apiUrlHost, branchCode, userCode);
-                    //objTrnSalesReturn.GetSalesReturn(apiUrlHost, branchCode, userCode);
                     if (useItemPrice) { objTrnItemPrice.GetItemPrice(apiUrlHost, branchCode); }
+
+                    if (ManualSalesIntegration == false)
+                    {
+                        Controllers.ISPOSTrnCollectionController objTrnCollection = new Controllers.ISPOSTrnCollectionController(this);
+                        Controllers.ISPOSTrnSalesReturnController objTrnSalesReturn = new Controllers.ISPOSTrnSalesReturnController(this);
+
+                        objTrnCollection.GetCollection(apiUrlHost, branchCode, userCode);
+                        objTrnSalesReturn.GetSalesReturn(apiUrlHost, branchCode, userCode);
+                    }
                 }
             }
         }
@@ -610,7 +628,6 @@ namespace EasyfisIntegrator.Forms
 
                 if (SITask.IsCompleted)
                 {
-
                     Task ORTask = Task.Run(() =>
                     {
                         runFolderMonitoringIntegrationOR(ext);
@@ -670,9 +687,9 @@ namespace EasyfisIntegrator.Forms
                             }
                         }
                     }
-
-                    System.Threading.Thread.Sleep(5000);
                 }
+
+                System.Threading.Thread.Sleep(5000);
             }
         }
 
@@ -786,6 +803,117 @@ namespace EasyfisIntegrator.Forms
                     folderMonitoringST.SendStockTransfer(this, txtFolderMonitoringUserCode.Text, STFile, domain);
                 }
             }
+        }
+
+        public Boolean isManualSalesIntegrationStartIntegrating = false;
+
+        public void logManualSalesIntegrationMessage(String message)
+        {
+            if (textBoxPOSManualSalesIntegrationLogs.InvokeRequired)
+            {
+                BeginInvoke((MethodInvoker)delegate
+                {
+                    bool log = true;
+
+                    if (message.Equals("ManualSIIntegrationLogOnce"))
+                    {
+                        log = false;
+                        textBoxPOSManualSalesIntegrationLogs.Text = textBoxPOSManualSalesIntegrationLogs.Text.Substring(0, textBoxPOSManualSalesIntegrationLogs.Text.Trim().LastIndexOf(Environment.NewLine));
+                    }
+
+                    if (log)
+                    {
+                        textBoxPOSManualSalesIntegrationLogs.Text += message;
+
+                        textBoxPOSManualSalesIntegrationLogs.Focus();
+                        textBoxPOSManualSalesIntegrationLogs.SelectionStart = textBoxPOSManualSalesIntegrationLogs.Text.Length;
+                        textBoxPOSManualSalesIntegrationLogs.ScrollToCaret();
+                    }
+
+                    if (textBoxPOSManualSalesIntegrationLogs.Lines.Length >= 1000)
+                    {
+                        textBoxPOSManualSalesIntegrationLogs.Text = "";
+
+                        String settingsPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Settings.json");
+
+                        String json;
+                        using (StreamReader trmRead = new StreamReader(settingsPath)) { json = trmRead.ReadToEnd(); }
+
+                        JavaScriptSerializer javaScriptSerializer = new JavaScriptSerializer();
+                        Entities.SysSettings sysSettings = javaScriptSerializer.Deserialize<Entities.SysSettings>(json);
+
+                        File.WriteAllText(sysSettings.LogFileLocation + "\\ManualSIIntegration_" + DateTime.Now.ToString("yyyyMMdd_hhmmss") + ".txt", textBoxPOSManualSalesIntegrationLogs.Text);
+                    }
+                });
+            }
+            else
+            {
+                textBoxPOSManualSalesIntegrationLogs.Text += message;
+
+                textBoxPOSManualSalesIntegrationLogs.Focus();
+                textBoxPOSManualSalesIntegrationLogs.SelectionStart = textBoxPOSManualSalesIntegrationLogs.Text.Length;
+                textBoxPOSManualSalesIntegrationLogs.ScrollToCaret();
+            }
+        }
+
+        private void buttonPOSManualSalesIntegrationStart_Click(object sender, EventArgs e)
+        {
+            buttonPOSManualSalesIntegrationStart.Text = "Integrating...";
+            buttonPOSManualSalesIntegrationStart.Enabled = false;
+
+            isManualSalesIntegrationStartIntegrating = true;
+
+            logManualSalesIntegrationMessage("Manual Sales Integration Started! \r\n\nTime Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+
+            if (backgroundWorkerManualSalesIntegration.IsBusy != true)
+            {
+                backgroundWorkerManualSalesIntegration.RunWorkerAsync();
+            }
+        }
+
+        private void backgroundWorkerManualSalesIntegration_DoWork(object sender, DoWorkEventArgs e)
+        {
+            while (isManualSalesIntegrationStartIntegrating)
+            {
+                Task ManualSIIntegrationTask = Task.Run(() =>
+                {
+                    ISPOSManualSalesIntegrationTrnCollectionController manualSalesIntegrationTrnCollectionController = new ISPOSManualSalesIntegrationTrnCollectionController();
+                    manualSalesIntegrationTrnCollectionController.SendSalesInvoice(this, domain, dateTimePickerPOSManualSalesIntegrationDate.Value.ToShortDateString());
+                });
+                ManualSIIntegrationTask.Wait();
+
+                if (ManualSIIntegrationTask.IsCompleted)
+                {
+                    Task ManualSIIntegrationTaskIsCompleted = Task.Run(() =>
+                    {
+                        AsyncManualSIIntegrationTaskIsCompleted();
+                    });
+                    ManualSIIntegrationTaskIsCompleted.Wait();
+                }
+
+                System.Threading.Thread.Sleep(5000);
+            }
+        }
+
+        public async void AsyncManualSIIntegrationTaskIsCompleted()
+        {
+            await TaskManualSIIntegrationTaskIsCompleted();
+        }
+
+        public Task<Boolean> TaskManualSIIntegrationTaskIsCompleted()
+        {
+            if (buttonPOSManualSalesIntegrationStart.InvokeRequired)
+            {
+                BeginInvoke((MethodInvoker)delegate
+                {
+                    buttonPOSManualSalesIntegrationStart.Enabled = true;
+                    buttonPOSManualSalesIntegrationStart.Text = "Integrate";
+
+                    isManualSalesIntegrationStartIntegrating = false;
+                });
+            }
+
+            return Task.FromResult(true);
         }
     }
 }

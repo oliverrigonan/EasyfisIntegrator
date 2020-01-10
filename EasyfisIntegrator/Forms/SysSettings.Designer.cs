@@ -65,6 +65,8 @@
             this.fbdLogFileLocation = new System.Windows.Forms.FolderBrowserDialog();
             this.fbdFolderToMonitor = new System.Windows.Forms.FolderBrowserDialog();
             this.fbdFolderForSentFiles = new System.Windows.Forms.FolderBrowserDialog();
+            this.label13 = new System.Windows.Forms.Label();
+            this.cbxManualSalesIntegration = new System.Windows.Forms.CheckBox();
             this.panel1.SuspendLayout();
             this.tabSettings.SuspendLayout();
             this.tabPagePOSSettings.SuspendLayout();
@@ -109,6 +111,8 @@
             // 
             // tabPagePOSSettings
             // 
+            this.tabPagePOSSettings.Controls.Add(this.label13);
+            this.tabPagePOSSettings.Controls.Add(this.cbxManualSalesIntegration);
             this.tabPagePOSSettings.Controls.Add(this.cboPostSupplier);
             this.tabPagePOSSettings.Controls.Add(this.cboPostUser);
             this.tabPagePOSSettings.Controls.Add(this.label2);
@@ -131,25 +135,25 @@
             // 
             this.cboPostSupplier.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.cboPostSupplier.FormattingEnabled = true;
-            this.cboPostSupplier.Location = new System.Drawing.Point(199, 135);
+            this.cboPostSupplier.Location = new System.Drawing.Point(214, 135);
             this.cboPostSupplier.Name = "cboPostSupplier";
-            this.cboPostSupplier.Size = new System.Drawing.Size(370, 28);
+            this.cboPostSupplier.Size = new System.Drawing.Size(360, 28);
             this.cboPostSupplier.TabIndex = 34;
             // 
             // cboPostUser
             // 
             this.cboPostUser.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.cboPostUser.FormattingEnabled = true;
-            this.cboPostUser.Location = new System.Drawing.Point(199, 103);
+            this.cboPostUser.Location = new System.Drawing.Point(214, 103);
             this.cboPostUser.Name = "cboPostUser";
-            this.cboPostUser.Size = new System.Drawing.Size(370, 28);
+            this.cboPostUser.Size = new System.Drawing.Size(360, 28);
             this.cboPostUser.TabIndex = 33;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.label2.Location = new System.Drawing.Point(62, 138);
+            this.label2.Location = new System.Drawing.Point(77, 138);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(114, 20);
             this.label2.TabIndex = 32;
@@ -159,7 +163,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.label3.Location = new System.Drawing.Point(87, 106);
+            this.label3.Location = new System.Drawing.Point(102, 106);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(89, 20);
             this.label3.TabIndex = 30;
@@ -169,7 +173,7 @@
             // 
             this.label11.AutoSize = true;
             this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.label11.Location = new System.Drawing.Point(51, 77);
+            this.label11.Location = new System.Drawing.Point(66, 77);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(125, 20);
             this.label11.TabIndex = 29;
@@ -179,7 +183,7 @@
             // 
             this.cbxUseItemPrice.AutoSize = true;
             this.cbxUseItemPrice.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.cbxUseItemPrice.Location = new System.Drawing.Point(199, 80);
+            this.cbxUseItemPrice.Location = new System.Drawing.Point(214, 80);
             this.cbxUseItemPrice.Name = "cbxUseItemPrice";
             this.cbxUseItemPrice.Size = new System.Drawing.Size(18, 17);
             this.cbxUseItemPrice.TabIndex = 28;
@@ -189,7 +193,7 @@
             // 
             this.label10.AutoSize = true;
             this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.label10.Location = new System.Drawing.Point(82, 51);
+            this.label10.Location = new System.Drawing.Point(97, 51);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(94, 20);
             this.label10.TabIndex = 26;
@@ -198,16 +202,16 @@
             // txtUserCode
             // 
             this.txtUserCode.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.txtUserCode.Location = new System.Drawing.Point(199, 48);
+            this.txtUserCode.Location = new System.Drawing.Point(214, 48);
             this.txtUserCode.Name = "txtUserCode";
-            this.txtUserCode.Size = new System.Drawing.Size(370, 26);
+            this.txtUserCode.Size = new System.Drawing.Size(360, 26);
             this.txtUserCode.TabIndex = 27;
             // 
             // label7
             // 
             this.label7.AutoSize = true;
             this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.label7.Location = new System.Drawing.Point(64, 19);
+            this.label7.Location = new System.Drawing.Point(79, 19);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(112, 20);
             this.label7.TabIndex = 24;
@@ -216,9 +220,9 @@
             // txtBranchCode
             // 
             this.txtBranchCode.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.txtBranchCode.Location = new System.Drawing.Point(199, 16);
+            this.txtBranchCode.Location = new System.Drawing.Point(214, 16);
             this.txtBranchCode.Name = "txtBranchCode";
-            this.txtBranchCode.Size = new System.Drawing.Size(370, 26);
+            this.txtBranchCode.Size = new System.Drawing.Size(360, 26);
             this.txtBranchCode.TabIndex = 25;
             // 
             // tabPageSystem
@@ -449,10 +453,30 @@
             this.btnSaveSettings.UseVisualStyleBackColor = false;
             this.btnSaveSettings.Click += new System.EventHandler(this.btnSaveSettings_Click);
             // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.label13.Location = new System.Drawing.Point(6, 166);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(185, 20);
+            this.label13.TabIndex = 36;
+            this.label13.Text = "Manual Sales Integrate:";
+            // 
+            // cbxManualSalesIntegration
+            // 
+            this.cbxManualSalesIntegration.AutoSize = true;
+            this.cbxManualSalesIntegration.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.cbxManualSalesIntegration.Location = new System.Drawing.Point(214, 169);
+            this.cbxManualSalesIntegration.Name = "cbxManualSalesIntegration";
+            this.cbxManualSalesIntegration.Size = new System.Drawing.Size(18, 17);
+            this.cbxManualSalesIntegration.TabIndex = 35;
+            this.cbxManualSalesIntegration.UseVisualStyleBackColor = true;
+            // 
             // SysSettings
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(120F, 120F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(634, 389);
             this.Controls.Add(this.btnSaveSettings);
             this.Controls.Add(this.btnCloseSettings);
@@ -516,5 +540,7 @@
         private System.Windows.Forms.TextBox txtFolderForSentFiles;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.FolderBrowserDialog fbdFolderForSentFiles;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.CheckBox cbxManualSalesIntegration;
     }
 }
