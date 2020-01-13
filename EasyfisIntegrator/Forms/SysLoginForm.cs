@@ -62,9 +62,10 @@ namespace EasyfisIntegrator.Forms
                         Domain = sysSettings.Domain,
                         LogFileLocation = sysSettings.LogFileLocation,
                         FolderToMonitor = sysSettings.FolderToMonitor,
-                        IsFolderMonitoringOnly = false,
+                        IsFolderMonitoringOnly = sysSettings.IsFolderMonitoringOnly,
                         FolderMonitoringUserCode = sysSettings.FolderMonitoringUserCode,
-                        FolderForSentFiles = sysSettings.FolderForSentFiles
+                        FolderForSentFiles = sysSettings.FolderForSentFiles,
+                        ManualSalesIntegration = sysSettings.ManualSalesIntegration
                     };
 
                     String newJson = new JavaScriptSerializer().Serialize(newSysSettings);
