@@ -30,6 +30,10 @@ namespace EasyfisIntegrator.Controllers
             String jsonData = "";
 
             List<Int32> collectionIds = new List<Int32>();
+
+            String defaultReferenceNumberTimeStamp = DateTime.Now.ToString("yyyyMMddHHmmss");
+            String salesTimeStamp = Convert.ToDateTime(salesDate).ToLongDateString();
+
             // ========================
             // Get Integration Settings
             // ========================
@@ -50,8 +54,7 @@ namespace EasyfisIntegrator.Controllers
                     try
                     {
                         var collections = from d in posdb.TrnCollections
-                                          where d.CollectionDate == Convert.ToDateTime(salesDate) 
-                                          && (d.CollectionNumber.Equals("NA") == false || d.CollectionNumber.Equals("na") == false)
+                                          where d.CollectionDate == Convert.ToDateTime(salesDate)
                                           && d.SalesId != null
                                           && d.PostCode == null
                                           && d.IsLocked == true
@@ -65,25 +68,15 @@ namespace EasyfisIntegrator.Controllers
                                 {
                                     collectionIds.Add(collection.Id);
                                 }
-                            }
 
-                            var groupedCollections = from d in collections
-                                                     group d by d.CustomerId
-                                                     into g
-                                                     select g;
-
-                            foreach (var groupedCollection in groupedCollections)
-                            {
                                 var salesLines = from d in posdb.TrnSalesLines
-                                                 where d.TrnSale.SalesDate == Convert.ToDateTime(salesDate)
-                                                 && d.TrnSale.CustomerId == groupedCollection.Key
-                                                 && d.TrnSale.IsLocked == true
+                                                 where d.SalesId == collection.SalesId
                                                  && d.MstItem.IsLocked == true
                                                  select d;
 
                                 if (salesLines.Any())
                                 {
-                                    String defaultManualSINumber = Convert.ToDateTime(salesDate).ToString("yyyyMMdd") + "_" + salesLines.FirstOrDefault().TrnSale.MstCustomer.CustomerCode;
+                                    String defaultManualSINumber = defaultReferenceNumberTimeStamp + "_" + salesLines.FirstOrDefault().TrnSale.MstCustomer.CustomerCode;
 
                                     var groupedSalesLines = from d in salesLines
                                                             group d by new
@@ -122,7 +115,7 @@ namespace EasyfisIntegrator.Controllers
                                                 CustomerCode = groupedSalesLine.CustomerCode,
                                                 ManualSINumber = defaultManualSINumber,
                                                 DocumentReference = defaultManualSINumber,
-                                                Remarks = defaultManualSINumber,
+                                                Remarks = "Sales for " + salesTimeStamp,
                                                 UserCode = userCode,
                                                 CreatedDateTime = salesDate,
                                                 ItemCode = groupedSalesLine.BarCode,
@@ -137,6 +130,63 @@ namespace EasyfisIntegrator.Controllers
                                             });
                                         }
                                     }
+                                }
+                            }
+
+                            var groupedNewSalesInvoices = from d in newSalesInvoices
+                                                          group d by new
+                                                          {
+                                                              d.CustomerCode,
+                                                              d.ItemCode,
+                                                              d.Unit,
+                                                              d.Price,
+                                                              d.NetPrice,
+                                                              d.DiscountAmount,
+                                                          } into g
+                                                          select new
+                                                          {
+                                                              g.Key.CustomerCode,
+                                                              g.Key.ItemCode,
+                                                              g.Key.Unit,
+                                                              Quantity = g.Sum(s => s.Quantity),
+                                                              g.Key.Price,
+                                                              g.Key.DiscountAmount,
+                                                              g.Key.NetPrice,
+                                                              Amount = g.Sum(s => s.Amount)
+                                                          };
+
+                            if (groupedNewSalesInvoices.Any())
+                            {
+                                newSalesInvoices = new List<Entities.FolderMonitoringTrnSalesInvoice>();
+
+                                Int32 count = 0;
+
+                                foreach (var groupedNewSalesInvoice in groupedNewSalesInvoices.ToList())
+                                {
+                                    count += 1;
+
+                                    String defaultManualSINumber = defaultReferenceNumberTimeStamp + "_" + groupedNewSalesInvoice.CustomerCode;
+
+                                    newSalesInvoices.Add(new Entities.FolderMonitoringTrnSalesInvoice
+                                    {
+                                        BranchCode = branchCode,
+                                        SIDate = salesDate,
+                                        CustomerCode = groupedNewSalesInvoice.CustomerCode,
+                                        ManualSINumber = defaultManualSINumber,
+                                        DocumentReference = defaultManualSINumber,
+                                        Remarks = "Sales for " + salesTimeStamp,
+                                        UserCode = userCode,
+                                        CreatedDateTime = salesDate,
+                                        ItemCode = groupedNewSalesInvoice.ItemCode,
+                                        Particulars = defaultManualSINumber,
+                                        Unit = groupedNewSalesInvoice.Unit,
+                                        Quantity = groupedNewSalesInvoice.Quantity,
+                                        Price = groupedNewSalesInvoice.Price,
+                                        DiscountAmount = groupedNewSalesInvoice.DiscountAmount,
+                                        NetPrice = groupedNewSalesInvoice.NetPrice,
+                                        Amount = groupedNewSalesInvoice.Amount,
+                                        No = count
+                                    });
                                 }
                             }
                         }
@@ -396,7 +446,7 @@ namespace EasyfisIntegrator.Controllers
 
                                         if (collection.Any())
                                         {
-                                            String defaultManualSINumber = Convert.ToDateTime(salesDate).ToString("yyyyMMdd") + "_" + collection.FirstOrDefault().MstCustomer.CustomerCode;
+                                            String defaultManualSINumber = defaultReferenceNumberTimeStamp + "_" + collection.FirstOrDefault().MstCustomer.CustomerCode;
 
                                             var updateCollectionPostCode = collection.FirstOrDefault();
                                             updateCollectionPostCode.PostCode = defaultManualSINumber;
