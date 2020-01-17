@@ -46,7 +46,7 @@ namespace EasyfisIntegrator.Controllers
                 // =============
                 // Getting Sales
                 // =============
-                trnIntegrationForm.logManualSalesIntegrationMessage("\r\n\nGetting POS Sales... (0%) \r\n\n");
+                trnIntegrationForm.logManualSalesIntegrationMessage("\r\n\nGetting Sales Data... (0%) \r\n\n");
                 while (true)
                 {
                     newSalesInvoices = new List<Entities.FolderMonitoringTrnSalesInvoice>();
@@ -197,8 +197,8 @@ namespace EasyfisIntegrator.Controllers
 
                         trnIntegrationForm.logManualSalesIntegrationMessage("ManualSIIntegrationLogOnce");
 
-                        trnIntegrationForm.logManualSalesIntegrationMessage("\r\n\nGetting POS Sales... (100%) \r\n\n");
-                        trnIntegrationForm.logManualSalesIntegrationMessage("Get POS Sales Successful!" + "\r\n\n");
+                        trnIntegrationForm.logManualSalesIntegrationMessage("\r\n\nGetting Sales Data... (100%) \r\n\n");
+                        trnIntegrationForm.logManualSalesIntegrationMessage("Get Successful!" + "\r\n\n");
                         trnIntegrationForm.logManualSalesIntegrationMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                         trnIntegrationForm.logManualSalesIntegrationMessage("\r\n\n");
 
