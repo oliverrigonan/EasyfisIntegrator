@@ -81,6 +81,8 @@
             this.txtFolderMonitoringLogs = new System.Windows.Forms.TextBox();
             this.bgwFolderMonitoringIntegration = new System.ComponentModel.BackgroundWorker();
             this.backgroundWorkerManualSalesIntegration = new System.ComponentModel.BackgroundWorker();
+            this.comboBoxTerminal = new System.Windows.Forms.ComboBox();
+            this.label13 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.fileSystemWatcherCSVFiles)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -518,12 +520,12 @@
             this.textBoxPOSManualSalesIntegrationLogs.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textBoxPOSManualSalesIntegrationLogs.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.textBoxPOSManualSalesIntegrationLogs.ForeColor = System.Drawing.Color.White;
-            this.textBoxPOSManualSalesIntegrationLogs.Location = new System.Drawing.Point(8, 112);
+            this.textBoxPOSManualSalesIntegrationLogs.Location = new System.Drawing.Point(8, 142);
             this.textBoxPOSManualSalesIntegrationLogs.MaxLength = 0;
             this.textBoxPOSManualSalesIntegrationLogs.Multiline = true;
             this.textBoxPOSManualSalesIntegrationLogs.Name = "textBoxPOSManualSalesIntegrationLogs";
             this.textBoxPOSManualSalesIntegrationLogs.ReadOnly = true;
-            this.textBoxPOSManualSalesIntegrationLogs.Size = new System.Drawing.Size(848, 510);
+            this.textBoxPOSManualSalesIntegrationLogs.Size = new System.Drawing.Size(848, 480);
             this.textBoxPOSManualSalesIntegrationLogs.TabIndex = 25;
             // 
             // buttonPOSManualSalesIntegrationStart
@@ -534,7 +536,7 @@
             this.buttonPOSManualSalesIntegrationStart.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonPOSManualSalesIntegrationStart.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.buttonPOSManualSalesIntegrationStart.ForeColor = System.Drawing.Color.White;
-            this.buttonPOSManualSalesIntegrationStart.Location = new System.Drawing.Point(680, 69);
+            this.buttonPOSManualSalesIntegrationStart.Location = new System.Drawing.Point(680, 99);
             this.buttonPOSManualSalesIntegrationStart.Name = "buttonPOSManualSalesIntegrationStart";
             this.buttonPOSManualSalesIntegrationStart.Size = new System.Drawing.Size(176, 37);
             this.buttonPOSManualSalesIntegrationStart.TabIndex = 24;
@@ -547,12 +549,14 @@
             this.panel7.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel7.BackColor = System.Drawing.SystemColors.Control;
+            this.panel7.Controls.Add(this.label13);
+            this.panel7.Controls.Add(this.comboBoxTerminal);
             this.panel7.Controls.Add(this.label12);
             this.panel7.Controls.Add(this.dateTimePickerPOSManualSalesIntegrationDate);
             this.panel7.Controls.Add(this.label17);
             this.panel7.Location = new System.Drawing.Point(8, 6);
             this.panel7.Name = "panel7";
-            this.panel7.Size = new System.Drawing.Size(848, 57);
+            this.panel7.Size = new System.Drawing.Size(848, 87);
             this.panel7.TabIndex = 22;
             // 
             // label12
@@ -712,6 +716,25 @@
             this.backgroundWorkerManualSalesIntegration.WorkerSupportsCancellation = true;
             this.backgroundWorkerManualSalesIntegration.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerManualSalesIntegration_DoWork);
             // 
+            // comboBoxTerminal
+            // 
+            this.comboBoxTerminal.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.comboBoxTerminal.FormattingEnabled = true;
+            this.comboBoxTerminal.Location = new System.Drawing.Point(167, 44);
+            this.comboBoxTerminal.Name = "comboBoxTerminal";
+            this.comboBoxTerminal.Size = new System.Drawing.Size(152, 28);
+            this.comboBoxTerminal.TabIndex = 27;
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.label13.Location = new System.Drawing.Point(64, 47);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(79, 20);
+            this.label13.TabIndex = 28;
+            this.label13.Text = "Terminal:";
+            // 
             // TrnIntegrationForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(120F, 120F);
@@ -807,5 +830,7 @@
         private System.Windows.Forms.Label label12;
         private System.ComponentModel.BackgroundWorker backgroundWorkerManualSalesIntegration;
         private System.Windows.Forms.TextBox textBoxPOSManualSalesIntegrationLogs;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.ComboBox comboBoxTerminal;
     }
 }

@@ -23,7 +23,7 @@ namespace EasyfisIntegrator.Controllers
         // ==================
         // Send Sales Invoice
         // ==================
-        public async void SendSalesInvoice(Forms.TrnIntegrationForm trnIntegrationForm, String domain, String salesDate)
+        public async void SendSalesInvoice(Forms.TrnIntegrationForm trnIntegrationForm, String domain, String salesDate, Int32 terminalId)
         {
             List<Entities.FolderMonitoringTrnSalesInvoice> newSalesInvoices = new List<Entities.FolderMonitoringTrnSalesInvoice>();
             JavaScriptSerializer serializer = new JavaScriptSerializer();
@@ -55,6 +55,7 @@ namespace EasyfisIntegrator.Controllers
                     {
                         var collections = from d in posdb.TrnCollections
                                           where d.CollectionDate == Convert.ToDateTime(salesDate)
+                                          && d.TerminalId == terminalId
                                           && d.SalesId != null
                                           && d.PostCode == null
                                           && d.IsLocked == true
@@ -71,12 +72,11 @@ namespace EasyfisIntegrator.Controllers
 
                                 var salesLines = from d in posdb.TrnSalesLines
                                                  where d.SalesId == collection.SalesId
-                                                 && d.MstItem.IsLocked == true
                                                  select d;
 
                                 if (salesLines.Any())
                                 {
-                                    String defaultManualSINumber = defaultReferenceNumberTimeStamp + "_" + salesLines.FirstOrDefault().TrnSale.MstCustomer.CustomerCode;
+                                    String defaultManualSINumber = collection.MstTerminal.Terminal + "-" + defaultReferenceNumberTimeStamp;
 
                                     var groupedSalesLines = from d in salesLines
                                                             group d by new
@@ -114,7 +114,7 @@ namespace EasyfisIntegrator.Controllers
                                                 SIDate = salesDate,
                                                 CustomerCode = groupedSalesLine.CustomerCode,
                                                 ManualSINumber = defaultManualSINumber,
-                                                DocumentReference = defaultManualSINumber,
+                                                DocumentReference = collection.MstTerminal.Terminal,
                                                 Remarks = "Sales for " + salesTimeStamp,
                                                 UserCode = userCode,
                                                 CreatedDateTime = salesDate,
@@ -136,7 +136,10 @@ namespace EasyfisIntegrator.Controllers
                             var groupedNewSalesInvoices = from d in newSalesInvoices
                                                           group d by new
                                                           {
+                                                              d.ManualSINumber,
+                                                              d.DocumentReference,
                                                               d.CustomerCode,
+                                                              d.Remarks,
                                                               d.ItemCode,
                                                               d.Unit,
                                                               d.Price,
@@ -145,7 +148,10 @@ namespace EasyfisIntegrator.Controllers
                                                           } into g
                                                           select new
                                                           {
+                                                              g.Key.ManualSINumber,
+                                                              g.Key.DocumentReference,
                                                               g.Key.CustomerCode,
+                                                              g.Key.Remarks,
                                                               g.Key.ItemCode,
                                                               g.Key.Unit,
                                                               Quantity = g.Sum(s => s.Quantity),
@@ -165,20 +171,18 @@ namespace EasyfisIntegrator.Controllers
                                 {
                                     count += 1;
 
-                                    String defaultManualSINumber = defaultReferenceNumberTimeStamp + "_" + groupedNewSalesInvoice.CustomerCode;
-
                                     newSalesInvoices.Add(new Entities.FolderMonitoringTrnSalesInvoice
                                     {
                                         BranchCode = branchCode,
                                         SIDate = salesDate,
                                         CustomerCode = groupedNewSalesInvoice.CustomerCode,
-                                        ManualSINumber = defaultManualSINumber,
-                                        DocumentReference = defaultManualSINumber,
-                                        Remarks = "Sales for " + salesTimeStamp,
+                                        ManualSINumber = groupedNewSalesInvoice.ManualSINumber,
+                                        DocumentReference = groupedNewSalesInvoice.DocumentReference,
+                                        Remarks = groupedNewSalesInvoice.Remarks,
                                         UserCode = userCode,
                                         CreatedDateTime = salesDate,
                                         ItemCode = groupedNewSalesInvoice.ItemCode,
-                                        Particulars = defaultManualSINumber,
+                                        Particulars = groupedNewSalesInvoice.ManualSINumber,
                                         Unit = groupedNewSalesInvoice.Unit,
                                         Quantity = groupedNewSalesInvoice.Quantity,
                                         Price = groupedNewSalesInvoice.Price,

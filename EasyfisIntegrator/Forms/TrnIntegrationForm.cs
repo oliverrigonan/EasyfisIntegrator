@@ -62,6 +62,7 @@ namespace EasyfisIntegrator.Forms
             logFolderMonitoringMessage("Press start button to integrate. \r\n\n" + "\r\n\n");
 
             fileSystemWatcherCSVFiles.Path = folderToMonitor;
+            GetTerminalList();
         }
 
         public void getLoginDetails(SysLoginForm form)
@@ -858,6 +859,9 @@ namespace EasyfisIntegrator.Forms
 
         private void buttonPOSManualSalesIntegrationStart_Click(object sender, EventArgs e)
         {
+            dateTimePickerPOSManualSalesIntegrationDate.Enabled = false;
+            comboBoxTerminal.Enabled = false;
+
             buttonPOSManualSalesIntegrationStart.Text = "Integrating...";
             buttonPOSManualSalesIntegrationStart.Enabled = false;
 
@@ -878,7 +882,7 @@ namespace EasyfisIntegrator.Forms
                 Task ManualSIIntegrationTask = Task.Run(() =>
                 {
                     ISPOSManualSalesIntegrationTrnCollectionController manualSalesIntegrationTrnCollectionController = new ISPOSManualSalesIntegrationTrnCollectionController();
-                    manualSalesIntegrationTrnCollectionController.SendSalesInvoice(this, domain, dateTimePickerPOSManualSalesIntegrationDate.Value.ToShortDateString());
+                    manualSalesIntegrationTrnCollectionController.SendSalesInvoice(this, domain, dateTimePickerPOSManualSalesIntegrationDate.Value.ToShortDateString(), Convert.ToInt32(comboBoxTerminal.SelectedValue));
                 });
                 ManualSIIntegrationTask.Wait();
 
@@ -906,6 +910,9 @@ namespace EasyfisIntegrator.Forms
             {
                 BeginInvoke((MethodInvoker)delegate
                 {
+                    dateTimePickerPOSManualSalesIntegrationDate.Enabled = true;
+                    comboBoxTerminal.Enabled = true;
+
                     buttonPOSManualSalesIntegrationStart.Enabled = true;
                     buttonPOSManualSalesIntegrationStart.Text = "Integrate";
 
@@ -914,6 +921,19 @@ namespace EasyfisIntegrator.Forms
             }
 
             return Task.FromResult(true);
+        }
+
+        public void GetTerminalList()
+        {
+            var terminals = from d in posdb.MstTerminals
+                            select d;
+
+            if (terminals.Any())
+            {
+                comboBoxTerminal.DataSource = terminals.ToList();
+                comboBoxTerminal.ValueMember = "Id";
+                comboBoxTerminal.DisplayMember = "Terminal";
+            }
         }
     }
 }
