@@ -1,10 +1,10 @@
 ﻿{
-  "ConnectionString": "Data Source=localhost;Initial Catalog=pos17;Persist Security Info=True;User ID=sa;Password=innosoft",
-  "Domain": "localhost:2651",
+  "ConnectionString": "Data Source=localhost;Initial Catalog=pos13_elora20200120;Persist Security Info=True;User ID=sa;Password=innosoft",
+  "Domain": "elora.easyfis.com",
   "LogFileLocation": "C:\\Users\\Developer\\Desktop\\JM Poultry\\Integrator\\Logs",
   "FolderToMonitor": "C:\\Users\\Developer\\Desktop\\JM Poultry\\Integrator\\Modules",
   "IsFolderMonitoringOnly": false,
-  "FolderMonitoringUserCode": "admin",
+  "FolderMonitoringUserCode": "elora",
   "FolderForSentFiles": "C:\\Users\\Developer\\Desktop\\JM Poultry\\Integrator\\Sent",
-  "ManualSalesIntegration": false
+  "ManualSalesIntegration": true
 }
