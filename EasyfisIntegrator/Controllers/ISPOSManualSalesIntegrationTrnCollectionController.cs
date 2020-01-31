@@ -59,6 +59,7 @@ namespace EasyfisIntegrator.Controllers
                                           && d.SalesId != null
                                           && d.PostCode == null
                                           && d.IsLocked == true
+                                          && d.IsCancelled == false
                                           select d;
 
                         if (collections.Any())

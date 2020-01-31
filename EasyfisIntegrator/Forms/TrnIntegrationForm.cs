@@ -62,7 +62,6 @@ namespace EasyfisIntegrator.Forms
             logFolderMonitoringMessage("Press start button to integrate. \r\n\n" + "\r\n\n");
 
             fileSystemWatcherCSVFiles.Path = folderToMonitor;
-            GetTerminalList();
         }
 
         public void getLoginDetails(SysLoginForm form)
@@ -121,6 +120,8 @@ namespace EasyfisIntegrator.Forms
             }
             else
             {
+                GetTerminalList();
+
                 tabPOSIntegration.Enabled = true;
                 tabFolderMonitoring.Enabled = true;
                 tabIntegration.SelectedTab = tabPOSIntegration;
@@ -682,6 +683,11 @@ namespace EasyfisIntegrator.Forms
                                                 runFolderMonitoringIntegrationST(ext);
                                             });
                                             STTask.Wait();
+
+                                            if (STTask.IsCompleted)
+                                            {
+                                                System.Threading.Thread.Sleep(5000);
+                                            }
                                         }
                                     }
                                 }
@@ -689,121 +695,127 @@ namespace EasyfisIntegrator.Forms
                         }
                     }
                 }
-
-                System.Threading.Thread.Sleep(5000);
             }
         }
 
-        public void runFolderMonitoringIntegrationSI(List<String> ext)
+        public Task<String> runFolderMonitoringIntegrationSI(List<String> ext)
         {
-            FolderMonitoringTrnSalesInvoiceController folderMonitoringSI = new FolderMonitoringTrnSalesInvoiceController();
-
             List<String> SIFiles = new List<String>(Directory.EnumerateFiles(folderToMonitor + "\\SI\\", "*.*", SearchOption.AllDirectories).Where(f => ext.Contains(Path.GetExtension(f))));
             if (SIFiles.Any())
             {
                 foreach (var SIFile in SIFiles)
                 {
+                    FolderMonitoringTrnSalesInvoiceController folderMonitoringSI = new FolderMonitoringTrnSalesInvoiceController();
                     folderMonitoringSI.SendSalesInvoice(this, txtFolderMonitoringUserCode.Text, SIFile, domain);
                 }
             }
+
+            return Task.FromResult("");
         }
 
-        public void runFolderMonitoringIntegrationOR(List<String> ext)
+        public Task<String> runFolderMonitoringIntegrationOR(List<String> ext)
         {
-            FolderMonitoringTrnCollectionController folderMonitoringOR = new FolderMonitoringTrnCollectionController();
-
             List<String> ORFiles = new List<String>(Directory.EnumerateFiles(folderToMonitor + "\\OR\\", "*.*", SearchOption.AllDirectories).Where(f => ext.Contains(Path.GetExtension(f))));
             if (ORFiles.Any())
             {
                 foreach (var ORFile in ORFiles)
                 {
+                    FolderMonitoringTrnCollectionController folderMonitoringOR = new FolderMonitoringTrnCollectionController();
                     folderMonitoringOR.SendCollection(this, txtFolderMonitoringUserCode.Text, ORFile, domain);
                 }
             }
+
+            return Task.FromResult("");
         }
 
-        public void runFolderMonitoringIntegrationRR(List<String> ext)
+        public Task<String> runFolderMonitoringIntegrationRR(List<String> ext)
         {
-            FolderMonitoringTrnReceivingReceiptController folderMonitoringRR = new FolderMonitoringTrnReceivingReceiptController();
-
             List<String> RRFiles = new List<String>(Directory.EnumerateFiles(folderToMonitor + "\\RR\\", "*.*", SearchOption.AllDirectories).Where(f => ext.Contains(Path.GetExtension(f))));
             if (RRFiles.Any())
             {
                 foreach (var RRFile in RRFiles)
                 {
+                    FolderMonitoringTrnReceivingReceiptController folderMonitoringRR = new FolderMonitoringTrnReceivingReceiptController();
                     folderMonitoringRR.SendReceivingReceipt(this, txtFolderMonitoringUserCode.Text, RRFile, domain);
                 }
             }
+
+            return Task.FromResult("");
         }
 
-        public void runFolderMonitoringIntegrationCV(List<String> ext)
+        public Task<String> runFolderMonitoringIntegrationCV(List<String> ext)
         {
-            FolderMonitoringTrnDisbursementController folderMonitoringCV = new FolderMonitoringTrnDisbursementController();
-
             List<String> CVFiles = new List<String>(Directory.EnumerateFiles(folderToMonitor + "\\CV\\", "*.*", SearchOption.AllDirectories).Where(f => ext.Contains(Path.GetExtension(f))));
             if (CVFiles.Any())
             {
                 foreach (var CVFile in CVFiles)
                 {
+                    FolderMonitoringTrnDisbursementController folderMonitoringCV = new FolderMonitoringTrnDisbursementController();
                     folderMonitoringCV.SendDisbursement(this, txtFolderMonitoringUserCode.Text, CVFile, domain);
                 }
             }
+
+            return Task.FromResult("");
         }
 
-        public void runFolderMonitoringIntegrationJV(List<String> ext)
+        public Task<String> runFolderMonitoringIntegrationJV(List<String> ext)
         {
-            FolderMonitoringTrnJournalVoucherController folderMonitoringJV = new FolderMonitoringTrnJournalVoucherController();
-
             List<String> JVFiles = new List<String>(Directory.EnumerateFiles(folderToMonitor + "\\JV\\", "*.*", SearchOption.AllDirectories).Where(f => ext.Contains(Path.GetExtension(f))));
             if (JVFiles.Any())
             {
                 foreach (var JVFile in JVFiles)
                 {
+                    FolderMonitoringTrnJournalVoucherController folderMonitoringJV = new FolderMonitoringTrnJournalVoucherController();
                     folderMonitoringJV.SendJournalVoucher(this, txtFolderMonitoringUserCode.Text, JVFile, domain);
                 }
             }
+
+            return Task.FromResult("");
         }
 
-        public void runFolderMonitoringIntegrationIN(List<String> ext)
+        public Task<String> runFolderMonitoringIntegrationIN(List<String> ext)
         {
-            FolderMonitoringTrnStockInController folderMonitoringIN = new FolderMonitoringTrnStockInController();
-
             List<String> INFiles = new List<String>(Directory.EnumerateFiles(folderToMonitor + "\\IN\\", "*.*", SearchOption.AllDirectories).Where(f => ext.Contains(Path.GetExtension(f))));
             if (INFiles.Any())
             {
                 foreach (var INFile in INFiles)
                 {
+                    FolderMonitoringTrnStockInController folderMonitoringIN = new FolderMonitoringTrnStockInController();
                     folderMonitoringIN.SendStockIn(this, txtFolderMonitoringUserCode.Text, INFile, domain);
                 }
             }
+
+            return Task.FromResult("");
         }
 
-        public void runFolderMonitoringIntegrationOT(List<String> ext)
+        public Task<String> runFolderMonitoringIntegrationOT(List<String> ext)
         {
-            FolderMonitoringTrnStockOutController folderMonitoringOT = new FolderMonitoringTrnStockOutController();
-
             List<String> OTFiles = new List<String>(Directory.EnumerateFiles(folderToMonitor + "\\OT\\", "*.*", SearchOption.AllDirectories).Where(f => ext.Contains(Path.GetExtension(f))));
             if (OTFiles.Any())
             {
                 foreach (var OTFile in OTFiles)
                 {
+                    FolderMonitoringTrnStockOutController folderMonitoringOT = new FolderMonitoringTrnStockOutController();
                     folderMonitoringOT.SendStockOut(this, txtFolderMonitoringUserCode.Text, OTFile, domain);
                 }
             }
+
+            return Task.FromResult("");
         }
 
-        public void runFolderMonitoringIntegrationST(List<String> ext)
+        public Task<String> runFolderMonitoringIntegrationST(List<String> ext)
         {
-            FolderMonitoringTrnStockTransferController folderMonitoringST = new FolderMonitoringTrnStockTransferController();
-
             List<String> STFiles = new List<String>(Directory.EnumerateFiles(folderToMonitor + "\\ST\\", "*.*", SearchOption.AllDirectories).Where(f => ext.Contains(Path.GetExtension(f))));
             if (STFiles.Any())
             {
                 foreach (var STFile in STFiles)
                 {
+                    FolderMonitoringTrnStockTransferController folderMonitoringST = new FolderMonitoringTrnStockTransferController();
                     folderMonitoringST.SendStockTransfer(this, txtFolderMonitoringUserCode.Text, STFile, domain);
                 }
             }
+
+            return Task.FromResult("");
         }
 
         public Boolean isManualSalesIntegrationStartIntegrating = false;
