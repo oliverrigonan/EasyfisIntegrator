@@ -37,9 +37,10 @@ namespace EasyfisIntegrator.Controllers
                                && d.CollectionId != null
                                && d.PostCode == null
                                && d.IsLocked == true
+                               && d.TrnStockInLines.Any() == true
                                select d;
 
-                if (stockIns.Any() && stockIns.FirstOrDefault().TrnStockInLines.Any())
+                if (stockIns.Any())
                 {
                     var stockIn = stockIns.FirstOrDefault();
                     List<Entities.ISPOSTrnCollectionLines> listCollectionLines = new List<Entities.ISPOSTrnCollectionLines>();
