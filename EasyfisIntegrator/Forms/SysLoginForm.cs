@@ -62,7 +62,7 @@ namespace EasyfisIntegrator.Forms
                         Domain = sysSettings.Domain,
                         LogFileLocation = sysSettings.LogFileLocation,
                         FolderToMonitor = sysSettings.FolderToMonitor,
-                        IsFolderMonitoringOnly = sysSettings.IsFolderMonitoringOnly,
+                        IsFolderMonitoringOnly = false,
                         FolderMonitoringUserCode = sysSettings.FolderMonitoringUserCode,
                         FolderForSentFiles = sysSettings.FolderForSentFiles,
                         ManualSalesIntegration = sysSettings.ManualSalesIntegration

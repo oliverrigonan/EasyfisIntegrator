@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 
 namespace EasyfisIntegrator.Controllers
@@ -43,10 +44,18 @@ namespace EasyfisIntegrator.Controllers
             return result;
         }
 
+        // =========
+        // Sync Item
+        // =========
+        public async void SyncItem(String apiUrlHost)
+        {
+            await GetItem(apiUrlHost);
+        }
+
         // ========
         // Get Item
         // ========
-        public void GetItem(String apiUrlHost)
+        public Task GetItem(String apiUrlHost)
         {
             try
             {
@@ -59,8 +68,6 @@ namespace EasyfisIntegrator.Controllers
                 var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://" + apiUrlHost + "/api/get/POSIntegration/item/" + currentDate);
                 httpWebRequest.Method = "GET";
                 httpWebRequest.Accept = "application/json";
-
-                Boolean isRead = false;
 
                 // ================
                 // Process Response
@@ -204,8 +211,8 @@ namespace EasyfisIntegrator.Controllers
 
                                             if (foundChanges)
                                             {
-                                                trnIntegrationForm.logMessages("Updating Item: " + currentItem.FirstOrDefault().ItemDescription + "\r\n\n");
-                                                trnIntegrationForm.logMessages("Barcode: " + currentItem.FirstOrDefault().BarCode + "\r\n\n");
+                                                trnIntegrationForm.salesIntegrationLogMessages("Updating Item: " + currentItem.FirstOrDefault().ItemDescription + "\r\n\n");
+                                                trnIntegrationForm.salesIntegrationLogMessages("Barcode: " + currentItem.FirstOrDefault().BarCode + "\r\n\n");
 
                                                 var updateItem = currentItem.FirstOrDefault();
                                                 updateItem.BarCode = item.ManualArticleCode;
@@ -251,15 +258,15 @@ namespace EasyfisIntegrator.Controllers
                                                     }
                                                 }
 
-                                                trnIntegrationForm.logMessages("Update Successful!" + "\r\n\n");
-                                                trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                                trnIntegrationForm.logMessages("\r\n\n");
+                                                trnIntegrationForm.salesIntegrationLogMessages("Update Successful!" + "\r\n\n");
+                                                trnIntegrationForm.salesIntegrationLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                                trnIntegrationForm.salesIntegrationLogMessages("\r\n\n");
                                             }
                                         }
                                         else
                                         {
-                                            trnIntegrationForm.logMessages("Saving Item: " + item.Article + "\r\n\n");
-                                            trnIntegrationForm.logMessages("Barcode: " + item.ManualArticleCode + "\r\n\n");
+                                            trnIntegrationForm.salesIntegrationLogMessages("Saving Item: " + item.Article + "\r\n\n");
+                                            trnIntegrationForm.salesIntegrationLogMessages("Barcode: " + item.ManualArticleCode + "\r\n\n");
 
                                             var defaultItemCode = "000001";
                                             var lastItem = from d in posdb.MstItems.OrderByDescending(d => d.Id) select d;
@@ -324,55 +331,50 @@ namespace EasyfisIntegrator.Controllers
                                                 posdb.SubmitChanges();
                                             }
 
-                                            trnIntegrationForm.logMessages("Save Successful!" + "\r\n\n");
-                                            trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                            trnIntegrationForm.logMessages("\r\n\n");
+                                            trnIntegrationForm.salesIntegrationLogMessages("Save Successful!" + "\r\n\n");
+                                            trnIntegrationForm.salesIntegrationLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                            trnIntegrationForm.salesIntegrationLogMessages("\r\n\n");
                                         }
                                     }
                                     else
                                     {
-                                        trnIntegrationForm.logMessages("Cannot Save Item: " + item.Article + "\r\n\n");
-                                        trnIntegrationForm.logMessages("Empty Supplier!" + "\r\n\n");
-                                        trnIntegrationForm.logMessages("Save Failed!" + "\r\n\n");
-                                        trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                        trnIntegrationForm.logMessages("\r\n\n");
+                                        trnIntegrationForm.salesIntegrationLogMessages("Cannot Save Item: " + item.Article + "\r\n\n");
+                                        trnIntegrationForm.salesIntegrationLogMessages("Empty Supplier!" + "\r\n\n");
+                                        trnIntegrationForm.salesIntegrationLogMessages("Save Failed!" + "\r\n\n");
+                                        trnIntegrationForm.salesIntegrationLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                        trnIntegrationForm.salesIntegrationLogMessages("\r\n\n");
                                     }
                                 }
                                 else
                                 {
-                                    trnIntegrationForm.logMessages("Cannot Save Item: " + item.Article + "\r\n\n");
-                                    trnIntegrationForm.logMessages("Output Tax Mismatch!" + "\r\n\n");
-                                    trnIntegrationForm.logMessages("Save Failed!" + "\r\n\n");
-                                    trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                    trnIntegrationForm.logMessages("\r\n\n");
+                                    trnIntegrationForm.salesIntegrationLogMessages("Cannot Save Item: " + item.Article + "\r\n\n");
+                                    trnIntegrationForm.salesIntegrationLogMessages("Output Tax Mismatch!" + "\r\n\n");
+                                    trnIntegrationForm.salesIntegrationLogMessages("Save Failed!" + "\r\n\n");
+                                    trnIntegrationForm.salesIntegrationLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                    trnIntegrationForm.salesIntegrationLogMessages("\r\n\n");
                                 }
                             }
                             else
                             {
-                                trnIntegrationForm.logMessages("Cannot Save Item: " + item.Article + "\r\n\n");
-                                trnIntegrationForm.logMessages("Unit Mismatch!" + "\r\n\n");
-                                trnIntegrationForm.logMessages("Save Failed!" + "\r\n\n");
-                                trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                trnIntegrationForm.logMessages("\r\n\n");
+                                trnIntegrationForm.salesIntegrationLogMessages("Cannot Save Item: " + item.Article + "\r\n\n");
+                                trnIntegrationForm.salesIntegrationLogMessages("Unit Mismatch!" + "\r\n\n");
+                                trnIntegrationForm.salesIntegrationLogMessages("Save Failed!" + "\r\n\n");
+                                trnIntegrationForm.salesIntegrationLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                trnIntegrationForm.salesIntegrationLogMessages("\r\n\n");
                             }
                         }
                     }
-
-                    isRead = true;
                 }
 
-                if (isRead)
-                {
-                    trnIntegrationForm.logMessages("Item Integration Done.");
-                }
+                return Task.FromResult("");
             }
             catch (Exception e)
             {
-                trnIntegrationForm.logMessages("Item Integration Done.");
+                trnIntegrationForm.salesIntegrationLogMessages("Item Error: " + e.Message + "\r\n\n");
+                trnIntegrationForm.salesIntegrationLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                trnIntegrationForm.salesIntegrationLogMessages("\r\n\n");
 
-                trnIntegrationForm.logMessages("Item Error: " + e.Message + "\r\n\n");
-                trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                trnIntegrationForm.logMessages("\r\n\n");
+                return Task.FromResult("");
             }
         }
     }

@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 
 namespace EasyfisIntegrator.Controllers
@@ -43,10 +44,18 @@ namespace EasyfisIntegrator.Controllers
             return result;
         }
 
+        // ========================
+        // Sync Stock Transfer - OT
+        // ========================
+        public async void SyncStockTransferOT(String apiUrlHost, String toBranchCode)
+        {
+            await GetStockTransferOT(apiUrlHost, toBranchCode);
+        }
+
         // =======================
         // Get Stock Transfer - OT
         // =======================
-        public void GetStockTransferOT(String apiUrlHost, String fromBranchCode)
+        public Task GetStockTransferOT(String apiUrlHost, String fromBranchCode)
         {
             try
             {
@@ -59,8 +68,6 @@ namespace EasyfisIntegrator.Controllers
                 var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://" + apiUrlHost + "/api/get/POSIntegration/stockTransferItems/OT/" + stockTransferDate + "/" + fromBranchCode);
                 httpWebRequest.Method = "GET";
                 httpWebRequest.Accept = "application/json";
-
-                Boolean isRead = false;
 
                 // ================
                 // Process Response
@@ -79,7 +86,7 @@ namespace EasyfisIntegrator.Controllers
                             var currentStockOut = from d in posdb.TrnStockOuts where d.Remarks.Equals("ST-" + stockTransfer.BranchCode + "-" + stockTransfer.STNumber) && d.TrnStockOutLines.Count() > 0 && d.IsLocked == true select d;
                             if (!currentStockOut.Any())
                             {
-                                trnIntegrationForm.logMessages("Saving Stock Transfer (OT): ST-" + stockTransfer.BranchCode + "-" + stockTransfer.STNumber + "\r\n\n");
+                                trnIntegrationForm.salesIntegrationLogMessages("Saving Stock Transfer (OT): ST-" + stockTransfer.BranchCode + "-" + stockTransfer.STNumber + "\r\n\n");
 
                                 var defaultPeriod = from d in posdb.MstPeriods select d;
                                 var defaultSettings = from d in posdb.SysSettings select d;
@@ -146,41 +153,36 @@ namespace EasyfisIntegrator.Controllers
 
                                                 posdb.SubmitChanges();
 
-                                                trnIntegrationForm.logMessages(" > " + currentItem.FirstOrDefault().ItemDescription + " * " + item.Quantity.ToString("#,##0.00") + "\r\n\n");
+                                                trnIntegrationForm.salesIntegrationLogMessages(" > " + currentItem.FirstOrDefault().ItemDescription + " * " + item.Quantity.ToString("#,##0.00") + "\r\n\n");
                                             }
                                         }
                                     }
 
-                                    trnIntegrationForm.logMessages("Save Successful!" + "\r\n\n");
-                                    trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                    trnIntegrationForm.logMessages("\r\n\n");
+                                    trnIntegrationForm.salesIntegrationLogMessages("Save Successful!" + "\r\n\n");
+                                    trnIntegrationForm.salesIntegrationLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                    trnIntegrationForm.salesIntegrationLogMessages("\r\n\n");
                                 }
                                 else
                                 {
-                                    trnIntegrationForm.logMessages("Cannot Save Stock Transfer (OT): ST-" + stockTransfer.BranchCode + "-" + stockTransfer.STNumber + "\r\n\n");
-                                    trnIntegrationForm.logMessages("Empty Accounts!" + "\r\n\n");
-                                    trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                    trnIntegrationForm.logMessages("\r\n\n");
+                                    trnIntegrationForm.salesIntegrationLogMessages("Cannot Save Stock Transfer (OT): ST-" + stockTransfer.BranchCode + "-" + stockTransfer.STNumber + "\r\n\n");
+                                    trnIntegrationForm.salesIntegrationLogMessages("Empty Accounts!" + "\r\n\n");
+                                    trnIntegrationForm.salesIntegrationLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                    trnIntegrationForm.salesIntegrationLogMessages("\r\n\n");
                                 }
                             }
                         }
                     }
-
-                    isRead = true;
                 }
 
-                if (isRead)
-                {
-                    trnIntegrationForm.logMessages("Stock Transfer Out Integration Done.");
-                }
+                return Task.FromResult("");
             }
             catch (Exception e)
             {
-                trnIntegrationForm.logMessages("Stock Transfer Out Integration Done.");
+                trnIntegrationForm.salesIntegrationLogMessages("Stock Transfer (Out) Error: " + e.Message + "\r\n\n");
+                trnIntegrationForm.salesIntegrationLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                trnIntegrationForm.salesIntegrationLogMessages("\r\n\n");
 
-                trnIntegrationForm.logMessages("Stock Transfer (Out) Error: " + e.Message + "\r\n\n");
-                trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                trnIntegrationForm.logMessages("\r\n\n");
+                return Task.FromResult("");
             }
         }
     }

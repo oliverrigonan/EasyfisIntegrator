@@ -23,45 +23,20 @@ namespace EasyfisIntegrator.Forms
         private InnosoftPOSData.InnosoftPOSDataDataContext posdb = new InnosoftPOSData.InnosoftPOSDataDataContext(Controllers.SysGlobalSettings.getConnectionString());
 
         public SysLoginForm sysLoginForm;
-        public Boolean isIntegrationStarted = false;
-        public Boolean isSettingsClicked = false;
-        private Timer integrationTimer = new Timer();
 
-        public Boolean isIntegrating = false;
-        public Boolean isIntegratingCustomer = false;
-        public Boolean isIntegratingItem = false;
-        public Boolean isIntegratingSupplier = false;
-        public Boolean isIntegratingCollection = false;
-        public Boolean isIntegratingItemPrice = false;
-        public Boolean isIntegratingReceivingReceipt = false;
-        public Boolean isIntegratingSalesReturn = false;
-        public Boolean isIntegratingStockIn = false;
-        public Boolean isIntegratingStockOut = false;
-        public Boolean isIntegratingTransferIn = false;
-        public Boolean isIntegratingTransferOut = false;
-        public Int32 logMessageCount = 0;
+        public Boolean isSalesIntegrationStarted = false;
+        public String salesIntegrationLogFileLocation = "";
+        public Int32 salesIntegrationLogMessageCount = 0;
 
-        public Boolean isFolderMonitoringOnly = false;
-        public String folderToMonitor = "";
-        public String domain = "";
+        public Boolean isManualSalesIntegrationStarted = false;
         public Boolean isFolderMonitoringIntegrationStarted = false;
 
-        public Boolean ManualSalesIntegration = false;
+        public Boolean isFolderMonitoringOnly = false;
 
         public TrnIntegrationForm()
         {
             InitializeComponent();
-
-            //bgwFolderMonitoringIntegration.DoWork += new DoWorkEventHandler(bgwSalesInvoice_DoWork);
-
-            isSettingsClicked = false;
-
-            logMessages("Press start button to integrate. \r\n\n" + "\r\n\n");
             getSettings();
-
-            logFolderMonitoringMessage("Press start button to integrate. \r\n\n" + "\r\n\n");
-
-            fileSystemWatcherCSVFiles.Path = folderToMonitor;
         }
 
         public void getLoginDetails(SysLoginForm form)
@@ -70,27 +45,8 @@ namespace EasyfisIntegrator.Forms
             lblCurrentUser.Text = sysLoginForm.currentUser;
         }
 
-        private void btnLogout_Click(object sender, EventArgs e)
-        {
-            if (isIntegrationStarted)
-            {
-                MessageBox.Show("Please stop the integration first.", "Logout", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            else
-            {
-                isFolderMonitoringIntegrationStarted = false;
-
-                Hide();
-
-                SysLoginForm sysLoginForm = new SysLoginForm();
-                sysLoginForm.Show();
-            }
-        }
-
         public void getSettings()
         {
-            stopIntegration();
-
             String settingsPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Settings.json");
 
             String json;
@@ -99,55 +55,66 @@ namespace EasyfisIntegrator.Forms
             JavaScriptSerializer javaScriptSerializer = new JavaScriptSerializer();
             Entities.SysSettings sysSettings = javaScriptSerializer.Deserialize<Entities.SysSettings>(json);
 
-            txtDomain.Text = sysSettings.Domain;
-            txtFolderMonitoringDomain.Text = sysSettings.Domain;
-            txtFolderMonitoringUserCode.Text = sysSettings.FolderMonitoringUserCode;
-            isFolderMonitoringOnly = sysSettings.IsFolderMonitoringOnly;
-            folderToMonitor = sysSettings.FolderToMonitor;
-            fileSystemWatcherCSVFiles.Path = folderToMonitor;
-            domain = sysSettings.Domain;
-            ManualSalesIntegration = sysSettings.ManualSalesIntegration;
-
-            if (isFolderMonitoringOnly)
+            if (sysSettings.IsFolderMonitoringOnly)
             {
-                tabPOSIntegration.Enabled = false;
-                tabFolderMonitoring.Enabled = true;
-                tabIntegration.SelectedTab = tabFolderMonitoring;
-                tabIntegration.TabPages.Remove(tabPOSIntegration);
-                tabIntegration.TabPages.Remove(tabPageManualSalesIntegration);
+                isFolderMonitoringOnly = true;
+
+                tabPagePOSSalesIntegration.Enabled = false;
+                tabPagePOSManualSalesIntegration.Enabled = false;
+                tabPageFolderMonitoringIntegration.Enabled = true;
+
+                tabIntegration.SelectedTab = tabPageFolderMonitoringIntegration;
+                tabIntegration.TabPages.Remove(tabPagePOSSalesIntegration);
+                tabIntegration.TabPages.Remove(tabPagePOSManualSalesIntegration);
 
                 btnLogout.Visible = false;
             }
             else
             {
-                GetTerminalList();
+                salesIntegrationLogFileLocation = sysSettings.LogFileLocation;
+                textBoxSalesIntegrationDomain.Text = sysSettings.Domain;
 
-                tabPOSIntegration.Enabled = true;
-                tabFolderMonitoring.Enabled = true;
-                tabIntegration.SelectedTab = tabPOSIntegration;
+                var settings = from d in posdb.SysSettings
+                               select d;
 
-                btnLogout.Visible = true;
-
-                var settings = from d in posdb.SysSettings select d;
                 if (settings.Any())
                 {
                     posdb.Refresh(RefreshMode.OverwriteCurrentValues, settings);
 
-                    txtBranchCode.Text = settings.FirstOrDefault().BranchCode;
-                    txtUserCode.Text = settings.FirstOrDefault().UserCode;
-                    cbxUseItemPrice.Checked = settings.FirstOrDefault().UseItemPrice;
+                    textBoxSalesIntegrationBranchCode.Text = settings.FirstOrDefault().BranchCode;
+                    textBoxSalesIntegrationUserCode.Text = settings.FirstOrDefault().UserCode;
+                    checkBoxSalesIntegrationUseItemPrice.Checked = settings.FirstOrDefault().UseItemPrice;
                 }
+
+                GetTerminalList();
+                textBoxManualSalesIntegrationDomain.Text = sysSettings.Domain;
             }
 
-            btnStartFolderMonitoringIntegration.Enabled = true;
+            textBoxFolderMonitoringUserCode.Text = sysSettings.FolderMonitoringUserCode;
+            textBoxFolderMonitoringDomain.Text = sysSettings.Domain;
+            textBoxFolderToMonitor.Text = sysSettings.FolderToMonitor;
+        }
 
-            if (ManualSalesIntegration == false)
+        private void btnLogout_Click(object sender, EventArgs e)
+        {
+            if (isSalesIntegrationStarted)
             {
-                buttonPOSManualSalesIntegrationStart.Enabled = false;
+                MessageBox.Show("Please stop the sales integration first.", "EasyFIS Integration", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else if (isManualSalesIntegrationStarted)
+            {
+                MessageBox.Show("Please stop the manual sales integration first.", "EasyFIS Integration", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else if (isFolderMonitoringIntegrationStarted)
+            {
+                MessageBox.Show("Please stop the folder monitoring integration first.", "EasyFIS Integration", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             else
             {
-                buttonPOSManualSalesIntegrationStart.Enabled = true;
+                Hide();
+
+                SysLoginForm sysLoginForm = new SysLoginForm();
+                sysLoginForm.Show();
             }
         }
 
@@ -156,52 +123,28 @@ namespace EasyfisIntegrator.Forms
             e.Cancel = true;
             Activate();
 
-            btnStartFolderMonitoringIntegration.Enabled = true;
-
-            DialogResult dialogResult = MessageBox.Show("Are you sure you want to close this application?", "Close Integrator", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            DialogResult dialogResult = MessageBox.Show("Are you sure you want to close this application?", "EasyFIS Integration", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (dialogResult == DialogResult.Yes)
             {
-                if (isFolderMonitoringOnly)
+                if (isSalesIntegrationStarted)
                 {
-                    isFolderMonitoringIntegrationStarted = false;
-
+                    MessageBox.Show("Please stop the sales integration first.", "EasyFIS Integration", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else if (isManualSalesIntegrationStarted)
+                {
+                    MessageBox.Show("Please stop the manual sales integration first.", "EasyFIS Integration", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else if (isFolderMonitoringIntegrationStarted)
+                {
+                    MessageBox.Show("Please stop the folder monitoring integration first.", "EasyFIS Integration", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else
+                {
                     Hide();
 
                     MainForm mainForm = new MainForm();
                     mainForm.Show();
                 }
-                else
-                {
-                    if (isIntegrationStarted)
-                    {
-                        MessageBox.Show("Please stop the integration first.", "Close Integrator", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                    else
-                    {
-                        Hide();
-
-                        MainForm mainForm = new MainForm();
-                        mainForm.Show();
-                    }
-                }
-            }
-        }
-
-        private void btnSettings_Click(object sender, EventArgs e)
-        {
-            isSettingsClicked = true;
-
-            SysSettings sysSettings = new SysSettings(this);
-            sysSettings.ShowDialog();
-        }
-
-        private void btnClearLogs_Click(object sender, EventArgs e)
-        {
-            DialogResult dialogResult = MessageBox.Show("Are you sure you want to clear all logs? You can't undo changes anymore.", "Clear Logs", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if (dialogResult == DialogResult.Yes)
-            {
-                txtLogs.Text = "Press start button to integrate. \r\n\n" + "\r\n\n";
-                txtFolderMonitoringLogs.Text = "Press start button to integrate. \r\n\n" + "\r\n\n";
             }
         }
 
@@ -220,57 +163,88 @@ namespace EasyfisIntegrator.Forms
                 File.WriteAllText(sysSettings.LogFileLocation + "\\ISPOS_" + DateTime.Now.ToString("yyyyMMdd_hhmmss") + ".txt", txtLogs.Text);
                 File.WriteAllText(sysSettings.LogFileLocation + "\\FM_" + DateTime.Now.ToString("yyyyMMdd_hhmmss") + ".txt", txtFolderMonitoringLogs.Text);
 
-                MessageBox.Show("Save Log Successful!", "Save Logs", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Save Log Successful!", "EasyFIS Integration", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (DirectoryNotFoundException drex)
             {
-                MessageBox.Show(drex.Message, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(drex.Message, "EasyFIS Integration", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void btnClearLogs_Click(object sender, EventArgs e)
+        {
+            DialogResult dialogResult = MessageBox.Show("Are you sure you want to clear all logs? You can't undo changes anymore.", "EasyFIS Integration", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (dialogResult == DialogResult.Yes)
+            {
+                txtLogs.Text = "Press start button to integrate. \r\n\n" + "\r\n\n";
+                txtFolderMonitoringLogs.Text = "Press start button to integrate. \r\n\n" + "\r\n\n";
+            }
+        }
+
+        private void btnSettings_Click(object sender, EventArgs e)
+        {
+            SysSettings sysSettings = new SysSettings(this);
+            sysSettings.ShowDialog();
+        }
+
+        public void salesIntegrationLogMessages(String message)
+        {
+            BeginInvoke((MethodInvoker)delegate
+            {
+                String displayMessage = message;
+
+                salesIntegrationLogMessageCount++;
+                if (salesIntegrationLogMessageCount >= 1000)
+                {
+                    salesIntegrationLogMessageCount = 0;
+
+                    if (!txtLogs.Text.Equals(""))
+                    {
+                        File.WriteAllText(salesIntegrationLogFileLocation + "\\" + DateTime.Now.ToString("yyyyMMdd_hhmmss") + ".txt", txtLogs.Text);
+                        txtLogs.Text = "";
+                    }
+                }
+
+                txtLogs.Text += displayMessage;
+
+                txtLogs.Focus();
+                txtLogs.SelectionStart = txtLogs.Text.Length;
+                txtLogs.ScrollToCaret();
+            });
         }
 
         private void btnStartIntegration_Click(object sender, EventArgs e)
         {
-            startIntegration();
-        }
+            isSalesIntegrationStarted = true;
 
-        public void startIntegration()
-        {
-            isIntegrationStarted = true;
+            buttonSalesIntegrationStart.Enabled = false;
+            buttonSalesIntegrationStop.Enabled = true;
 
-            btnStartIntegration.Enabled = false;
-            btnStopIntegration.Enabled = false;
+            dateTimePickerSalesIntegrationDate.Enabled = false;
 
-            dtpIntegrationDate.Enabled = false;
-            btnSettings.Enabled = false;
-
-            btnClearLogs.Enabled = false;
             btnSaveLogs.Enabled = false;
+            btnClearLogs.Enabled = false;
+            btnSettings.Enabled = false;
 
             btnLogout.Enabled = false;
 
-            logMessages("Started! \r\n\nTime Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n\r\n\n");
+            salesIntegrationLogMessages("Sales integrtion started! \r\n\nTime Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n\r\n\n");
 
-            isIntegrating = false;
+            tabPagePOSSalesIntegration.Enabled = true;
+            tabPagePOSManualSalesIntegration.Enabled = false;
+            tabPageFolderMonitoringIntegration.Enabled = false;
 
-            integrationTimer = new Timer();
-            integrationTimer.Interval = 5000;
-            integrationTimer.Tick += new EventHandler(integrationTimerTick);
-            integrationTimer.Enabled = true;
-        }
-
-        public void integrationTimerTick(object sender, EventArgs e)
-        {
-            integrationTimer.Enabled = false;
-            integrate();
-        }
-
-        public void integrate()
-        {
-            if (isIntegrating == false)
+            if (backgroundWorkerSalesIntegration.IsBusy != true)
             {
-                btnStopIntegration.Enabled = true;
+                backgroundWorkerSalesIntegration.RunWorkerAsync();
+            }
+        }
 
-                String apiUrlHost = txtDomain.Text;
+        private void backgroundWorkerSalesIntegration_DoWork(object sender, DoWorkEventArgs e)
+        {
+            while (isSalesIntegrationStarted)
+            {
+                String apiUrlHost = textBoxSalesIntegrationDomain.Text;
 
                 var sysSettings = from d in posdb.SysSettings select d;
                 if (sysSettings.Any())
@@ -279,191 +253,316 @@ namespace EasyfisIntegrator.Forms
                     var userCode = sysSettings.FirstOrDefault().UserCode;
                     var useItemPrice = sysSettings.FirstOrDefault().UseItemPrice;
 
-                    isIntegrating = true;
-
-                    isIntegratingCustomer = true;
-                    isIntegratingItem = true;
-                    isIntegratingSupplier = true;
-                    isIntegratingCollection = true;
-                    if (useItemPrice) { isIntegratingItemPrice = true; }
-                    isIntegratingReceivingReceipt = true;
-                    isIntegratingSalesReturn = true;
-                    isIntegratingStockIn = true;
-                    isIntegratingStockOut = true;
-                    isIntegratingTransferIn = true;
-                    isIntegratingTransferOut = true;
-
-                    Controllers.ISPOSMstItemController objMstItem = new Controllers.ISPOSMstItemController(this, dtpIntegrationDate.Text);
-                    Controllers.ISPOSMstCustomerController objMstCustomer = new Controllers.ISPOSMstCustomerController(this, dtpIntegrationDate.Text);
-                    Controllers.ISPOSMstSupplierController objMstSupplier = new Controllers.ISPOSMstSupplierController(this, dtpIntegrationDate.Text);
-                    Controllers.ISPOSTrnStockTransferInController objTrnStockTransferIn = new Controllers.ISPOSTrnStockTransferInController(this, dtpIntegrationDate.Text);
-                    Controllers.ISPOSTrnStockTransferOutController objTrnStockTransferOut = new Controllers.ISPOSTrnStockTransferOutController(this, dtpIntegrationDate.Text);
-                    Controllers.ISPOSTrnStockInController objTrnStockIn = new Controllers.ISPOSTrnStockInController(this, dtpIntegrationDate.Text);
-                    Controllers.ISPOSTrnStockOutController objTrnStockOut = new Controllers.ISPOSTrnStockOutController(this, dtpIntegrationDate.Text);
-                    Controllers.ISPOSTrnReceivingReceiptController objTrnReceivingReceipt = new Controllers.ISPOSTrnReceivingReceiptController(this, dtpIntegrationDate.Text);
-                    Controllers.ISPOSTrnItemPriceController objTrnItemPrice = new Controllers.ISPOSTrnItemPriceController(this, dtpIntegrationDate.Text);
-
-                    objMstCustomer.GetCustomer(apiUrlHost);
-                    objMstSupplier.GetSupplier(apiUrlHost);
-                    objMstItem.GetItem(apiUrlHost);
-                    objTrnReceivingReceipt.GetReceivingReceipt(apiUrlHost, branchCode);
-                    objTrnStockIn.GetStockIn(apiUrlHost, branchCode);
-                    objTrnStockOut.GetStockOut(apiUrlHost, branchCode);
-                    objTrnStockTransferIn.GetStockTransferIN(apiUrlHost, branchCode);
-                    objTrnStockTransferOut.GetStockTransferOT(apiUrlHost, branchCode);
-                    if (useItemPrice) { objTrnItemPrice.GetItemPrice(apiUrlHost, branchCode); }
-
-                    if (ManualSalesIntegration == false)
+                    Task taskCustomer = Task.Run(() =>
                     {
-                        Controllers.ISPOSTrnCollectionController objTrnCollection = new Controllers.ISPOSTrnCollectionController(this);
-                        Controllers.ISPOSTrnSalesReturnController objTrnSalesReturn = new Controllers.ISPOSTrnSalesReturnController(this);
+                        Controllers.ISPOSMstCustomerController objMstCustomer = new Controllers.ISPOSMstCustomerController(this, dateTimePickerSalesIntegrationDate.Text);
+                        objMstCustomer.SyncCustomer(apiUrlHost);
+                    });
+                    taskCustomer.Wait();
 
-                        objTrnCollection.GetCollection(apiUrlHost, branchCode, userCode);
-                        objTrnSalesReturn.GetSalesReturn(apiUrlHost, branchCode, userCode);
+                    if (taskCustomer.IsCompleted)
+                    {
+                        Task taskSupplier = Task.Run(() =>
+                        {
+                            Controllers.ISPOSMstSupplierController objMstSupplier = new Controllers.ISPOSMstSupplierController(this, dateTimePickerSalesIntegrationDate.Text);
+                            objMstSupplier.SyncSupplier(apiUrlHost);
+                        });
+                        taskSupplier.Wait();
+
+                        if (taskSupplier.IsCompleted)
+                        {
+                            Task taskItem = Task.Run(() =>
+                            {
+                                Controllers.ISPOSMstItemController objMstItem = new Controllers.ISPOSMstItemController(this, dateTimePickerSalesIntegrationDate.Text);
+                                objMstItem.SyncItem(apiUrlHost);
+                            });
+                            taskItem.Wait();
+
+                            if (taskItem.IsCompleted)
+                            {
+                                Task taskReceivingReceipt = Task.Run(() =>
+                                {
+                                    Controllers.ISPOSTrnReceivingReceiptController objTrnReceivingReceipt = new Controllers.ISPOSTrnReceivingReceiptController(this, dateTimePickerSalesIntegrationDate.Text);
+                                    objTrnReceivingReceipt.SyncReceivingReceipt(apiUrlHost, branchCode);
+                                });
+                                taskReceivingReceipt.Wait();
+
+                                if (taskReceivingReceipt.IsCompleted)
+                                {
+                                    Task taskStockIn = Task.Run(() =>
+                                    {
+                                        Controllers.ISPOSTrnStockInController objTrnStockIn = new Controllers.ISPOSTrnStockInController(this, dateTimePickerSalesIntegrationDate.Text);
+                                        objTrnStockIn.SyncStockIn(apiUrlHost, branchCode);
+                                    });
+                                    taskStockIn.Wait();
+
+                                    if (taskStockIn.IsCompleted)
+                                    {
+                                        Task taskStockOut = Task.Run(() =>
+                                        {
+                                            Controllers.ISPOSTrnStockOutController objTrnStockOut = new Controllers.ISPOSTrnStockOutController(this, dateTimePickerSalesIntegrationDate.Text);
+                                            objTrnStockOut.SyncStockOut(apiUrlHost, branchCode);
+
+                                        });
+                                        taskStockOut.Wait();
+
+                                        if (taskStockOut.IsCompleted)
+                                        {
+                                            Task taskStockTransferIn = Task.Run(() =>
+                                            {
+                                                Controllers.ISPOSTrnStockTransferInController objTrnStockTransferIn = new Controllers.ISPOSTrnStockTransferInController(this, dateTimePickerSalesIntegrationDate.Text);
+                                                objTrnStockTransferIn.SyncStockTransferIN(apiUrlHost, branchCode);
+
+                                            });
+                                            taskStockTransferIn.Wait();
+
+                                            if (taskStockTransferIn.IsCompleted)
+                                            {
+                                                Task taskStockTransferOut = Task.Run(() =>
+                                                {
+                                                    Controllers.ISPOSTrnStockTransferOutController objTrnStockTransferOut = new Controllers.ISPOSTrnStockTransferOutController(this, dateTimePickerSalesIntegrationDate.Text);
+                                                    objTrnStockTransferOut.SyncStockTransferOT(apiUrlHost, branchCode);
+                                                });
+                                                taskStockTransferOut.Wait();
+
+                                                if (taskStockTransferOut.IsCompleted)
+                                                {
+                                                    Task taskCollection = Task.Run(() =>
+                                                    {
+                                                        Controllers.ISPOSTrnCollectionController objTrnCollection = new Controllers.ISPOSTrnCollectionController(this);
+                                                        objTrnCollection.SyncCollection(apiUrlHost, branchCode, userCode);
+                                                    });
+                                                    taskCollection.Wait();
+
+                                                    if (taskCollection.IsCompleted)
+                                                    {
+                                                        Task taskSalesReturn = Task.Run(() =>
+                                                        {
+                                                            Controllers.ISPOSTrnSalesReturnController objTrnSalesReturn = new Controllers.ISPOSTrnSalesReturnController(this);
+                                                            objTrnSalesReturn.SyncSalesReturn(apiUrlHost, branchCode, userCode);
+                                                        });
+                                                        taskSalesReturn.Wait();
+
+                                                        if (useItemPrice)
+                                                        {
+                                                            if (taskSalesReturn.IsCompleted)
+                                                            {
+                                                                Task taskItemPrice = Task.Run(() =>
+                                                                {
+                                                                    Controllers.ISPOSTrnItemPriceController objTrnItemPrice = new Controllers.ISPOSTrnItemPriceController(this, dateTimePickerSalesIntegrationDate.Text);
+                                                                    objTrnItemPrice.SyncItemPrice(apiUrlHost, branchCode);
+
+                                                                });
+                                                                taskItemPrice.Wait();
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
+
+                System.Threading.Thread.Sleep(5000);
             }
-        }
-
-        public void stopIntegration()
-        {
-            isIntegrationStarted = false;
-
-            btnStartIntegration.Enabled = true;
-            btnStopIntegration.Enabled = false;
-
-            dtpIntegrationDate.Enabled = true;
-
-            if (!isFolderMonitoringIntegrationStarted)
-            {
-                btnSettings.Enabled = true;
-            }
-
-            btnClearLogs.Enabled = true;
-            btnSaveLogs.Enabled = true;
-
-            btnLogout.Enabled = true;
-
-            isIntegrating = true;
-            integrationTimer.Enabled = false;
         }
 
         private void btnStopIntegration_Click(object sender, EventArgs e)
         {
-            DialogResult dialogResult = MessageBox.Show("Are you sure you want to stop integration?", "Stop Integration", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            DialogResult dialogResult = MessageBox.Show("Are you sure you want to stop sales integration?", "EasyFIS Integration", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (dialogResult == DialogResult.Yes)
             {
-                stopIntegration();
-                logMessages("Stopped! \r\n\nTime Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n\r\n\n");
-            }
-        }
+                isSalesIntegrationStarted = false;
 
-        public void logMessages(String message)
-        {
-            String displayMessage = message;
+                buttonSalesIntegrationStart.Enabled = true;
+                buttonSalesIntegrationStop.Enabled = false;
 
-            if (!message.Equals("Stopped! \r\n\nTime Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n\r\n\n"))
-            {
-                if (message.Equals("Customer Integration Done.")) { isIntegratingCustomer = false; displayMessage = ""; }
-                if (message.Equals("Item Integration Done.")) { isIntegratingItem = false; displayMessage = ""; }
-                if (message.Equals("Supplier Integration Done.")) { isIntegratingSupplier = false; displayMessage = ""; }
-                if (message.Equals("Collection Integration Done.")) { isIntegratingCollection = false; displayMessage = ""; }
-                if (message.Equals("ItemPrice Integration Done.")) { isIntegratingItemPrice = false; displayMessage = ""; }
-                if (message.Equals("Receiving Receipt Integration Done.")) { isIntegratingReceivingReceipt = false; displayMessage = ""; }
-                if (message.Equals("Sales Return Integration Done.")) { isIntegratingSalesReturn = false; displayMessage = ""; }
-                if (message.Equals("StockIn Integration Done.")) { isIntegratingStockIn = false; displayMessage = ""; }
-                if (message.Equals("StockOut Integration Done.")) { isIntegratingStockOut = false; displayMessage = ""; }
-                if (message.Equals("Stock Transfer In Integration Done.")) { isIntegratingTransferIn = false; displayMessage = ""; }
-                if (message.Equals("Stock Transfer Out Integration Done.")) { isIntegratingTransferOut = false; displayMessage = ""; }
+                dateTimePickerSalesIntegrationDate.Enabled = true;
 
-                if (isIntegratingCustomer == false &&
-                    isIntegratingItem == false &&
-                    isIntegratingSupplier == false &&
-                    isIntegratingCollection == false &&
-                    isIntegratingItemPrice == false &&
-                    isIntegratingReceivingReceipt == false &&
-                    isIntegratingSalesReturn == false &&
-                    isIntegratingStockIn == false &&
-                    isIntegratingStockOut == false &&
-                    isIntegratingTransferIn == false &&
-                    isIntegratingTransferOut == false)
-                {
-                    isIntegrating = false;
-                    integrationTimer.Enabled = true;
-
-                    logMessageCount++;
-
-                    if (logMessageCount >= 50)
-                    {
-                        logMessageCount = 0;
-
-                        if (!txtLogs.Text.Equals(""))
-                        {
-                            String settingsPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Settings.json");
-
-                            String json;
-                            using (StreamReader trmRead = new StreamReader(settingsPath)) { json = trmRead.ReadToEnd(); }
-
-                            JavaScriptSerializer javaScriptSerializer = new JavaScriptSerializer();
-                            Entities.SysSettings sysSettings = javaScriptSerializer.Deserialize<Entities.SysSettings>(json);
-
-                            File.WriteAllText(sysSettings.LogFileLocation + "\\" + DateTime.Now.ToString("yyyyMMdd_hhmmss") + ".txt", txtLogs.Text);
-
-                            txtLogs.Text = "";
-                        }
-                    }
-                }
-            }
-
-            txtLogs.Text += displayMessage;
-
-            txtLogs.Focus();
-            txtLogs.SelectionStart = txtLogs.Text.Length;
-            txtLogs.ScrollToCaret();
-        }
-
-        private void btnStartFolderMonitoringIntegration_Click(object sender, EventArgs e)
-        {
-            if (isFolderMonitoringIntegrationStarted == true)
-            {
-                DialogResult dialogResult = MessageBox.Show("Are you sure you want to close all application? This will close all running threads.", "Close Thread", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (dialogResult == DialogResult.Yes)
-                {
-                    Environment.Exit(Environment.ExitCode);
-                }
-            }
-
-            btnSettings.Enabled = false;
-            btnStartFolderMonitoringIntegration.BackColor = Color.IndianRed;
-            btnStartFolderMonitoringIntegration.Text = "Close";
-
-            //btnStartFolderMonitoringIntegration.Enabled = false;
-
-            logFolderMonitoringMessage("File Integration Started! \r\n\nTime Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-
-            isFolderMonitoringIntegrationStarted = true;
-
-            if (bgwFolderMonitoringIntegration.IsBusy != true)
-            {
-                bgwFolderMonitoringIntegration.RunWorkerAsync();
-            }
-        }
-
-        private void btnStopFolderMonitoringIntegration_Click(object sender, EventArgs e)
-        {
-            if (!isIntegrationStarted)
-            {
+                btnSaveLogs.Enabled = true;
+                btnClearLogs.Enabled = true;
                 btnSettings.Enabled = true;
+
+                btnLogout.Enabled = true;
+
+                salesIntegrationLogMessages("Sales integration stopped! \r\n\nTime Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n\r\n\n");
+
+                tabPagePOSSalesIntegration.Enabled = true;
+                tabPagePOSManualSalesIntegration.Enabled = true;
+                tabPageFolderMonitoringIntegration.Enabled = true;
             }
-
-            btnStartFolderMonitoringIntegration.Enabled = true;
-
-            logFolderMonitoringMessage("Stopped! \r\n\nTime Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n\r\n\n");
-
-            isFolderMonitoringIntegrationStarted = false;
         }
 
-        public void logFolderMonitoringMessage(String message)
+        public void GetTerminalList()
+        {
+            var terminals = from d in posdb.MstTerminals
+                            select d;
+
+            if (terminals.Any())
+            {
+                comboBoxManualSalesIntegrationTerminal.DataSource = terminals.ToList();
+                comboBoxManualSalesIntegrationTerminal.ValueMember = "Id";
+                comboBoxManualSalesIntegrationTerminal.DisplayMember = "Terminal";
+            }
+        }
+
+        public void manualSalesIntegrationLogMessages(String message)
+        {
+            if (textBoxPOSManualSalesIntegrationLogs.InvokeRequired)
+            {
+                BeginInvoke((MethodInvoker)delegate
+                {
+                    bool log = true;
+
+                    if (message.Equals("ManualSIIntegrationLogOnce"))
+                    {
+                        log = false;
+                        textBoxPOSManualSalesIntegrationLogs.Text = textBoxPOSManualSalesIntegrationLogs.Text.Substring(0, textBoxPOSManualSalesIntegrationLogs.Text.Trim().LastIndexOf(Environment.NewLine));
+                    }
+
+                    if (log)
+                    {
+                        textBoxPOSManualSalesIntegrationLogs.Text += message;
+
+                        textBoxPOSManualSalesIntegrationLogs.Focus();
+                        textBoxPOSManualSalesIntegrationLogs.SelectionStart = textBoxPOSManualSalesIntegrationLogs.Text.Length;
+                        textBoxPOSManualSalesIntegrationLogs.ScrollToCaret();
+                    }
+
+                    if (textBoxPOSManualSalesIntegrationLogs.Lines.Length >= 1000)
+                    {
+                        textBoxPOSManualSalesIntegrationLogs.Text = "";
+
+                        String settingsPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Settings.json");
+
+                        String json;
+                        using (StreamReader trmRead = new StreamReader(settingsPath)) { json = trmRead.ReadToEnd(); }
+
+                        JavaScriptSerializer javaScriptSerializer = new JavaScriptSerializer();
+                        Entities.SysSettings sysSettings = javaScriptSerializer.Deserialize<Entities.SysSettings>(json);
+
+                        File.WriteAllText(sysSettings.LogFileLocation + "\\ManualSIIntegration_" + DateTime.Now.ToString("yyyyMMdd_hhmmss") + ".txt", textBoxPOSManualSalesIntegrationLogs.Text);
+                    }
+                });
+            }
+            else
+            {
+                textBoxPOSManualSalesIntegrationLogs.Text += message;
+
+                textBoxPOSManualSalesIntegrationLogs.Focus();
+                textBoxPOSManualSalesIntegrationLogs.SelectionStart = textBoxPOSManualSalesIntegrationLogs.Text.Length;
+                textBoxPOSManualSalesIntegrationLogs.ScrollToCaret();
+            }
+        }
+
+        private void buttonPOSManualSalesIntegrationStart_Click(object sender, EventArgs e)
+        {
+            isManualSalesIntegrationStarted = true;
+
+            dateTimePickerManualSalesIntegrationDate.Enabled = false;
+            comboBoxManualSalesIntegrationTerminal.Enabled = false;
+
+            buttonManualSalesIntegrationStart.Enabled = false;
+            buttonManualSalesIntegrationStop.Enabled = true;
+
+            btnSaveLogs.Enabled = false;
+            btnClearLogs.Enabled = false;
+            btnSettings.Enabled = false;
+
+            btnLogout.Enabled = false;
+
+            manualSalesIntegrationLogMessages("Manual sales integration started! \r\n\nTime Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+
+            tabPagePOSSalesIntegration.Enabled = false;
+            tabPagePOSManualSalesIntegration.Enabled = true;
+            tabPageFolderMonitoringIntegration.Enabled = false;
+
+            if (backgroundWorkerManualSalesIntegration.IsBusy != true)
+            {
+                backgroundWorkerManualSalesIntegration.RunWorkerAsync();
+            }
+        }
+
+        private void backgroundWorkerManualSalesIntegration_DoWork(object sender, DoWorkEventArgs e)
+        {
+            while (isManualSalesIntegrationStarted)
+            {
+                Task ManualSIIntegrationTask = Task.Run(() =>
+                {
+                    ISPOSManualSalesIntegrationTrnCollectionController manualSalesIntegrationTrnCollectionController = new ISPOSManualSalesIntegrationTrnCollectionController();
+                    manualSalesIntegrationTrnCollectionController.SendSalesInvoice(this, textBoxManualSalesIntegrationDomain.Text, dateTimePickerManualSalesIntegrationDate.Value.ToShortDateString(), Convert.ToInt32(comboBoxManualSalesIntegrationTerminal.SelectedValue));
+                });
+                ManualSIIntegrationTask.Wait();
+
+                if (ManualSIIntegrationTask.IsCompleted)
+                {
+                    Task ManualSIIntegrationTaskIsCompleted = Task.Run(() =>
+                    {
+                        AsyncManualSIIntegrationTaskIsCompleted();
+                    });
+                    ManualSIIntegrationTaskIsCompleted.Wait();
+                }
+
+                System.Threading.Thread.Sleep(5000);
+            }
+        }
+
+        public async void AsyncManualSIIntegrationTaskIsCompleted()
+        {
+            await TaskManualSIIntegrationTaskIsCompleted();
+        }
+
+        public Task<Boolean> TaskManualSIIntegrationTaskIsCompleted()
+        {
+            if (buttonManualSalesIntegrationStart.InvokeRequired)
+            {
+                BeginInvoke((MethodInvoker)delegate
+                {
+                    dateTimePickerManualSalesIntegrationDate.Enabled = true;
+                    comboBoxManualSalesIntegrationTerminal.Enabled = true;
+
+                    buttonManualSalesIntegrationStart.Enabled = true;
+                    buttonManualSalesIntegrationStart.Text = "Integrate";
+
+                    isManualSalesIntegrationStarted = false;
+                });
+            }
+
+            return Task.FromResult(true);
+        }
+
+        private void buttonManualSalesIntegrationStop_Click(object sender, EventArgs e)
+        {
+            DialogResult dialogResult = MessageBox.Show("Are you sure you want to stop manual sales integration?", "EasyFIS Integration", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (dialogResult == DialogResult.Yes)
+            {
+                isManualSalesIntegrationStarted = false;
+
+                dateTimePickerManualSalesIntegrationDate.Enabled = true;
+                comboBoxManualSalesIntegrationTerminal.Enabled = true;
+
+                buttonManualSalesIntegrationStart.Enabled = true;
+                buttonManualSalesIntegrationStop.Enabled = false;
+
+                btnSaveLogs.Enabled = true;
+                btnClearLogs.Enabled = true;
+                btnSettings.Enabled = true;
+
+                btnLogout.Enabled = true;
+
+                manualSalesIntegrationLogMessages("\r\n\nManual sales integration stopped! \r\n\nTime Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+
+                tabPagePOSSalesIntegration.Enabled = true;
+                tabPagePOSManualSalesIntegration.Enabled = true;
+                tabPageFolderMonitoringIntegration.Enabled = true;
+            }
+        }
+
+        public void folderMonitoringLogMessages(String message)
         {
             if (txtFolderMonitoringLogs.InvokeRequired)
             {
@@ -519,6 +618,65 @@ namespace EasyfisIntegrator.Forms
             }
         }
 
+        private void btnStartFolderMonitoringIntegration_Click(object sender, EventArgs e)
+        {
+            if (Directory.Exists(textBoxFolderToMonitor.Text) == true)
+            {
+                isFolderMonitoringIntegrationStarted = true;
+
+                buttonFolderMonitoringIntegrationStart.Enabled = false;
+                buttonFolderMonitoringIntegrationStop.Enabled = true;
+
+                folderMonitoringLogMessages("Folder monitoring integration started! \r\n\nTime Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+
+                btnSaveLogs.Enabled = false;
+                btnClearLogs.Enabled = false;
+                btnSettings.Enabled = false;
+
+                btnLogout.Enabled = false;
+
+                tabPagePOSSalesIntegration.Enabled = false;
+                tabPagePOSManualSalesIntegration.Enabled = false;
+                tabPageFolderMonitoringIntegration.Enabled = true;
+
+                if (backgroundWorkerFolderMonitoringIntegration.IsBusy != true)
+                {
+                    backgroundWorkerFolderMonitoringIntegration.RunWorkerAsync();
+                }
+            }
+            else
+            {
+                MessageBox.Show("Invalid folder to monitor directory!", "EasyFIS Integration", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void buttonFolderMonitoringIntegrationStop_Click(object sender, EventArgs e)
+        {
+            DialogResult dialogResult = MessageBox.Show("Are you sure you want to stop folder monitoring integration?", "EasyFIS Integration", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (dialogResult == DialogResult.Yes)
+            {
+                isFolderMonitoringIntegrationStarted = false;
+
+                buttonFolderMonitoringIntegrationStart.Enabled = true;
+                buttonFolderMonitoringIntegrationStop.Enabled = false;
+
+                btnSaveLogs.Enabled = false;
+                btnClearLogs.Enabled = false;
+                btnSettings.Enabled = true;
+
+                btnLogout.Enabled = true;
+
+                folderMonitoringLogMessages("\r\n\nFolder monitoring integration stopped! \r\n\nTime Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+
+                if (isFolderMonitoringOnly == false)
+                {
+                    tabPagePOSSalesIntegration.Enabled = true;
+                    tabPagePOSManualSalesIntegration.Enabled = true;
+                    tabPageFolderMonitoringIntegration.Enabled = true;
+                }
+            }
+        }
+
         private void btnGetCSVTemplate_Click(object sender, EventArgs e)
         {
             try
@@ -535,7 +693,7 @@ namespace EasyfisIntegrator.Forms
                     String OTSourcePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"CSVTemplate\OT.csv");
                     String STSourcePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"CSVTemplate\ST.csv");
 
-                    DialogResult getTemplateDialogResult = MessageBox.Show("This will overwrite all existing csv template files. Are you sure you want to continue?", "Download CSV Templates", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    DialogResult getTemplateDialogResult = MessageBox.Show("This will overwrite all existing csv template files. Are you sure you want to continue?", "EasyFIS Integration", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                     if (getTemplateDialogResult == DialogResult.Yes)
                     {
                         if (Directory.Exists(fbdGetCSVTemplate.SelectedPath + "\\CSVTemplate_" + DateTime.Now.ToString("yyyyMMdd_hhmmss") + "\\")) { Directory.Delete(fbdGetCSVTemplate.SelectedPath + "\\CSVTemplate_" + DateTime.Now.ToString("yyyyMMdd_hhmmss") + "\\", true); }
@@ -564,129 +722,210 @@ namespace EasyfisIntegrator.Forms
                         File.Copy(OTSourcePath, createDirectoryOTCSV.FullName + "\\OT.csv", true);
                         File.Copy(STSourcePath, createDirectorySTCSV.FullName + "\\ST.csv", true);
 
-                        MessageBox.Show("CSV Templates are successfully saved!", "Save CSV Templates", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show("CSV Templates are successfully saved!", "EasyFIS Integration", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, "EasyFIS Integration", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        private void fileSystemWatcherCSVFiles_Created(object sender, FileSystemEventArgs e)
+        public Task<String> runFolderMonitoringIntegrationSI(List<String> ext)
         {
-            //String[] documentPrefix = e.FullPath.Split('\\');
-            //monitorControllers(documentPrefix[documentPrefix.Length - 2]);
-        }
-
-        public void monitorControllers(String documentPrefix)
-        {
-            //if (isFolderMonitoringIntegrationStarted)
-            //{
-            //    switch (documentPrefix)
-            //    {
-            //        case "SI":
-            //            if (!bgwFolderMonitoringIntegration.IsBusy) { bgwFolderMonitoringIntegration.RunWorkerAsync(); }
-            //            break;
-            //        case "OR":
-            //            if (!bgwCollection.IsBusy) { bgwCollection.RunWorkerAsync(); }
-            //            break;
-            //        case "RR":
-            //            if (!bgwReceivingReceipt.IsBusy) { bgwReceivingReceipt.RunWorkerAsync(); }
-            //            break;
-            //        case "CV":
-            //            if (!bgwDisbursement.IsBusy) { bgwDisbursement.RunWorkerAsync(); }
-            //            break;
-            //        case "JV":
-            //            if (!bgwJournalVoucher.IsBusy) { bgwJournalVoucher.RunWorkerAsync(); }
-            //            break;
-            //        case "IN":
-            //            if (!bgwStockIn.IsBusy) { bgwStockIn.RunWorkerAsync(); }
-            //            break;
-            //        case "OT":
-            //            if (!bgwStockOut.IsBusy) { bgwStockOut.RunWorkerAsync(); }
-            //            break;
-            //        case "ST":
-            //            if (!bgwStockTransfer.IsBusy) { bgwStockTransfer.RunWorkerAsync(); }
-            //            break;
-            //        default:
-            //            break;
-            //    }
-            //}
-        }
-
-        private void bgwFolderMonitoringIntegration_DoWork(object sender, DoWorkEventArgs e)
-        {
-            List<String> ext = new List<String> { ".csv" };
-
-            while (isFolderMonitoringIntegrationStarted)
+            List<String> SIFiles = new List<String>(Directory.EnumerateFiles(textBoxFolderToMonitor.Text + "\\SI\\", "*.*", SearchOption.AllDirectories).Where(f => ext.Contains(Path.GetExtension(f))));
+            if (SIFiles.Any())
             {
-                Task SITask = Task.Run(() =>
+                foreach (var SIFile in SIFiles)
                 {
-                    runFolderMonitoringIntegrationSI(ext);
-                });
-                SITask.Wait();
+                    FolderMonitoringTrnSalesInvoiceController folderMonitoringSI = new FolderMonitoringTrnSalesInvoiceController();
+                    folderMonitoringSI.SendSalesInvoice(this, textBoxFolderMonitoringUserCode.Text, SIFile, textBoxFolderMonitoringDomain.Text);
+                }
+            }
 
-                if (SITask.IsCompleted)
+            return Task.FromResult("");
+        }
+
+        public Task<String> runFolderMonitoringIntegrationOR(List<String> ext)
+        {
+            List<String> ORFiles = new List<String>(Directory.EnumerateFiles(textBoxFolderToMonitor.Text + "\\OR\\", "*.*", SearchOption.AllDirectories).Where(f => ext.Contains(Path.GetExtension(f))));
+            if (ORFiles.Any())
+            {
+                foreach (var ORFile in ORFiles)
                 {
-                    Task ORTask = Task.Run(() =>
+                    FolderMonitoringTrnCollectionController folderMonitoringOR = new FolderMonitoringTrnCollectionController();
+                    folderMonitoringOR.SendCollection(this, textBoxFolderMonitoringUserCode.Text, ORFile, textBoxFolderMonitoringDomain.Text);
+                }
+            }
+
+            return Task.FromResult("");
+        }
+
+        public Task<String> runFolderMonitoringIntegrationRR(List<String> ext)
+        {
+            List<String> RRFiles = new List<String>(Directory.EnumerateFiles(textBoxFolderToMonitor.Text + "\\RR\\", "*.*", SearchOption.AllDirectories).Where(f => ext.Contains(Path.GetExtension(f))));
+            if (RRFiles.Any())
+            {
+                foreach (var RRFile in RRFiles)
+                {
+                    FolderMonitoringTrnReceivingReceiptController folderMonitoringRR = new FolderMonitoringTrnReceivingReceiptController();
+                    folderMonitoringRR.SendReceivingReceipt(this, textBoxFolderMonitoringUserCode.Text, RRFile, textBoxFolderMonitoringDomain.Text);
+                }
+            }
+
+            return Task.FromResult("");
+        }
+
+        public Task<String> runFolderMonitoringIntegrationCV(List<String> ext)
+        {
+            List<String> CVFiles = new List<String>(Directory.EnumerateFiles(textBoxFolderToMonitor.Text + "\\CV\\", "*.*", SearchOption.AllDirectories).Where(f => ext.Contains(Path.GetExtension(f))));
+            if (CVFiles.Any())
+            {
+                foreach (var CVFile in CVFiles)
+                {
+                    FolderMonitoringTrnDisbursementController folderMonitoringCV = new FolderMonitoringTrnDisbursementController();
+                    folderMonitoringCV.SendDisbursement(this, textBoxFolderMonitoringUserCode.Text, CVFile, textBoxFolderMonitoringDomain.Text);
+                }
+            }
+
+            return Task.FromResult("");
+        }
+
+        public Task<String> runFolderMonitoringIntegrationJV(List<String> ext)
+        {
+            List<String> JVFiles = new List<String>(Directory.EnumerateFiles(textBoxFolderToMonitor.Text + "\\JV\\", "*.*", SearchOption.AllDirectories).Where(f => ext.Contains(Path.GetExtension(f))));
+            if (JVFiles.Any())
+            {
+                foreach (var JVFile in JVFiles)
+                {
+                    FolderMonitoringTrnJournalVoucherController folderMonitoringJV = new FolderMonitoringTrnJournalVoucherController();
+                    folderMonitoringJV.SendJournalVoucher(this, textBoxFolderMonitoringUserCode.Text, JVFile, textBoxFolderMonitoringDomain.Text);
+                }
+            }
+
+            return Task.FromResult("");
+        }
+
+        public Task<String> runFolderMonitoringIntegrationIN(List<String> ext)
+        {
+            List<String> INFiles = new List<String>(Directory.EnumerateFiles(textBoxFolderToMonitor.Text + "\\IN\\", "*.*", SearchOption.AllDirectories).Where(f => ext.Contains(Path.GetExtension(f))));
+            if (INFiles.Any())
+            {
+                foreach (var INFile in INFiles)
+                {
+                    FolderMonitoringTrnStockInController folderMonitoringIN = new FolderMonitoringTrnStockInController();
+                    folderMonitoringIN.SendStockIn(this, textBoxFolderMonitoringUserCode.Text, INFile, textBoxFolderMonitoringDomain.Text);
+                }
+            }
+
+            return Task.FromResult("");
+        }
+
+        public Task<String> runFolderMonitoringIntegrationOT(List<String> ext)
+        {
+            List<String> OTFiles = new List<String>(Directory.EnumerateFiles(textBoxFolderToMonitor.Text + "\\OT\\", "*.*", SearchOption.AllDirectories).Where(f => ext.Contains(Path.GetExtension(f))));
+            if (OTFiles.Any())
+            {
+                foreach (var OTFile in OTFiles)
+                {
+                    FolderMonitoringTrnStockOutController folderMonitoringOT = new FolderMonitoringTrnStockOutController();
+                    folderMonitoringOT.SendStockOut(this, textBoxFolderMonitoringUserCode.Text, OTFile, textBoxFolderMonitoringDomain.Text);
+                }
+            }
+
+            return Task.FromResult("");
+        }
+
+        public Task<String> runFolderMonitoringIntegrationST(List<String> ext)
+        {
+            List<String> STFiles = new List<String>(Directory.EnumerateFiles(textBoxFolderToMonitor.Text + "\\ST\\", "*.*", SearchOption.AllDirectories).Where(f => ext.Contains(Path.GetExtension(f))));
+            if (STFiles.Any())
+            {
+                foreach (var STFile in STFiles)
+                {
+                    FolderMonitoringTrnStockTransferController folderMonitoringST = new FolderMonitoringTrnStockTransferController();
+                    folderMonitoringST.SendStockTransfer(this, textBoxFolderMonitoringUserCode.Text, STFile, textBoxFolderMonitoringDomain.Text);
+                }
+            }
+
+            return Task.FromResult("");
+        }
+
+        private void backgroundWorkerFolderMonitoringIntegration_DoWork(object sender, DoWorkEventArgs e)
+        {
+            try
+            {
+                List<String> ext = new List<String> { ".csv" };
+
+                while (isFolderMonitoringIntegrationStarted)
+                {
+                    Task SITask = Task.Run(() =>
                     {
-                        runFolderMonitoringIntegrationOR(ext);
+                        runFolderMonitoringIntegrationSI(ext);
                     });
-                    ORTask.Wait();
+                    SITask.Wait();
 
-                    if (ORTask.IsCompleted)
+                    if (SITask.IsCompleted)
                     {
-                        Task RRTask = Task.Run(() =>
+                        Task ORTask = Task.Run(() =>
                         {
-                            runFolderMonitoringIntegrationRR(ext);
+                            runFolderMonitoringIntegrationOR(ext);
                         });
-                        RRTask.Wait();
+                        ORTask.Wait();
 
-                        if (RRTask.IsCompleted)
+                        if (ORTask.IsCompleted)
                         {
-                            Task CVTask = Task.Run(() =>
+                            Task RRTask = Task.Run(() =>
                             {
-                                runFolderMonitoringIntegrationCV(ext);
+                                runFolderMonitoringIntegrationRR(ext);
                             });
-                            CVTask.Wait();
+                            RRTask.Wait();
 
-                            if (CVTask.IsCompleted)
+                            if (RRTask.IsCompleted)
                             {
-                                Task JVTask = Task.Run(() =>
+                                Task CVTask = Task.Run(() =>
                                 {
-                                    runFolderMonitoringIntegrationJV(ext);
+                                    runFolderMonitoringIntegrationCV(ext);
                                 });
-                                JVTask.Wait();
+                                CVTask.Wait();
 
-                                if (JVTask.IsCompleted)
+                                if (CVTask.IsCompleted)
                                 {
-                                    Task INTask = Task.Run(() =>
+                                    Task JVTask = Task.Run(() =>
                                     {
-                                        runFolderMonitoringIntegrationIN(ext);
+                                        runFolderMonitoringIntegrationJV(ext);
                                     });
-                                    INTask.Wait();
+                                    JVTask.Wait();
 
-                                    if (INTask.IsCompleted)
+                                    if (JVTask.IsCompleted)
                                     {
-                                        Task OTTask = Task.Run(() =>
+                                        Task INTask = Task.Run(() =>
                                         {
-                                            runFolderMonitoringIntegrationOT(ext);
+                                            runFolderMonitoringIntegrationIN(ext);
                                         });
-                                        OTTask.Wait();
+                                        INTask.Wait();
 
-                                        if (OTTask.IsCompleted)
+                                        if (INTask.IsCompleted)
                                         {
-                                            Task STTask = Task.Run(() =>
+                                            Task OTTask = Task.Run(() =>
                                             {
-                                                runFolderMonitoringIntegrationST(ext);
+                                                runFolderMonitoringIntegrationOT(ext);
                                             });
-                                            STTask.Wait();
+                                            OTTask.Wait();
 
-                                            if (STTask.IsCompleted)
+                                            if (OTTask.IsCompleted)
                                             {
-                                                System.Threading.Thread.Sleep(5000);
+                                                Task STTask = Task.Run(() =>
+                                                {
+                                                    runFolderMonitoringIntegrationST(ext);
+                                                });
+                                                STTask.Wait();
+
+                                                if (STTask.IsCompleted)
+                                                {
+                                                    System.Threading.Thread.Sleep(5000);
+                                                }
                                             }
                                         }
                                     }
@@ -696,255 +935,9 @@ namespace EasyfisIntegrator.Forms
                     }
                 }
             }
-        }
-
-        public Task<String> runFolderMonitoringIntegrationSI(List<String> ext)
-        {
-            List<String> SIFiles = new List<String>(Directory.EnumerateFiles(folderToMonitor + "\\SI\\", "*.*", SearchOption.AllDirectories).Where(f => ext.Contains(Path.GetExtension(f))));
-            if (SIFiles.Any())
+            catch (Exception ex)
             {
-                foreach (var SIFile in SIFiles)
-                {
-                    FolderMonitoringTrnSalesInvoiceController folderMonitoringSI = new FolderMonitoringTrnSalesInvoiceController();
-                    folderMonitoringSI.SendSalesInvoice(this, txtFolderMonitoringUserCode.Text, SIFile, domain);
-                }
-            }
-
-            return Task.FromResult("");
-        }
-
-        public Task<String> runFolderMonitoringIntegrationOR(List<String> ext)
-        {
-            List<String> ORFiles = new List<String>(Directory.EnumerateFiles(folderToMonitor + "\\OR\\", "*.*", SearchOption.AllDirectories).Where(f => ext.Contains(Path.GetExtension(f))));
-            if (ORFiles.Any())
-            {
-                foreach (var ORFile in ORFiles)
-                {
-                    FolderMonitoringTrnCollectionController folderMonitoringOR = new FolderMonitoringTrnCollectionController();
-                    folderMonitoringOR.SendCollection(this, txtFolderMonitoringUserCode.Text, ORFile, domain);
-                }
-            }
-
-            return Task.FromResult("");
-        }
-
-        public Task<String> runFolderMonitoringIntegrationRR(List<String> ext)
-        {
-            List<String> RRFiles = new List<String>(Directory.EnumerateFiles(folderToMonitor + "\\RR\\", "*.*", SearchOption.AllDirectories).Where(f => ext.Contains(Path.GetExtension(f))));
-            if (RRFiles.Any())
-            {
-                foreach (var RRFile in RRFiles)
-                {
-                    FolderMonitoringTrnReceivingReceiptController folderMonitoringRR = new FolderMonitoringTrnReceivingReceiptController();
-                    folderMonitoringRR.SendReceivingReceipt(this, txtFolderMonitoringUserCode.Text, RRFile, domain);
-                }
-            }
-
-            return Task.FromResult("");
-        }
-
-        public Task<String> runFolderMonitoringIntegrationCV(List<String> ext)
-        {
-            List<String> CVFiles = new List<String>(Directory.EnumerateFiles(folderToMonitor + "\\CV\\", "*.*", SearchOption.AllDirectories).Where(f => ext.Contains(Path.GetExtension(f))));
-            if (CVFiles.Any())
-            {
-                foreach (var CVFile in CVFiles)
-                {
-                    FolderMonitoringTrnDisbursementController folderMonitoringCV = new FolderMonitoringTrnDisbursementController();
-                    folderMonitoringCV.SendDisbursement(this, txtFolderMonitoringUserCode.Text, CVFile, domain);
-                }
-            }
-
-            return Task.FromResult("");
-        }
-
-        public Task<String> runFolderMonitoringIntegrationJV(List<String> ext)
-        {
-            List<String> JVFiles = new List<String>(Directory.EnumerateFiles(folderToMonitor + "\\JV\\", "*.*", SearchOption.AllDirectories).Where(f => ext.Contains(Path.GetExtension(f))));
-            if (JVFiles.Any())
-            {
-                foreach (var JVFile in JVFiles)
-                {
-                    FolderMonitoringTrnJournalVoucherController folderMonitoringJV = new FolderMonitoringTrnJournalVoucherController();
-                    folderMonitoringJV.SendJournalVoucher(this, txtFolderMonitoringUserCode.Text, JVFile, domain);
-                }
-            }
-
-            return Task.FromResult("");
-        }
-
-        public Task<String> runFolderMonitoringIntegrationIN(List<String> ext)
-        {
-            List<String> INFiles = new List<String>(Directory.EnumerateFiles(folderToMonitor + "\\IN\\", "*.*", SearchOption.AllDirectories).Where(f => ext.Contains(Path.GetExtension(f))));
-            if (INFiles.Any())
-            {
-                foreach (var INFile in INFiles)
-                {
-                    FolderMonitoringTrnStockInController folderMonitoringIN = new FolderMonitoringTrnStockInController();
-                    folderMonitoringIN.SendStockIn(this, txtFolderMonitoringUserCode.Text, INFile, domain);
-                }
-            }
-
-            return Task.FromResult("");
-        }
-
-        public Task<String> runFolderMonitoringIntegrationOT(List<String> ext)
-        {
-            List<String> OTFiles = new List<String>(Directory.EnumerateFiles(folderToMonitor + "\\OT\\", "*.*", SearchOption.AllDirectories).Where(f => ext.Contains(Path.GetExtension(f))));
-            if (OTFiles.Any())
-            {
-                foreach (var OTFile in OTFiles)
-                {
-                    FolderMonitoringTrnStockOutController folderMonitoringOT = new FolderMonitoringTrnStockOutController();
-                    folderMonitoringOT.SendStockOut(this, txtFolderMonitoringUserCode.Text, OTFile, domain);
-                }
-            }
-
-            return Task.FromResult("");
-        }
-
-        public Task<String> runFolderMonitoringIntegrationST(List<String> ext)
-        {
-            List<String> STFiles = new List<String>(Directory.EnumerateFiles(folderToMonitor + "\\ST\\", "*.*", SearchOption.AllDirectories).Where(f => ext.Contains(Path.GetExtension(f))));
-            if (STFiles.Any())
-            {
-                foreach (var STFile in STFiles)
-                {
-                    FolderMonitoringTrnStockTransferController folderMonitoringST = new FolderMonitoringTrnStockTransferController();
-                    folderMonitoringST.SendStockTransfer(this, txtFolderMonitoringUserCode.Text, STFile, domain);
-                }
-            }
-
-            return Task.FromResult("");
-        }
-
-        public Boolean isManualSalesIntegrationStartIntegrating = false;
-
-        public void logManualSalesIntegrationMessage(String message)
-        {
-            if (textBoxPOSManualSalesIntegrationLogs.InvokeRequired)
-            {
-                BeginInvoke((MethodInvoker)delegate
-                {
-                    bool log = true;
-
-                    if (message.Equals("ManualSIIntegrationLogOnce"))
-                    {
-                        log = false;
-                        textBoxPOSManualSalesIntegrationLogs.Text = textBoxPOSManualSalesIntegrationLogs.Text.Substring(0, textBoxPOSManualSalesIntegrationLogs.Text.Trim().LastIndexOf(Environment.NewLine));
-                    }
-
-                    if (log)
-                    {
-                        textBoxPOSManualSalesIntegrationLogs.Text += message;
-
-                        textBoxPOSManualSalesIntegrationLogs.Focus();
-                        textBoxPOSManualSalesIntegrationLogs.SelectionStart = textBoxPOSManualSalesIntegrationLogs.Text.Length;
-                        textBoxPOSManualSalesIntegrationLogs.ScrollToCaret();
-                    }
-
-                    if (textBoxPOSManualSalesIntegrationLogs.Lines.Length >= 1000)
-                    {
-                        textBoxPOSManualSalesIntegrationLogs.Text = "";
-
-                        String settingsPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Settings.json");
-
-                        String json;
-                        using (StreamReader trmRead = new StreamReader(settingsPath)) { json = trmRead.ReadToEnd(); }
-
-                        JavaScriptSerializer javaScriptSerializer = new JavaScriptSerializer();
-                        Entities.SysSettings sysSettings = javaScriptSerializer.Deserialize<Entities.SysSettings>(json);
-
-                        File.WriteAllText(sysSettings.LogFileLocation + "\\ManualSIIntegration_" + DateTime.Now.ToString("yyyyMMdd_hhmmss") + ".txt", textBoxPOSManualSalesIntegrationLogs.Text);
-                    }
-                });
-            }
-            else
-            {
-                textBoxPOSManualSalesIntegrationLogs.Text += message;
-
-                textBoxPOSManualSalesIntegrationLogs.Focus();
-                textBoxPOSManualSalesIntegrationLogs.SelectionStart = textBoxPOSManualSalesIntegrationLogs.Text.Length;
-                textBoxPOSManualSalesIntegrationLogs.ScrollToCaret();
-            }
-        }
-
-        private void buttonPOSManualSalesIntegrationStart_Click(object sender, EventArgs e)
-        {
-            dateTimePickerPOSManualSalesIntegrationDate.Enabled = false;
-            comboBoxTerminal.Enabled = false;
-
-            buttonPOSManualSalesIntegrationStart.Text = "Integrating...";
-            buttonPOSManualSalesIntegrationStart.Enabled = false;
-
-            isManualSalesIntegrationStartIntegrating = true;
-
-            logManualSalesIntegrationMessage("Manual Sales Integration Started! \r\n\nTime Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-
-            if (backgroundWorkerManualSalesIntegration.IsBusy != true)
-            {
-                backgroundWorkerManualSalesIntegration.RunWorkerAsync();
-            }
-        }
-
-        private void backgroundWorkerManualSalesIntegration_DoWork(object sender, DoWorkEventArgs e)
-        {
-            while (isManualSalesIntegrationStartIntegrating)
-            {
-                Task ManualSIIntegrationTask = Task.Run(() =>
-                {
-                    ISPOSManualSalesIntegrationTrnCollectionController manualSalesIntegrationTrnCollectionController = new ISPOSManualSalesIntegrationTrnCollectionController();
-                    manualSalesIntegrationTrnCollectionController.SendSalesInvoice(this, domain, dateTimePickerPOSManualSalesIntegrationDate.Value.ToShortDateString(), Convert.ToInt32(comboBoxTerminal.SelectedValue));
-                });
-                ManualSIIntegrationTask.Wait();
-
-                if (ManualSIIntegrationTask.IsCompleted)
-                {
-                    Task ManualSIIntegrationTaskIsCompleted = Task.Run(() =>
-                    {
-                        AsyncManualSIIntegrationTaskIsCompleted();
-                    });
-                    ManualSIIntegrationTaskIsCompleted.Wait();
-                }
-
-                System.Threading.Thread.Sleep(5000);
-            }
-        }
-
-        public async void AsyncManualSIIntegrationTaskIsCompleted()
-        {
-            await TaskManualSIIntegrationTaskIsCompleted();
-        }
-
-        public Task<Boolean> TaskManualSIIntegrationTaskIsCompleted()
-        {
-            if (buttonPOSManualSalesIntegrationStart.InvokeRequired)
-            {
-                BeginInvoke((MethodInvoker)delegate
-                {
-                    dateTimePickerPOSManualSalesIntegrationDate.Enabled = true;
-                    comboBoxTerminal.Enabled = true;
-
-                    buttonPOSManualSalesIntegrationStart.Enabled = true;
-                    buttonPOSManualSalesIntegrationStart.Text = "Integrate";
-
-                    isManualSalesIntegrationStartIntegrating = false;
-                });
-            }
-
-            return Task.FromResult(true);
-        }
-
-        public void GetTerminalList()
-        {
-            var terminals = from d in posdb.MstTerminals
-                            select d;
-
-            if (terminals.Any())
-            {
-                comboBoxTerminal.DataSource = terminals.ToList();
-                comboBoxTerminal.ValueMember = "Id";
-                comboBoxTerminal.DisplayMember = "Terminal";
+                MessageBox.Show(ex.Message, "EasyFIS Integration", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 
 namespace EasyfisIntegrator.Controllers
@@ -43,10 +44,18 @@ namespace EasyfisIntegrator.Controllers
             return result;
         }
 
+        // ==============
+        // Sync Stock Out
+        // ==============
+        public async void SyncStockOut(String apiUrlHost, String branchCode)
+        {
+            await GetStockOut(apiUrlHost, branchCode);
+        }
+
         // =============
         // Get Stock Out
         // =============
-        public void GetStockOut(String apiUrlHost, String branchCode)
+        public Task GetStockOut(String apiUrlHost, String branchCode)
         {
             try
             {
@@ -59,8 +68,6 @@ namespace EasyfisIntegrator.Controllers
                 var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://" + apiUrlHost + "/api/get/POSIntegration/stockOut/" + stockOutDate + "/" + branchCode);
                 httpWebRequest.Method = "GET";
                 httpWebRequest.Accept = "application/json";
-
-                Boolean isRead = false;
 
                 // ================
                 // Process Response
@@ -79,7 +86,7 @@ namespace EasyfisIntegrator.Controllers
                             var currentStockOut = from d in posdb.TrnStockOuts where d.Remarks.Equals("OT-" + stockOut.BranchCode + "-" + stockOut.OTNumber) && d.TrnStockOutLines.Count() > 0 && d.IsLocked == true select d;
                             if (!currentStockOut.Any())
                             {
-                                trnIntegrationForm.logMessages("Saving Stock Out: OT-" + stockOut.BranchCode + "-" + stockOut.OTNumber + "\r\n\n");
+                                trnIntegrationForm.salesIntegrationLogMessages("Saving Stock Out: OT-" + stockOut.BranchCode + "-" + stockOut.OTNumber + "\r\n\n");
 
                                 var defaultPeriod = from d in posdb.MstPeriods select d;
                                 var defaultSettings = from d in posdb.SysSettings select d;
@@ -144,41 +151,36 @@ namespace EasyfisIntegrator.Controllers
 
                                                 posdb.SubmitChanges();
 
-                                                trnIntegrationForm.logMessages(" > " + currentItem.FirstOrDefault().ItemDescription + " * " + item.Quantity.ToString("#,##0.00") + "\r\n\n");
+                                                trnIntegrationForm.salesIntegrationLogMessages(" > " + currentItem.FirstOrDefault().ItemDescription + " * " + item.Quantity.ToString("#,##0.00") + "\r\n\n");
                                             }
                                         }
                                     }
 
-                                    trnIntegrationForm.logMessages("Save Successful!" + "\r\n\n");
-                                    trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                    trnIntegrationForm.logMessages("\r\n\n");
+                                    trnIntegrationForm.salesIntegrationLogMessages("Save Successful!" + "\r\n\n");
+                                    trnIntegrationForm.salesIntegrationLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                    trnIntegrationForm.salesIntegrationLogMessages("\r\n\n");
                                 }
                                 else
                                 {
-                                    trnIntegrationForm.logMessages("Cannot Save Stock Out: OT - " + stockOut.BranchCode + " - " + stockOut.OTNumber + "\r\n\n");
-                                    trnIntegrationForm.logMessages("Empty Accounts!" + "\r\n\n");
-                                    trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                    trnIntegrationForm.logMessages("\r\n\n");
+                                    trnIntegrationForm.salesIntegrationLogMessages("Cannot Save Stock Out: OT - " + stockOut.BranchCode + " - " + stockOut.OTNumber + "\r\n\n");
+                                    trnIntegrationForm.salesIntegrationLogMessages("Empty Accounts!" + "\r\n\n");
+                                    trnIntegrationForm.salesIntegrationLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                    trnIntegrationForm.salesIntegrationLogMessages("\r\n\n");
                                 }
                             }
                         }
                     }
-
-                    isRead = true;
                 }
 
-                if (isRead)
-                {
-                    trnIntegrationForm.logMessages("StockOut Integration Done.");
-                }
+                return Task.FromResult("");
             }
             catch (Exception e)
             {
-                trnIntegrationForm.logMessages("StockOut Integration Done.");
+                trnIntegrationForm.salesIntegrationLogMessages("Stock-Out Error: " + e.Message + "\r\n\n");
+                trnIntegrationForm.salesIntegrationLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                trnIntegrationForm.salesIntegrationLogMessages("\r\n\n");
 
-                trnIntegrationForm.logMessages("Stock-Out Error: " + e.Message + "\r\n\n");
-                trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                trnIntegrationForm.logMessages("\r\n\n");
+                return Task.FromResult("");
             }
         }
     }

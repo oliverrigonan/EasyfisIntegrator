@@ -46,7 +46,7 @@ namespace EasyfisIntegrator.Controllers
                 // =============
                 // Getting Sales
                 // =============
-                trnIntegrationForm.logManualSalesIntegrationMessage("\r\n\nGetting Sales Data... (0%) \r\n\n");
+                trnIntegrationForm.manualSalesIntegrationLogMessages("\r\n\nGetting Sales Data... (0%) \r\n\n");
                 while (true)
                 {
                     newSalesInvoices = new List<Entities.FolderMonitoringTrnSalesInvoice>();
@@ -196,22 +196,22 @@ namespace EasyfisIntegrator.Controllers
                             }
                         }
 
-                        trnIntegrationForm.logManualSalesIntegrationMessage("ManualSIIntegrationLogOnce");
+                        trnIntegrationForm.manualSalesIntegrationLogMessages("ManualSIIntegrationLogOnce");
 
-                        trnIntegrationForm.logManualSalesIntegrationMessage("\r\n\nGetting Sales Data... (100%) \r\n\n");
-                        trnIntegrationForm.logManualSalesIntegrationMessage("Get Successful!" + "\r\n\n");
-                        trnIntegrationForm.logManualSalesIntegrationMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                        trnIntegrationForm.logManualSalesIntegrationMessage("\r\n\n");
+                        trnIntegrationForm.manualSalesIntegrationLogMessages("\r\n\nGetting Sales Data... (100%) \r\n\n");
+                        trnIntegrationForm.manualSalesIntegrationLogMessages("Get Successful!" + "\r\n\n");
+                        trnIntegrationForm.manualSalesIntegrationLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                        trnIntegrationForm.manualSalesIntegrationLogMessages("\r\n\n");
 
                         break;
                     }
                     catch (Exception e)
                     {
-                        trnIntegrationForm.logManualSalesIntegrationMessage("Error: " + e.Message + "\r\n\n");
-                        trnIntegrationForm.logManualSalesIntegrationMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                        trnIntegrationForm.logManualSalesIntegrationMessage("\r\n\n");
+                        trnIntegrationForm.manualSalesIntegrationLogMessages("Error: " + e.Message + "\r\n\n");
+                        trnIntegrationForm.manualSalesIntegrationLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                        trnIntegrationForm.manualSalesIntegrationLogMessages("\r\n\n");
 
-                        trnIntegrationForm.logManualSalesIntegrationMessage("Retrying...\r\n\n");
+                        trnIntegrationForm.manualSalesIntegrationLogMessages("Retrying...\r\n\n");
 
                         Thread.Sleep(5000);
                     }
@@ -222,7 +222,7 @@ namespace EasyfisIntegrator.Controllers
                     // ========
                     // Cleaning
                     // ========
-                    trnIntegrationForm.logManualSalesIntegrationMessage("Cleaning Temporary Sales... (0%) \r\n\n");
+                    trnIntegrationForm.manualSalesIntegrationLogMessages("Cleaning Temporary Sales... (0%) \r\n\n");
                     while (true)
                     {
                         try
@@ -230,33 +230,33 @@ namespace EasyfisIntegrator.Controllers
                             String deleteTemporarySalesInvoiceTask = await DeleteTemporarySalesInvoice(domain);
                             if (!deleteTemporarySalesInvoiceTask.Equals("Clean Successful..."))
                             {
-                                trnIntegrationForm.logManualSalesIntegrationMessage(deleteTemporarySalesInvoiceTask);
-                                trnIntegrationForm.logManualSalesIntegrationMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                trnIntegrationForm.logManualSalesIntegrationMessage("\r\n\n");
+                                trnIntegrationForm.manualSalesIntegrationLogMessages(deleteTemporarySalesInvoiceTask);
+                                trnIntegrationForm.manualSalesIntegrationLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                trnIntegrationForm.manualSalesIntegrationLogMessages("\r\n\n");
 
-                                trnIntegrationForm.logManualSalesIntegrationMessage("Retrying...\r\n\n");
+                                trnIntegrationForm.manualSalesIntegrationLogMessages("Retrying...\r\n\n");
 
                                 Thread.Sleep(5000);
                             }
                             else
                             {
-                                trnIntegrationForm.logManualSalesIntegrationMessage("ManualSIIntegrationLogOnce");
+                                trnIntegrationForm.manualSalesIntegrationLogMessages("ManualSIIntegrationLogOnce");
 
-                                trnIntegrationForm.logManualSalesIntegrationMessage("\r\n\nCleaning Temporary Sales... (100%) \r\n\n");
-                                trnIntegrationForm.logManualSalesIntegrationMessage("Clean Successful!" + "\r\n\n");
-                                trnIntegrationForm.logManualSalesIntegrationMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                trnIntegrationForm.logManualSalesIntegrationMessage("\r\n\n");
+                                trnIntegrationForm.manualSalesIntegrationLogMessages("\r\n\nCleaning Temporary Sales... (100%) \r\n\n");
+                                trnIntegrationForm.manualSalesIntegrationLogMessages("Clean Successful!" + "\r\n\n");
+                                trnIntegrationForm.manualSalesIntegrationLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                trnIntegrationForm.manualSalesIntegrationLogMessages("\r\n\n");
 
                                 break;
                             }
                         }
                         catch (Exception e)
                         {
-                            trnIntegrationForm.logManualSalesIntegrationMessage("Error: " + e.Message + "\r\n\n");
-                            trnIntegrationForm.logManualSalesIntegrationMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                            trnIntegrationForm.logManualSalesIntegrationMessage("\r\n\n");
+                            trnIntegrationForm.manualSalesIntegrationLogMessages("Error: " + e.Message + "\r\n\n");
+                            trnIntegrationForm.manualSalesIntegrationLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                            trnIntegrationForm.manualSalesIntegrationLogMessages("\r\n\n");
 
-                            trnIntegrationForm.logManualSalesIntegrationMessage("Retrying...\r\n\n");
+                            trnIntegrationForm.manualSalesIntegrationLogMessages("Retrying...\r\n\n");
 
                             Thread.Sleep(5000);
                         }
@@ -267,7 +267,7 @@ namespace EasyfisIntegrator.Controllers
                     // =======
                     // Sending
                     // =======
-                    trnIntegrationForm.logManualSalesIntegrationMessage("Sending Sales... (0%) \r\n\n");
+                    trnIntegrationForm.manualSalesIntegrationLogMessages("Sending Sales... (0%) \r\n\n");
                     while (true)
                     {
                         try
@@ -314,24 +314,24 @@ namespace EasyfisIntegrator.Controllers
                                             String insertTemporarySalesInvoiceTask = await InsertTemporarySalesInvoice(domain, jsonData);
                                             if (!insertTemporarySalesInvoiceTask.Equals("Send Successful..."))
                                             {
-                                                trnIntegrationForm.logManualSalesIntegrationMessage(insertTemporarySalesInvoiceTask);
-                                                trnIntegrationForm.logManualSalesIntegrationMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                                trnIntegrationForm.logManualSalesIntegrationMessage("\r\n\n");
+                                                trnIntegrationForm.manualSalesIntegrationLogMessages(insertTemporarySalesInvoiceTask);
+                                                trnIntegrationForm.manualSalesIntegrationLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                                trnIntegrationForm.manualSalesIntegrationLogMessages("\r\n\n");
 
-                                                trnIntegrationForm.logManualSalesIntegrationMessage("Retrying...\r\n\n");
+                                                trnIntegrationForm.manualSalesIntegrationLogMessages("Retrying...\r\n\n");
 
                                                 Thread.Sleep(5000);
                                             }
                                             else
                                             {
-                                                trnIntegrationForm.logManualSalesIntegrationMessage("ManualSIIntegrationLogOnce");
-                                                trnIntegrationForm.logManualSalesIntegrationMessage("\r\n\nSending Sales... (" + Math.Round(percentage, 2) + "%) \r\n\n");
+                                                trnIntegrationForm.manualSalesIntegrationLogMessages("ManualSIIntegrationLogOnce");
+                                                trnIntegrationForm.manualSalesIntegrationLogMessages("\r\n\nSending Sales... (" + Math.Round(percentage, 2) + "%) \r\n\n");
 
                                                 if (i == newSalesInvoices.Count())
                                                 {
-                                                    trnIntegrationForm.logManualSalesIntegrationMessage("Send Successful!" + "\r\n\n");
-                                                    trnIntegrationForm.logManualSalesIntegrationMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                                    trnIntegrationForm.logManualSalesIntegrationMessage("\r\n\n");
+                                                    trnIntegrationForm.manualSalesIntegrationLogMessages("Send Successful!" + "\r\n\n");
+                                                    trnIntegrationForm.manualSalesIntegrationLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                                    trnIntegrationForm.manualSalesIntegrationLogMessages("\r\n\n");
                                                 }
 
                                                 break;
@@ -339,11 +339,11 @@ namespace EasyfisIntegrator.Controllers
                                         }
                                         catch (Exception e)
                                         {
-                                            trnIntegrationForm.logManualSalesIntegrationMessage("Sending Error: " + e.Message + "\r\n\n");
-                                            trnIntegrationForm.logManualSalesIntegrationMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                            trnIntegrationForm.logManualSalesIntegrationMessage("\r\n\n");
+                                            trnIntegrationForm.manualSalesIntegrationLogMessages("Sending Error: " + e.Message + "\r\n\n");
+                                            trnIntegrationForm.manualSalesIntegrationLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                            trnIntegrationForm.manualSalesIntegrationLogMessages("\r\n\n");
 
-                                            trnIntegrationForm.logManualSalesIntegrationMessage("Retrying...\r\n\n");
+                                            trnIntegrationForm.manualSalesIntegrationLogMessages("Retrying...\r\n\n");
 
                                             Thread.Sleep(5000);
                                         }
@@ -358,11 +358,11 @@ namespace EasyfisIntegrator.Controllers
                         }
                         catch (Exception e)
                         {
-                            trnIntegrationForm.logManualSalesIntegrationMessage("Error: " + e.Message + "\r\n\n");
-                            trnIntegrationForm.logManualSalesIntegrationMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                            trnIntegrationForm.logManualSalesIntegrationMessage("\r\n\n");
+                            trnIntegrationForm.manualSalesIntegrationLogMessages("Error: " + e.Message + "\r\n\n");
+                            trnIntegrationForm.manualSalesIntegrationLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                            trnIntegrationForm.manualSalesIntegrationLogMessages("\r\n\n");
 
-                            trnIntegrationForm.logManualSalesIntegrationMessage("Retrying...\r\n\n");
+                            trnIntegrationForm.manualSalesIntegrationLogMessages("Retrying...\r\n\n");
 
                             Thread.Sleep(5000);
                         }
@@ -373,7 +373,7 @@ namespace EasyfisIntegrator.Controllers
                     // =======
                     if (post)
                     {
-                        trnIntegrationForm.logManualSalesIntegrationMessage("Posting Sales... (0%) \r\n\n");
+                        trnIntegrationForm.manualSalesIntegrationLogMessages("Posting Sales... (0%) \r\n\n");
                         while (true)
                         {
                             try
@@ -404,24 +404,24 @@ namespace EasyfisIntegrator.Controllers
                                                 String postSalesInvoiceTask = await PostSalesInvoice(domain, salesInvoice.BranchCode, salesInvoice.ManualSINumber);
                                                 if (!postSalesInvoiceTask.Equals("Post Successful..."))
                                                 {
-                                                    trnIntegrationForm.logManualSalesIntegrationMessage(postSalesInvoiceTask);
-                                                    trnIntegrationForm.logManualSalesIntegrationMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                                    trnIntegrationForm.logManualSalesIntegrationMessage("\r\n\n");
+                                                    trnIntegrationForm.manualSalesIntegrationLogMessages(postSalesInvoiceTask);
+                                                    trnIntegrationForm.manualSalesIntegrationLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                                    trnIntegrationForm.manualSalesIntegrationLogMessages("\r\n\n");
 
-                                                    trnIntegrationForm.logManualSalesIntegrationMessage("Retrying...\r\n\n");
+                                                    trnIntegrationForm.manualSalesIntegrationLogMessages("Retrying...\r\n\n");
 
                                                     Thread.Sleep(5000);
                                                 }
                                                 else
                                                 {
-                                                    trnIntegrationForm.logManualSalesIntegrationMessage("ManualSIIntegrationLogOnce");
-                                                    trnIntegrationForm.logManualSalesIntegrationMessage("\r\n\nPosting Sales... (" + Math.Round(percentage, 2) + "%) \r\n\n");
+                                                    trnIntegrationForm.manualSalesIntegrationLogMessages("ManualSIIntegrationLogOnce");
+                                                    trnIntegrationForm.manualSalesIntegrationLogMessages("\r\n\nPosting Sales... (" + Math.Round(percentage, 2) + "%) \r\n\n");
 
                                                     if (count == salesInvoices.Count())
                                                     {
-                                                        trnIntegrationForm.logManualSalesIntegrationMessage("Post Successful!" + "\r\n\n");
-                                                        trnIntegrationForm.logManualSalesIntegrationMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                                        trnIntegrationForm.logManualSalesIntegrationMessage("\r\n\n");
+                                                        trnIntegrationForm.manualSalesIntegrationLogMessages("Post Successful!" + "\r\n\n");
+                                                        trnIntegrationForm.manualSalesIntegrationLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                                        trnIntegrationForm.manualSalesIntegrationLogMessages("\r\n\n");
                                                     }
 
                                                     break;
@@ -429,11 +429,11 @@ namespace EasyfisIntegrator.Controllers
                                             }
                                             catch (Exception e)
                                             {
-                                                trnIntegrationForm.logManualSalesIntegrationMessage("Posting Error: " + e.Message + "\r\n\n");
-                                                trnIntegrationForm.logManualSalesIntegrationMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                                trnIntegrationForm.logManualSalesIntegrationMessage("\r\n\n");
+                                                trnIntegrationForm.manualSalesIntegrationLogMessages("Posting Error: " + e.Message + "\r\n\n");
+                                                trnIntegrationForm.manualSalesIntegrationLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                                trnIntegrationForm.manualSalesIntegrationLogMessages("\r\n\n");
 
-                                                trnIntegrationForm.logManualSalesIntegrationMessage("Retrying...\r\n\n");
+                                                trnIntegrationForm.manualSalesIntegrationLogMessages("Retrying...\r\n\n");
 
                                                 Thread.Sleep(5000);
                                             }
@@ -465,11 +465,11 @@ namespace EasyfisIntegrator.Controllers
                             }
                             catch (Exception e)
                             {
-                                trnIntegrationForm.logManualSalesIntegrationMessage("Error: " + e.Message + "\r\n\n");
-                                trnIntegrationForm.logManualSalesIntegrationMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                trnIntegrationForm.logManualSalesIntegrationMessage("\r\n\n");
+                                trnIntegrationForm.manualSalesIntegrationLogMessages("Error: " + e.Message + "\r\n\n");
+                                trnIntegrationForm.manualSalesIntegrationLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                trnIntegrationForm.manualSalesIntegrationLogMessages("\r\n\n");
 
-                                trnIntegrationForm.logManualSalesIntegrationMessage("Retrying...\r\n\n");
+                                trnIntegrationForm.manualSalesIntegrationLogMessages("Retrying...\r\n\n");
 
                                 Thread.Sleep(5000);
                             }
@@ -478,9 +478,9 @@ namespace EasyfisIntegrator.Controllers
                 }
                 else
                 {
-                    trnIntegrationForm.logManualSalesIntegrationMessage("Data Source Empty \r\n\n");
-                    trnIntegrationForm.logManualSalesIntegrationMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                    trnIntegrationForm.logManualSalesIntegrationMessage("\r\n\n");
+                    trnIntegrationForm.manualSalesIntegrationLogMessages("Data Source Empty \r\n\n");
+                    trnIntegrationForm.manualSalesIntegrationLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                    trnIntegrationForm.manualSalesIntegrationLogMessages("\r\n\n");
                 }
             }
         }

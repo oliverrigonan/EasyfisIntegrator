@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 
 namespace EasyfisIntegrator.Controllers
@@ -24,10 +25,18 @@ namespace EasyfisIntegrator.Controllers
             trnIntegrationForm = form;
         }
 
+        // ==========
+        // Sync Sales
+        // ==========
+        public async void SyncCollection(String apiUrlHost, String branchCode, String userCode)
+        {
+            await GetCollection(apiUrlHost, branchCode, userCode);
+        }
+
         // ==============
         // Get Collection
         // ==============
-        public void GetCollection(String apiUrlHost, String branchCode, String userCode)
+        public Task GetCollection(String apiUrlHost, String branchCode, String userCode)
         {
             try
             {
@@ -90,22 +99,20 @@ namespace EasyfisIntegrator.Controllers
 
                     String json = new JavaScriptSerializer().Serialize(collectionData);
 
-                    trnIntegrationForm.logMessages("Sending Collection: " + collectionData.DocumentReference + "\r\n\n");
-                    trnIntegrationForm.logMessages("Amount: " + collectionData.ListPOSIntegrationTrnSalesInvoiceItem.Sum(d => d.Amount).ToString("#,##0.00") + "\r\n\n");
+                    trnIntegrationForm.salesIntegrationLogMessages("Sending Collection: " + collectionData.DocumentReference + "\r\n\n");
+                    trnIntegrationForm.salesIntegrationLogMessages("Amount: " + collectionData.ListPOSIntegrationTrnSalesInvoiceItem.Sum(d => d.Amount).ToString("#,##0.00") + "\r\n\n");
                     SendCollection(apiUrlHost, json);
                 }
-                else
-                {
-                    trnIntegrationForm.logMessages("Collection Integration Done.");
-                }
+
+                return Task.FromResult("");
             }
             catch (Exception e)
             {
-                trnIntegrationForm.logMessages("Collection Integration Done.");
+                trnIntegrationForm.salesIntegrationLogMessages("Collection Error: " + e.Message + "\r\n\n");
+                trnIntegrationForm.salesIntegrationLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                trnIntegrationForm.salesIntegrationLogMessages("\r\n\n");
 
-                trnIntegrationForm.logMessages("Collection Error: " + e.Message + "\r\n\n");
-                trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                trnIntegrationForm.logMessages("\r\n\n");
+                return Task.FromResult("");
             }
         }
 
@@ -132,8 +139,6 @@ namespace EasyfisIntegrator.Controllers
                     streamWriter.Write(new JavaScriptSerializer().Serialize(collection));
                 }
 
-                Boolean isRead = false;
-
                 // ================
                 // Process Response
                 // ================
@@ -159,28 +164,20 @@ namespace EasyfisIntegrator.Controllers
                             posdb.SubmitChanges();
                         }
 
-                        trnIntegrationForm.logMessages("Send Succesful!" + "\r\n\n");
-                        trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                        trnIntegrationForm.logMessages("\r\n\n");
+                        trnIntegrationForm.salesIntegrationLogMessages("Send Succesful!" + "\r\n\n");
+                        trnIntegrationForm.salesIntegrationLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                        trnIntegrationForm.salesIntegrationLogMessages("\r\n\n");
                     }
-
-                    isRead = true;
                 }
 
-                if (isRead)
-                {
-                    trnIntegrationForm.logMessages("Collection Integration Done.");
-                }
             }
             catch (WebException we)
             {
                 var resp = new StreamReader(we.Response.GetResponseStream()).ReadToEnd();
 
-                trnIntegrationForm.logMessages("Collection Integration Done.");
-
-                trnIntegrationForm.logMessages(resp.Replace("\"", "") + "\r\n\n");
-                trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                trnIntegrationForm.logMessages("\r\n\n");
+                trnIntegrationForm.salesIntegrationLogMessages(resp.Replace("\"", "") + "\r\n\n");
+                trnIntegrationForm.salesIntegrationLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                trnIntegrationForm.salesIntegrationLogMessages("\r\n\n");
             }
         }
     }

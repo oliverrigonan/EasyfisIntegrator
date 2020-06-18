@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 
 namespace EasyfisIntegrator.Controllers
@@ -27,10 +28,18 @@ namespace EasyfisIntegrator.Controllers
             activityDate = actDate;
         }
 
+        // =============
+        // Sync Customer
+        // =============
+        public async void SyncCustomer(String apiUrlHost)
+        {
+            await GetCustomer(apiUrlHost);
+        }
+
         // ============
         // Get Customer
         // ============
-        public void GetCustomer(String apiUrlHost)
+        public Task GetCustomer(String apiUrlHost)
         {
             try
             {
@@ -43,8 +52,6 @@ namespace EasyfisIntegrator.Controllers
                 var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://" + apiUrlHost + "/api/get/POSIntegration/customer/" + currentDate);
                 httpWebRequest.Method = "GET";
                 httpWebRequest.Accept = "application/json";
-
-                Boolean isRead = false;
 
                 // ================
                 // Process Response
@@ -128,8 +135,8 @@ namespace EasyfisIntegrator.Controllers
 
                                     if (foundChanges)
                                     {
-                                        trnIntegrationForm.logMessages("Updating Customer: " + currentCustomer.FirstOrDefault().Customer + "\r\n\n");
-                                        trnIntegrationForm.logMessages("Customer Code: " + currentCustomer.FirstOrDefault().CustomerCode + "\r\n\n");
+                                        trnIntegrationForm.salesIntegrationLogMessages("Updating Customer: " + currentCustomer.FirstOrDefault().Customer + "\r\n\n");
+                                        trnIntegrationForm.salesIntegrationLogMessages("Customer Code: " + currentCustomer.FirstOrDefault().CustomerCode + "\r\n\n");
 
                                         var updateCustomer = currentCustomer.FirstOrDefault();
                                         updateCustomer.Customer = customer.Article;
@@ -144,15 +151,15 @@ namespace EasyfisIntegrator.Controllers
                                         updateCustomer.CustomerCode = customer.ManualArticleCode;
                                         posdb.SubmitChanges();
 
-                                        trnIntegrationForm.logMessages("Update Successful!" + "\r\n\n");
-                                        trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                        trnIntegrationForm.logMessages("\r\n\n");
+                                        trnIntegrationForm.salesIntegrationLogMessages("Update Successful!" + "\r\n\n");
+                                        trnIntegrationForm.salesIntegrationLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                        trnIntegrationForm.salesIntegrationLogMessages("\r\n\n");
                                     }
                                 }
                                 else
                                 {
-                                    trnIntegrationForm.logMessages("Saving Customer: " + customer.Article + "\r\n\n");
-                                    trnIntegrationForm.logMessages("Customer Code: " + customer.ManualArticleCode + "\r\n\n");
+                                    trnIntegrationForm.salesIntegrationLogMessages("Saving Customer: " + customer.Article + "\r\n\n");
+                                    trnIntegrationForm.salesIntegrationLogMessages("Customer Code: " + customer.ManualArticleCode + "\r\n\n");
 
                                     InnosoftPOSData.MstCustomer newCustomer = new InnosoftPOSData.MstCustomer
                                     {
@@ -179,37 +186,32 @@ namespace EasyfisIntegrator.Controllers
                                     posdb.MstCustomers.InsertOnSubmit(newCustomer);
                                     posdb.SubmitChanges();
 
-                                    trnIntegrationForm.logMessages("Save Successful!" + "\r\n\n");
-                                    trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                    trnIntegrationForm.logMessages("\r\n\n");
+                                    trnIntegrationForm.salesIntegrationLogMessages("Save Successful!" + "\r\n\n");
+                                    trnIntegrationForm.salesIntegrationLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                    trnIntegrationForm.salesIntegrationLogMessages("\r\n\n");
                                 }
                             }
                             else
                             {
-                                trnIntegrationForm.logMessages("Cannot Save Customer: " + customer.Article + "\r\n\n");
-                                trnIntegrationForm.logMessages("Term Mismatch!" + "\r\n\n");
-                                trnIntegrationForm.logMessages("Save Failed!" + "\r\n\n");
-                                trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                trnIntegrationForm.logMessages("\r\n\n");
+                                trnIntegrationForm.salesIntegrationLogMessages("Cannot Save Customer: " + customer.Article + "\r\n\n");
+                                trnIntegrationForm.salesIntegrationLogMessages("Term Mismatch!" + "\r\n\n");
+                                trnIntegrationForm.salesIntegrationLogMessages("Save Failed!" + "\r\n\n");
+                                trnIntegrationForm.salesIntegrationLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                trnIntegrationForm.salesIntegrationLogMessages("\r\n\n");
                             }
                         }
                     }
-
-                    isRead = true;
                 }
 
-                if (isRead)
-                {
-                    trnIntegrationForm.logMessages("Customer Integration Done.");
-                }
+                return Task.FromResult("");
             }
             catch (Exception e)
             {
-                trnIntegrationForm.logMessages("Customer Integration Done.");
+                trnIntegrationForm.salesIntegrationLogMessages("Customer Error: " + e.Message + "\r\n\n");
+                trnIntegrationForm.salesIntegrationLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                trnIntegrationForm.salesIntegrationLogMessages("\r\n\n");
 
-                trnIntegrationForm.logMessages("Customer Error: " + e.Message + "\r\n\n");
-                trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                trnIntegrationForm.logMessages("\r\n\n");
+                return Task.FromResult("");
             }
         }
     }

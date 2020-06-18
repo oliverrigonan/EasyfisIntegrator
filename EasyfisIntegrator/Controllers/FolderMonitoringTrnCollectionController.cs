@@ -21,7 +21,7 @@ namespace EasyfisIntegrator.Controllers
         // ===============
         public async void SendCollection(Forms.TrnIntegrationForm trnIntegrationForm, String userCode, String file, String domain)
         {
-            trnIntegrationForm.logFolderMonitoringMessage("\r\n\nOpening File: " + file + " \r\n\n");
+            trnIntegrationForm.folderMonitoringLogMessages("\r\n\nOpening File: " + file + " \r\n\n");
 
             List<Entities.FolderMonitoringTrnCollection> newCollections = new List<Entities.FolderMonitoringTrnCollection>();
             JavaScriptSerializer serializer = new JavaScriptSerializer();
@@ -30,7 +30,7 @@ namespace EasyfisIntegrator.Controllers
             // ========
             // Cleaning
             // ========
-            trnIntegrationForm.logFolderMonitoringMessage("\r\n\nCleaning Collection... (0%) \r\n\n");
+            trnIntegrationForm.folderMonitoringLogMessages("\r\n\nCleaning Collection... (0%) \r\n\n");
             while (true)
             {
                 try
@@ -38,33 +38,33 @@ namespace EasyfisIntegrator.Controllers
                     String deleteTemporaryCollectionTask = await DeleteTemporaryCollection(domain);
                     if (!deleteTemporaryCollectionTask.Equals("Clean Successful..."))
                     {
-                        trnIntegrationForm.logFolderMonitoringMessage(deleteTemporaryCollectionTask);
-                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                        trnIntegrationForm.folderMonitoringLogMessages(deleteTemporaryCollectionTask);
+                        trnIntegrationForm.folderMonitoringLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                        trnIntegrationForm.folderMonitoringLogMessages("\r\n\n");
 
-                        trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+                        trnIntegrationForm.folderMonitoringLogMessages("Retrying...\r\n\n");
 
                         Thread.Sleep(5000);
                     }
                     else
                     {
-                        trnIntegrationForm.logFolderMonitoringMessage("ORIntegrationLogOnce");
+                        trnIntegrationForm.folderMonitoringLogMessages("ORIntegrationLogOnce");
 
-                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\nCleaning Collection... (100%) \r\n\n");
-                        trnIntegrationForm.logFolderMonitoringMessage("Clean Successful!" + "\r\n\n");
-                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                        trnIntegrationForm.folderMonitoringLogMessages("\r\n\nCleaning Collection... (100%) \r\n\n");
+                        trnIntegrationForm.folderMonitoringLogMessages("Clean Successful!" + "\r\n\n");
+                        trnIntegrationForm.folderMonitoringLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                        trnIntegrationForm.folderMonitoringLogMessages("\r\n\n");
 
                         break;
                     }
                 }
                 catch (Exception e)
                 {
-                    trnIntegrationForm.logFolderMonitoringMessage("Error: " + e.Message + "\r\n\n");
-                    trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                    trnIntegrationForm.folderMonitoringLogMessages("Error: " + e.Message + "\r\n\n");
+                    trnIntegrationForm.folderMonitoringLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                    trnIntegrationForm.folderMonitoringLogMessages("\r\n\n");
 
-                    trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+                    trnIntegrationForm.folderMonitoringLogMessages("Retrying...\r\n\n");
 
                     Thread.Sleep(5000);
                 }
@@ -73,7 +73,7 @@ namespace EasyfisIntegrator.Controllers
             // ================
             // Reading CSV Data
             // ================
-            trnIntegrationForm.logFolderMonitoringMessage("Reading CSV Data... (0%) \r\n\n");
+            trnIntegrationForm.folderMonitoringLogMessages("Reading CSV Data... (0%) \r\n\n");
             while (true)
             {
                 newCollections = new List<Entities.FolderMonitoringTrnCollection>();
@@ -119,33 +119,33 @@ namespace EasyfisIntegrator.Controllers
                             }
                         }
 
-                        trnIntegrationForm.logFolderMonitoringMessage("ORIntegrationLogOnce");
+                        trnIntegrationForm.folderMonitoringLogMessages("ORIntegrationLogOnce");
 
-                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\nReading CSV Data... (100%) \r\n\n");
-                        trnIntegrationForm.logFolderMonitoringMessage("Read Successful!" + "\r\n\n");
-                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                        trnIntegrationForm.folderMonitoringLogMessages("\r\n\nReading CSV Data... (100%) \r\n\n");
+                        trnIntegrationForm.folderMonitoringLogMessages("Read Successful!" + "\r\n\n");
+                        trnIntegrationForm.folderMonitoringLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                        trnIntegrationForm.folderMonitoringLogMessages("\r\n\n");
 
                         break;
                     }
                     else
                     {
-                        trnIntegrationForm.logFolderMonitoringMessage("Error: File: " + file + " is currently open. \r\n\n");
-                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                        trnIntegrationForm.folderMonitoringLogMessages("Error: File: " + file + " is currently open. \r\n\n");
+                        trnIntegrationForm.folderMonitoringLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                        trnIntegrationForm.folderMonitoringLogMessages("\r\n\n");
 
-                        trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+                        trnIntegrationForm.folderMonitoringLogMessages("Retrying...\r\n\n");
 
                         Thread.Sleep(5000);
                     }
                 }
                 catch (Exception e)
                 {
-                    trnIntegrationForm.logFolderMonitoringMessage("Error: " + e.Message + "\r\n\n");
-                    trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                    trnIntegrationForm.folderMonitoringLogMessages("Error: " + e.Message + "\r\n\n");
+                    trnIntegrationForm.folderMonitoringLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                    trnIntegrationForm.folderMonitoringLogMessages("\r\n\n");
 
-                    trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+                    trnIntegrationForm.folderMonitoringLogMessages("Retrying...\r\n\n");
 
                     Thread.Sleep(5000);
                 }
@@ -156,7 +156,7 @@ namespace EasyfisIntegrator.Controllers
                 // =========================
                 // Checking Muliple OR Dates
                 // =========================
-                trnIntegrationForm.logFolderMonitoringMessage("Checking Multiple OR Dates... (0%) \r\n\n");
+                trnIntegrationForm.folderMonitoringLogMessages("Checking Multiple OR Dates... (0%) \r\n\n");
                 while (true)
                 {
                     try
@@ -166,33 +166,33 @@ namespace EasyfisIntegrator.Controllers
                         var ORDates = from d in groupedORDates.ToList() select d;
                         if (ORDates.Count() > 1)
                         {
-                            trnIntegrationForm.logFolderMonitoringMessage("Checking Error: Cannot integrate multiple OR Dates. \r\n\n");
-                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                            trnIntegrationForm.folderMonitoringLogMessages("Checking Error: Cannot integrate multiple OR Dates. \r\n\n");
+                            trnIntegrationForm.folderMonitoringLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                            trnIntegrationForm.folderMonitoringLogMessages("\r\n\n");
 
-                            trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+                            trnIntegrationForm.folderMonitoringLogMessages("Retrying...\r\n\n");
 
                             Thread.Sleep(5000);
                         }
                         else
                         {
-                            trnIntegrationForm.logFolderMonitoringMessage("ORIntegrationLogOnce");
+                            trnIntegrationForm.folderMonitoringLogMessages("ORIntegrationLogOnce");
 
-                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\nChecking Multiple OR Dates... (100%) \r\n\n");
-                            trnIntegrationForm.logFolderMonitoringMessage("Check Successful!" + "\r\n\n");
-                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                            trnIntegrationForm.folderMonitoringLogMessages("\r\n\nChecking Multiple OR Dates... (100%) \r\n\n");
+                            trnIntegrationForm.folderMonitoringLogMessages("Check Successful!" + "\r\n\n");
+                            trnIntegrationForm.folderMonitoringLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                            trnIntegrationForm.folderMonitoringLogMessages("\r\n\n");
 
                             break;
                         }
                     }
                     catch (Exception e)
                     {
-                        trnIntegrationForm.logFolderMonitoringMessage("Error: " + e.Message + "\r\n\n");
-                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                        trnIntegrationForm.folderMonitoringLogMessages("Error: " + e.Message + "\r\n\n");
+                        trnIntegrationForm.folderMonitoringLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                        trnIntegrationForm.folderMonitoringLogMessages("\r\n\n");
 
-                        trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+                        trnIntegrationForm.folderMonitoringLogMessages("Retrying...\r\n\n");
 
                         Thread.Sleep(5000);
                     }
@@ -203,7 +203,7 @@ namespace EasyfisIntegrator.Controllers
                 // =======
                 // Sending
                 // =======
-                trnIntegrationForm.logFolderMonitoringMessage("Sending Collection... (0%) \r\n\n");
+                trnIntegrationForm.folderMonitoringLogMessages("Sending Collection... (0%) \r\n\n");
                 while (true)
                 {
                     try
@@ -250,24 +250,24 @@ namespace EasyfisIntegrator.Controllers
                                         String insertTemporaryCollectionTask = await InsertTemporaryCollection(domain, jsonData);
                                         if (!insertTemporaryCollectionTask.Equals("Send Successful..."))
                                         {
-                                            trnIntegrationForm.logFolderMonitoringMessage(insertTemporaryCollectionTask);
-                                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                                            trnIntegrationForm.folderMonitoringLogMessages(insertTemporaryCollectionTask);
+                                            trnIntegrationForm.folderMonitoringLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                            trnIntegrationForm.folderMonitoringLogMessages("\r\n\n");
 
-                                            trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+                                            trnIntegrationForm.folderMonitoringLogMessages("Retrying...\r\n\n");
 
                                             Thread.Sleep(5000);
                                         }
                                         else
                                         {
-                                            trnIntegrationForm.logFolderMonitoringMessage("ORIntegrationLogOnce");
-                                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\nSending Collection... (" + Math.Round(percentage, 2) + "%) \r\n\n");
+                                            trnIntegrationForm.folderMonitoringLogMessages("ORIntegrationLogOnce");
+                                            trnIntegrationForm.folderMonitoringLogMessages("\r\n\nSending Collection... (" + Math.Round(percentage, 2) + "%) \r\n\n");
 
                                             if (i == newCollections.Count())
                                             {
-                                                trnIntegrationForm.logFolderMonitoringMessage("Send Successful!" + "\r\n\n");
-                                                trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                                trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                                                trnIntegrationForm.folderMonitoringLogMessages("Send Successful!" + "\r\n\n");
+                                                trnIntegrationForm.folderMonitoringLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                                trnIntegrationForm.folderMonitoringLogMessages("\r\n\n");
                                             }
 
                                             break;
@@ -275,11 +275,11 @@ namespace EasyfisIntegrator.Controllers
                                     }
                                     catch (Exception e)
                                     {
-                                        trnIntegrationForm.logFolderMonitoringMessage("Sending Error: " + e.Message + "\r\n\n");
-                                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                                        trnIntegrationForm.folderMonitoringLogMessages("Sending Error: " + e.Message + "\r\n\n");
+                                        trnIntegrationForm.folderMonitoringLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                        trnIntegrationForm.folderMonitoringLogMessages("\r\n\n");
 
-                                        trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+                                        trnIntegrationForm.folderMonitoringLogMessages("Retrying...\r\n\n");
 
                                         Thread.Sleep(5000);
                                     }
@@ -294,11 +294,11 @@ namespace EasyfisIntegrator.Controllers
                     }
                     catch (Exception e)
                     {
-                        trnIntegrationForm.logFolderMonitoringMessage("Error: " + e.Message + "\r\n\n");
-                        trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                        trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                        trnIntegrationForm.folderMonitoringLogMessages("Error: " + e.Message + "\r\n\n");
+                        trnIntegrationForm.folderMonitoringLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                        trnIntegrationForm.folderMonitoringLogMessages("\r\n\n");
 
-                        trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+                        trnIntegrationForm.folderMonitoringLogMessages("Retrying...\r\n\n");
 
                         Thread.Sleep(5000);
                     }
@@ -309,7 +309,7 @@ namespace EasyfisIntegrator.Controllers
                 // =======
                 if (post)
                 {
-                    trnIntegrationForm.logFolderMonitoringMessage("Posting Collection... (0%) \r\n\n");
+                    trnIntegrationForm.folderMonitoringLogMessages("Posting Collection... (0%) \r\n\n");
                     while (true)
                     {
                         try
@@ -340,24 +340,24 @@ namespace EasyfisIntegrator.Controllers
                                             String postCollectionTask = await PostCollection(domain, collection.BranchCode, collection.ManualORNumber);
                                             if (!postCollectionTask.Equals("Post Successful..."))
                                             {
-                                                trnIntegrationForm.logFolderMonitoringMessage(postCollectionTask);
-                                                trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                                trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                                                trnIntegrationForm.folderMonitoringLogMessages(postCollectionTask);
+                                                trnIntegrationForm.folderMonitoringLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                                trnIntegrationForm.folderMonitoringLogMessages("\r\n\n");
 
-                                                trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+                                                trnIntegrationForm.folderMonitoringLogMessages("Retrying...\r\n\n");
 
                                                 Thread.Sleep(5000);
                                             }
                                             else
                                             {
-                                                trnIntegrationForm.logFolderMonitoringMessage("ORIntegrationLogOnce");
-                                                trnIntegrationForm.logFolderMonitoringMessage("\r\n\nPosting Collection... (" + Math.Round(percentage, 2) + "%) \r\n\n");
+                                                trnIntegrationForm.folderMonitoringLogMessages("ORIntegrationLogOnce");
+                                                trnIntegrationForm.folderMonitoringLogMessages("\r\n\nPosting Collection... (" + Math.Round(percentage, 2) + "%) \r\n\n");
 
                                                 if (count == collections.Count())
                                                 {
-                                                    trnIntegrationForm.logFolderMonitoringMessage("Post Successful!" + "\r\n\n");
-                                                    trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                                                    trnIntegrationForm.folderMonitoringLogMessages("Post Successful!" + "\r\n\n");
+                                                    trnIntegrationForm.folderMonitoringLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                                    trnIntegrationForm.folderMonitoringLogMessages("\r\n\n");
                                                 }
 
                                                 break;
@@ -365,11 +365,11 @@ namespace EasyfisIntegrator.Controllers
                                         }
                                         catch (Exception e)
                                         {
-                                            trnIntegrationForm.logFolderMonitoringMessage("Posting Error: " + e.Message + "\r\n\n");
-                                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                                            trnIntegrationForm.folderMonitoringLogMessages("Posting Error: " + e.Message + "\r\n\n");
+                                            trnIntegrationForm.folderMonitoringLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                            trnIntegrationForm.folderMonitoringLogMessages("\r\n\n");
 
-                                            trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+                                            trnIntegrationForm.folderMonitoringLogMessages("Retrying...\r\n\n");
 
                                             Thread.Sleep(5000);
                                         }
@@ -381,11 +381,11 @@ namespace EasyfisIntegrator.Controllers
                         }
                         catch (Exception e)
                         {
-                            trnIntegrationForm.logFolderMonitoringMessage("Error: " + e.Message + "\r\n\n");
-                            trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                            trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                            trnIntegrationForm.folderMonitoringLogMessages("Error: " + e.Message + "\r\n\n");
+                            trnIntegrationForm.folderMonitoringLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                            trnIntegrationForm.folderMonitoringLogMessages("\r\n\n");
 
-                            trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+                            trnIntegrationForm.folderMonitoringLogMessages("Retrying...\r\n\n");
 
                             Thread.Sleep(5000);
                         }
@@ -394,15 +394,15 @@ namespace EasyfisIntegrator.Controllers
             }
             else
             {
-                trnIntegrationForm.logFolderMonitoringMessage("Erorr: Data Source Empty \r\n\n");
-                trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                trnIntegrationForm.folderMonitoringLogMessages("Erorr: Data Source Empty \r\n\n");
+                trnIntegrationForm.folderMonitoringLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                trnIntegrationForm.folderMonitoringLogMessages("\r\n\n");
             }
 
             // =============
             // Move CSV File
             // =============
-            trnIntegrationForm.logFolderMonitoringMessage("Moving Collection File... (0%) \r\n\n");
+            trnIntegrationForm.folderMonitoringLogMessages("Moving Collection File... (0%) \r\n\n");
             while (true)
             {
                 try
@@ -428,22 +428,22 @@ namespace EasyfisIntegrator.Controllers
                         File.Move(file, folderForSentFiles + "OR_" + DateTime.Now.ToString("yyyyMMdd_hhmmss") + ".csv");
                     }
 
-                    trnIntegrationForm.logFolderMonitoringMessage("ORIntegrationLogOnce");
+                    trnIntegrationForm.folderMonitoringLogMessages("ORIntegrationLogOnce");
 
-                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\nMoving Collection File... (100%) \r\n\n");
-                    trnIntegrationForm.logFolderMonitoringMessage("Move Successful!" + "\r\n\n");
-                    trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                    trnIntegrationForm.folderMonitoringLogMessages("\r\n\nMoving Collection File... (100%) \r\n\n");
+                    trnIntegrationForm.folderMonitoringLogMessages("Move Successful!" + "\r\n\n");
+                    trnIntegrationForm.folderMonitoringLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                    trnIntegrationForm.folderMonitoringLogMessages("\r\n\n");
 
                     break;
                 }
                 catch (Exception e)
                 {
-                    trnIntegrationForm.logFolderMonitoringMessage("Moving File Error: " + e.Message + "\r\n\n");
-                    trnIntegrationForm.logFolderMonitoringMessage("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                    trnIntegrationForm.logFolderMonitoringMessage("\r\n\n");
+                    trnIntegrationForm.folderMonitoringLogMessages("Moving File Error: " + e.Message + "\r\n\n");
+                    trnIntegrationForm.folderMonitoringLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                    trnIntegrationForm.folderMonitoringLogMessages("\r\n\n");
 
-                    trnIntegrationForm.logFolderMonitoringMessage("Retrying...\r\n\n");
+                    trnIntegrationForm.folderMonitoringLogMessages("Retrying...\r\n\n");
 
                     Thread.Sleep(5000);
                 }

@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 
 namespace EasyfisIntegrator.Controllers
@@ -27,10 +28,18 @@ namespace EasyfisIntegrator.Controllers
             activityDate = actDate;
         }
 
+        // ===============
+        // Sync Item Price
+        // ===============
+        public async void SyncItemPrice(String apiUrlHost, String branchCode)
+        {
+            await GetItemPrice(apiUrlHost, branchCode);
+        }
+
         // ==============
         // Get Item Price
         // ==============
-        public void GetItemPrice(String apiUrlHost, String branchCode)
+        public Task GetItemPrice(String apiUrlHost, String branchCode)
         {
             try
             {
@@ -43,8 +52,6 @@ namespace EasyfisIntegrator.Controllers
                 var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://" + apiUrlHost + "/api/get/POSIntegration/itemPrice/" + branchCode + "/" + currentDate);
                 httpWebRequest.Method = "GET";
                 httpWebRequest.Accept = "application/json";
-
-                Boolean isRead = false;
 
                 // ================
                 // Process Response
@@ -66,8 +73,8 @@ namespace EasyfisIntegrator.Controllers
                                 var currentItemPrice = from d in posdb.MstItemPrices where d.ItemId == currentItem.FirstOrDefault().Id && d.PriceDescription.Equals("IP-" + itemPrice.BranchCode + "-" + itemPrice.IPNumber + " (" + itemPrice.IPDate + ")") select d;
                                 if (!currentItemPrice.Any())
                                 {
-                                    trnIntegrationForm.logMessages("Saving Item Price: IP-" + itemPrice.BranchCode + "-" + itemPrice.IPNumber + " (" + itemPrice.IPDate + ")" + "\r\n\n");
-                                    trnIntegrationForm.logMessages("Current Item: " + currentItem.FirstOrDefault().ItemDescription + "\r\n\n");
+                                    trnIntegrationForm.salesIntegrationLogMessages("Saving Item Price: IP-" + itemPrice.BranchCode + "-" + itemPrice.IPNumber + " (" + itemPrice.IPDate + ")" + "\r\n\n");
+                                    trnIntegrationForm.salesIntegrationLogMessages("Current Item: " + currentItem.FirstOrDefault().ItemDescription + "\r\n\n");
 
                                     InnosoftPOSData.MstItemPrice newPrice = new InnosoftPOSData.MstItemPrice()
                                     {
@@ -83,37 +90,32 @@ namespace EasyfisIntegrator.Controllers
                                     updateCurrentItem.Price = itemPrice.Price;
                                     posdb.SubmitChanges();
 
-                                    trnIntegrationForm.logMessages("Save Successful!" + "\r\n\n");
-                                    trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                    trnIntegrationForm.logMessages("\r\n\n");
+                                    trnIntegrationForm.salesIntegrationLogMessages("Save Successful!" + "\r\n\n");
+                                    trnIntegrationForm.salesIntegrationLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                    trnIntegrationForm.salesIntegrationLogMessages("\r\n\n");
                                 }
                             }
                             else
                             {
-                                trnIntegrationForm.logMessages("Cannot Save Item Price: IP-" + itemPrice.BranchCode + "-" + itemPrice.IPNumber + " (" + itemPrice.IPDate + ")" + "..." + "\r\n\n");
-                                trnIntegrationForm.logMessages("Price: " + itemPrice.Price + "\r\n\n");
-                                trnIntegrationForm.logMessages("Item Not Found!" + "\r\n\n");
-                                trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                trnIntegrationForm.logMessages("\r\n\n");
+                                trnIntegrationForm.salesIntegrationLogMessages("Cannot Save Item Price: IP-" + itemPrice.BranchCode + "-" + itemPrice.IPNumber + " (" + itemPrice.IPDate + ")" + "..." + "\r\n\n");
+                                trnIntegrationForm.salesIntegrationLogMessages("Price: " + itemPrice.Price + "\r\n\n");
+                                trnIntegrationForm.salesIntegrationLogMessages("Item Not Found!" + "\r\n\n");
+                                trnIntegrationForm.salesIntegrationLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                trnIntegrationForm.salesIntegrationLogMessages("\r\n\n");
                             }
                         }
                     }
-
-                    isRead = true;
                 }
 
-                if (isRead)
-                {
-                    trnIntegrationForm.logMessages("ItemPrice Integration Done.");
-                }
+                return Task.FromResult("");
             }
             catch (Exception e)
             {
-                trnIntegrationForm.logMessages("ItemPrice Integration Done.");
+                trnIntegrationForm.salesIntegrationLogMessages("Item Price Error: " + e.Message + "\r\n\n");
+                trnIntegrationForm.salesIntegrationLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                trnIntegrationForm.salesIntegrationLogMessages("\r\n\n");
 
-                trnIntegrationForm.logMessages("Item Price Error: " + e.Message + "\r\n\n");
-                trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                trnIntegrationForm.logMessages("\r\n\n");
+                return Task.FromResult("");
             }
         }
     }

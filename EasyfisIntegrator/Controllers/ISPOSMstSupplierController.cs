@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 
 namespace EasyfisIntegrator.Controllers
@@ -27,10 +28,18 @@ namespace EasyfisIntegrator.Controllers
             activityDate = actDate;
         }
 
+        // =============
+        // Sync Supplier
+        // =============
+        public async void SyncSupplier(String apiUrlHost)
+        {
+            await GetSupplier(apiUrlHost);
+        }
+
         // ============
         // Get Supplier
         // ============
-        public void GetSupplier(String apiUrlHost)
+        public Task GetSupplier(String apiUrlHost)
         {
             try
             {
@@ -43,8 +52,6 @@ namespace EasyfisIntegrator.Controllers
                 var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://" + apiUrlHost + "/api/get/POSIntegration/supplier/" + currentDate);
                 httpWebRequest.Method = "GET";
                 httpWebRequest.Accept = "application/json";
-
-                Boolean isRead = false;
 
                 // ================
                 // Process Response
@@ -112,8 +119,8 @@ namespace EasyfisIntegrator.Controllers
 
                                     if (foundChanges)
                                     {
-                                        trnIntegrationForm.logMessages("Updating Supplier: " + currentSupplier.FirstOrDefault().Supplier + "\r\n\n");
-                                        trnIntegrationForm.logMessages("Contact No.: " + currentSupplier.FirstOrDefault().CellphoneNumber + "\r\n\n");
+                                        trnIntegrationForm.salesIntegrationLogMessages("Updating Supplier: " + currentSupplier.FirstOrDefault().Supplier + "\r\n\n");
+                                        trnIntegrationForm.salesIntegrationLogMessages("Contact No.: " + currentSupplier.FirstOrDefault().CellphoneNumber + "\r\n\n");
 
                                         var updateSupplier = currentSupplier.FirstOrDefault();
                                         updateSupplier.Supplier = supplier.Article;
@@ -125,15 +132,15 @@ namespace EasyfisIntegrator.Controllers
                                         updateSupplier.UpdateDateTime = DateTime.Now;
                                         posdb.SubmitChanges();
 
-                                        trnIntegrationForm.logMessages("Update Successful!" + "\r\n\n");
-                                        trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                        trnIntegrationForm.logMessages("\r\n\n");
+                                        trnIntegrationForm.salesIntegrationLogMessages("Update Successful!" + "\r\n\n");
+                                        trnIntegrationForm.salesIntegrationLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                        trnIntegrationForm.salesIntegrationLogMessages("\r\n\n");
                                     }
                                 }
                                 else
                                 {
-                                    trnIntegrationForm.logMessages("Saving Supplier: " + supplier.Article + "\r\n\n");
-                                    trnIntegrationForm.logMessages("Contact No.: " + supplier.ContactNumber + "\r\n\n");
+                                    trnIntegrationForm.salesIntegrationLogMessages("Saving Supplier: " + supplier.Article + "\r\n\n");
+                                    trnIntegrationForm.salesIntegrationLogMessages("Contact No.: " + supplier.ContactNumber + "\r\n\n");
 
                                     InnosoftPOSData.MstSupplier newSupplier = new InnosoftPOSData.MstSupplier
                                     {
@@ -155,37 +162,32 @@ namespace EasyfisIntegrator.Controllers
                                     posdb.MstSuppliers.InsertOnSubmit(newSupplier);
                                     posdb.SubmitChanges();
 
-                                    trnIntegrationForm.logMessages("Save Successful!" + "\r\n\n");
-                                    trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                    trnIntegrationForm.logMessages("\r\n\n");
+                                    trnIntegrationForm.salesIntegrationLogMessages("Save Successful!" + "\r\n\n");
+                                    trnIntegrationForm.salesIntegrationLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                    trnIntegrationForm.salesIntegrationLogMessages("\r\n\n");
                                 }
                             }
                             else
                             {
-                                trnIntegrationForm.logMessages("Cannot Save Supplier: " + supplier.Article + "\r\n\n");
-                                trnIntegrationForm.logMessages("Term Mismatch!" + "\r\n\n");
-                                trnIntegrationForm.logMessages("Save Failed!" + "\r\n\n");
-                                trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                trnIntegrationForm.logMessages("\r\n\n");
+                                trnIntegrationForm.salesIntegrationLogMessages("Cannot Save Supplier: " + supplier.Article + "\r\n\n");
+                                trnIntegrationForm.salesIntegrationLogMessages("Term Mismatch!" + "\r\n\n");
+                                trnIntegrationForm.salesIntegrationLogMessages("Save Failed!" + "\r\n\n");
+                                trnIntegrationForm.salesIntegrationLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                trnIntegrationForm.salesIntegrationLogMessages("\r\n\n");
                             }
                         }
                     }
-
-                    isRead = true;
                 }
 
-                if (isRead)
-                {
-                    trnIntegrationForm.logMessages("Supplier Integration Done.");
-                }
+                return Task.FromResult("");
             }
             catch (Exception e)
             {
-                trnIntegrationForm.logMessages("Supplier Integration Done.");
+                trnIntegrationForm.salesIntegrationLogMessages("Supplier Error: " + e.Message + "\r\n\n");
+                trnIntegrationForm.salesIntegrationLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                trnIntegrationForm.salesIntegrationLogMessages("\r\n\n");
 
-                trnIntegrationForm.logMessages("Supplier Error: " + e.Message + "\r\n\n");
-                trnIntegrationForm.logMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                trnIntegrationForm.logMessages("\r\n\n");
+                return Task.FromResult("");
             }
         }
     }
