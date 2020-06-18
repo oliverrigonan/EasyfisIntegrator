@@ -475,7 +475,7 @@ namespace EasyfisIntegrator.Forms
 
             btnLogout.Enabled = false;
 
-            manualSalesIntegrationLogMessages("Manual sales integration started! \r\n\nTime Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+            manualSalesIntegrationLogMessages("Manual sales integration started! \r\n\nTime Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n\r\n\n");
 
             tabPagePOSSalesIntegration.Enabled = false;
             tabPagePOSManualSalesIntegration.Enabled = true;
@@ -522,13 +522,23 @@ namespace EasyfisIntegrator.Forms
             {
                 BeginInvoke((MethodInvoker)delegate
                 {
+                    isManualSalesIntegrationStarted = false;
+
                     dateTimePickerManualSalesIntegrationDate.Enabled = true;
                     comboBoxManualSalesIntegrationTerminal.Enabled = true;
 
                     buttonManualSalesIntegrationStart.Enabled = true;
-                    buttonManualSalesIntegrationStart.Text = "Integrate";
+                    buttonManualSalesIntegrationStop.Enabled = false;
 
-                    isManualSalesIntegrationStarted = false;
+                    btnSaveLogs.Enabled = true;
+                    btnClearLogs.Enabled = true;
+                    btnSettings.Enabled = true;
+
+                    btnLogout.Enabled = true;
+
+                    tabPagePOSSalesIntegration.Enabled = true;
+                    tabPagePOSManualSalesIntegration.Enabled = true;
+                    tabPageFolderMonitoringIntegration.Enabled = true;
                 });
             }
 
@@ -554,7 +564,7 @@ namespace EasyfisIntegrator.Forms
 
                 btnLogout.Enabled = true;
 
-                manualSalesIntegrationLogMessages("\r\n\nManual sales integration stopped! \r\n\nTime Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                manualSalesIntegrationLogMessages("Manual sales integration stopped! \r\n\nTime Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n\r\n\n");
 
                 tabPagePOSSalesIntegration.Enabled = true;
                 tabPagePOSManualSalesIntegration.Enabled = true;
@@ -627,7 +637,7 @@ namespace EasyfisIntegrator.Forms
                 buttonFolderMonitoringIntegrationStart.Enabled = false;
                 buttonFolderMonitoringIntegrationStop.Enabled = true;
 
-                folderMonitoringLogMessages("Folder monitoring integration started! \r\n\nTime Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                folderMonitoringLogMessages("Folder monitoring integration started! \r\n\nTime Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n\r\n\n");
 
                 btnSaveLogs.Enabled = false;
                 btnClearLogs.Enabled = false;
@@ -666,7 +676,7 @@ namespace EasyfisIntegrator.Forms
 
                 btnLogout.Enabled = true;
 
-                folderMonitoringLogMessages("\r\n\nFolder monitoring integration stopped! \r\n\nTime Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                folderMonitoringLogMessages("Folder monitoring integration stopped! \r\n\nTime Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n\r\n\n");
 
                 if (isFolderMonitoringOnly == false)
                 {
@@ -854,78 +864,75 @@ namespace EasyfisIntegrator.Forms
 
         private void backgroundWorkerFolderMonitoringIntegration_DoWork(object sender, DoWorkEventArgs e)
         {
-            try
+            List<String> ext = new List<String> { ".csv" };
+
+            while (isFolderMonitoringIntegrationStarted)
             {
-                List<String> ext = new List<String> { ".csv" };
-
-                while (isFolderMonitoringIntegrationStarted)
+                Task SITask = Task.Run(() =>
                 {
-                    Task SITask = Task.Run(() =>
+                    runFolderMonitoringIntegrationSI(ext);
+                });
+                SITask.Wait();
+
+                if (SITask.IsCompleted)
+                {
+                    Task ORTask = Task.Run(() =>
                     {
-                        runFolderMonitoringIntegrationSI(ext);
+                        runFolderMonitoringIntegrationOR(ext);
                     });
-                    SITask.Wait();
+                    ORTask.Wait();
 
-                    if (SITask.IsCompleted)
+                    if (ORTask.IsCompleted)
                     {
-                        Task ORTask = Task.Run(() =>
+                        Task RRTask = Task.Run(() =>
                         {
-                            runFolderMonitoringIntegrationOR(ext);
+                            runFolderMonitoringIntegrationRR(ext);
                         });
-                        ORTask.Wait();
+                        RRTask.Wait();
 
-                        if (ORTask.IsCompleted)
+                        if (RRTask.IsCompleted)
                         {
-                            Task RRTask = Task.Run(() =>
+                            Task CVTask = Task.Run(() =>
                             {
-                                runFolderMonitoringIntegrationRR(ext);
+                                runFolderMonitoringIntegrationCV(ext);
                             });
-                            RRTask.Wait();
+                            CVTask.Wait();
 
-                            if (RRTask.IsCompleted)
+                            if (CVTask.IsCompleted)
                             {
-                                Task CVTask = Task.Run(() =>
+                                Task JVTask = Task.Run(() =>
                                 {
-                                    runFolderMonitoringIntegrationCV(ext);
+                                    runFolderMonitoringIntegrationJV(ext);
                                 });
-                                CVTask.Wait();
+                                JVTask.Wait();
 
-                                if (CVTask.IsCompleted)
+                                if (JVTask.IsCompleted)
                                 {
-                                    Task JVTask = Task.Run(() =>
+                                    Task INTask = Task.Run(() =>
                                     {
-                                        runFolderMonitoringIntegrationJV(ext);
+                                        runFolderMonitoringIntegrationIN(ext);
                                     });
-                                    JVTask.Wait();
+                                    INTask.Wait();
 
-                                    if (JVTask.IsCompleted)
+                                    if (INTask.IsCompleted)
                                     {
-                                        Task INTask = Task.Run(() =>
+                                        Task OTTask = Task.Run(() =>
                                         {
-                                            runFolderMonitoringIntegrationIN(ext);
+                                            runFolderMonitoringIntegrationOT(ext);
                                         });
-                                        INTask.Wait();
+                                        OTTask.Wait();
 
-                                        if (INTask.IsCompleted)
+                                        if (OTTask.IsCompleted)
                                         {
-                                            Task OTTask = Task.Run(() =>
+                                            Task STTask = Task.Run(() =>
                                             {
-                                                runFolderMonitoringIntegrationOT(ext);
+                                                runFolderMonitoringIntegrationST(ext);
                                             });
-                                            OTTask.Wait();
+                                            STTask.Wait();
 
-                                            if (OTTask.IsCompleted)
+                                            if (STTask.IsCompleted)
                                             {
-                                                Task STTask = Task.Run(() =>
-                                                {
-                                                    runFolderMonitoringIntegrationST(ext);
-                                                });
-                                                STTask.Wait();
-
-                                                if (STTask.IsCompleted)
-                                                {
-                                                    System.Threading.Thread.Sleep(5000);
-                                                }
+                                                System.Threading.Thread.Sleep(5000);
                                             }
                                         }
                                     }
@@ -934,10 +941,6 @@ namespace EasyfisIntegrator.Forms
                         }
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "EasyFIS Integration", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }
