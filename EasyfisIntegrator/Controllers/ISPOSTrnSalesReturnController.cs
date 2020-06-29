@@ -52,6 +52,8 @@ namespace EasyfisIntegrator.Controllers
                 if (stockIns.Any())
                 {
                     var stockIn = stockIns.FirstOrDefault();
+                    Int32 stockInId = stockIn.Id;
+
                     List<Entities.ISPOSTrnCollectionLines> listCollectionLines = new List<Entities.ISPOSTrnCollectionLines>();
 
                     var stockInLines = from d in stockIn.TrnStockInLines select d;
@@ -90,7 +92,7 @@ namespace EasyfisIntegrator.Controllers
 
                     trnIntegrationForm.salesIntegrationLogMessages("Sending Sales Return: " + collectionData.ManualSINumber + "\r\n\n");
                     trnIntegrationForm.salesIntegrationLogMessages("Amount: " + collectionData.ListPOSIntegrationTrnSalesInvoiceItem.Sum(d => d.Amount).ToString("#,##0.00") + "\r\n\n");
-                    SendSalesReturn(apiUrlHost, json);
+                    SendSalesReturn(apiUrlHost, json, stockInId);
                 }
 
                 return Task.FromResult("");
@@ -108,7 +110,7 @@ namespace EasyfisIntegrator.Controllers
         // =================
         // Send Sales Return
         // =================
-        public void SendSalesReturn(String apiUrlHost, String json)
+        public void SendSalesReturn(String apiUrlHost, String json, Int32 stockInId)
         {
             try
             {
@@ -137,8 +139,10 @@ namespace EasyfisIntegrator.Controllers
                     var result = streamReader.ReadToEnd();
                     if (result != null)
                     {
-                        Entities.ISPOSTrnCollection collection = new JavaScriptSerializer().Deserialize<Entities.ISPOSTrnCollection>(json);
-                        var stockIns = from d in posdb.TrnStockIns where d.StockInNumber.Equals(collection.DocumentReference) select d;
+                        var stockIns = from d in posdb.TrnStockIns
+                                       where d.Id == stockInId
+                                       select d;
+
                         if (stockIns.Any())
                         {
                             var stockIn = stockIns.FirstOrDefault();

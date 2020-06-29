@@ -50,6 +50,7 @@ namespace EasyfisIntegrator.Controllers
                 if (collections.Any())
                 {
                     var collection = collections.FirstOrDefault();
+                    Int32 collectionId = collection.Id;
 
                     var listPayTypes = new List<String>();
                     if (collection.TrnCollectionLines.Any())
@@ -101,7 +102,7 @@ namespace EasyfisIntegrator.Controllers
 
                     trnIntegrationForm.salesIntegrationLogMessages("Sending Collection: " + collectionData.DocumentReference + "\r\n\n");
                     trnIntegrationForm.salesIntegrationLogMessages("Amount: " + collectionData.ListPOSIntegrationTrnSalesInvoiceItem.Sum(d => d.Amount).ToString("#,##0.00") + "\r\n\n");
-                    SendCollection(apiUrlHost, json);
+                    SendCollection(apiUrlHost, json, collectionId);
                 }
 
                 return Task.FromResult("");
@@ -119,7 +120,7 @@ namespace EasyfisIntegrator.Controllers
         // ===============
         // Send Collection
         // ===============
-        public void SendCollection(String apiUrlHost, String json)
+        public void SendCollection(String apiUrlHost, String json, Int32 collectionId)
         {
             try
             {
@@ -148,13 +149,8 @@ namespace EasyfisIntegrator.Controllers
                     var result = streamReader.ReadToEnd();
                     if (result != null)
                     {
-                        Entities.ISPOSTrnCollection collection = new JavaScriptSerializer().Deserialize<Entities.ISPOSTrnCollection>(json);
                         var currentCollection = from d in posdb.TrnCollections
-                                                where d.CollectionNumber.Equals(collection.DocumentReference)
-                                                && (d.CollectionNumber.Equals("NA") == false || d.CollectionNumber.Equals("na") == false)
-                                                && d.SalesId != null
-                                                && d.PostCode == null
-                                                && d.IsLocked == true
+                                                where d.Id == collectionId
                                                 select d;
 
                         if (currentCollection.Any())
