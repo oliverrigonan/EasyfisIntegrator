@@ -65,11 +65,11 @@ namespace EasyfisIntegrator.Controllers
                             Particulars = stockInLine.MstItem.ItemDescription,
                             Unit = stockInLine.MstUnit.Unit,
                             Quantity = stockInLine.Quantity * -1,
-                            Price = stockInLine.Cost * -1,
+                            Price = stockInLine.Cost,
                             Discount = "Zero Discount",
                             DiscountAmount = 0,
-                            NetPrice = (stockInLine.Cost * -1),
-                            Amount = ((stockInLine.Quantity * -1) * (stockInLine.Cost * -1)) * -1,
+                            NetPrice = stockInLine.Cost,
+                            Amount = (stockInLine.Quantity * -1) * stockInLine.Cost,
                             VAT = stockInLine.MstItem.MstTax.Tax,
                             SalesItemTimeStamp = DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss.fff", CultureInfo.InvariantCulture)
                         });
