@@ -23,6 +23,8 @@ namespace EasyfisIntegrator.Entities
         public Decimal DiscountAmount { get; set; }
         public Decimal NetPrice { get; set; }
         public Decimal Amount { get; set; }
+        public String PayType { get; set; }
+        public String DepositoryBankCode { get; set; }
         public Int32 No { get; set; }
     }
 }

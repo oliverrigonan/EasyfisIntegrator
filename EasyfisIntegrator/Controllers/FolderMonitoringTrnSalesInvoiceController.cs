@@ -108,6 +108,8 @@ namespace EasyfisIntegrator.Controllers
                                     DiscountAmount = Convert.ToDecimal(data[12]),
                                     NetPrice = Convert.ToDecimal(data[13]),
                                     Amount = Convert.ToDecimal(data[14]),
+                                    PayType = data[15],
+                                    DepositoryBankCode = data[16],
                                     No = count
                                 });
                             }
