@@ -23,15 +23,13 @@ namespace EasyfisIntegrator.Forms
         private InnosoftPOSData.InnosoftPOSDataDataContext posdb = new InnosoftPOSData.InnosoftPOSDataDataContext(Controllers.SysGlobalSettings.getConnectionString());
 
         public SysLoginForm sysLoginForm;
-
         public Boolean isSalesIntegrationStarted = false;
         public String salesIntegrationLogFileLocation = "";
         public Int32 salesIntegrationLogMessageCount = 0;
-
         public Boolean isManualSalesIntegrationStarted = false;
         public Boolean isFolderMonitoringIntegrationStarted = false;
-
         public Boolean isFolderMonitoringOnly = false;
+        public Boolean isMasterFileInventoryUpdating = false;
 
         public TrnIntegrationForm()
         {
@@ -42,7 +40,7 @@ namespace EasyfisIntegrator.Forms
         public void getLoginDetails(SysLoginForm form)
         {
             sysLoginForm = form;
-            lblCurrentUser.Text = sysLoginForm.currentUser;
+            //lblCurrentUser.Text = sysLoginForm.currentUser;
         }
 
         public void getSettings()
@@ -217,6 +215,7 @@ namespace EasyfisIntegrator.Forms
         {
             isSalesIntegrationStarted = true;
 
+            buttonUpdateMasterFileInventory.Enabled = true;
             buttonSalesIntegrationStart.Enabled = false;
             buttonSalesIntegrationStop.Enabled = true;
 
@@ -253,108 +252,108 @@ namespace EasyfisIntegrator.Forms
                     var userCode = sysSettings.FirstOrDefault().UserCode;
                     var useItemPrice = sysSettings.FirstOrDefault().UseItemPrice;
 
-                    Task taskCustomer = Task.Run(() =>
+                    if (isMasterFileInventoryUpdating == true)
                     {
-                        Controllers.ISPOSMstCustomerController objMstCustomer = new Controllers.ISPOSMstCustomerController(this, dateTimePickerSalesIntegrationDate.Text);
-                        objMstCustomer.SyncCustomer(apiUrlHost);
-                    });
-                    taskCustomer.Wait();
-
-                    if (taskCustomer.IsCompleted)
-                    {
-                        Task taskSupplier = Task.Run(() =>
+                        Task taskCustomer = Task.Run(() =>
                         {
-                            Controllers.ISPOSMstSupplierController objMstSupplier = new Controllers.ISPOSMstSupplierController(this, dateTimePickerSalesIntegrationDate.Text);
-                            objMstSupplier.SyncSupplier(apiUrlHost);
+                            Controllers.ISPOSMstCustomerController objMstCustomer = new Controllers.ISPOSMstCustomerController(this, dateTimePickerSalesIntegrationDate.Text);
+                            objMstCustomer.SyncCustomer(apiUrlHost);
                         });
-                        taskSupplier.Wait();
+                        taskCustomer.Wait();
 
-                        if (taskSupplier.IsCompleted)
+                        if (taskCustomer.IsCompleted)
                         {
-                            Task taskItem = Task.Run(() =>
+                            Task taskSupplier = Task.Run(() =>
                             {
-                                Controllers.ISPOSMstItemController objMstItem = new Controllers.ISPOSMstItemController(this, dateTimePickerSalesIntegrationDate.Text);
-                                objMstItem.SyncItem(apiUrlHost);
+                                Controllers.ISPOSMstSupplierController objMstSupplier = new Controllers.ISPOSMstSupplierController(this, dateTimePickerSalesIntegrationDate.Text);
+                                objMstSupplier.SyncSupplier(apiUrlHost);
                             });
-                            taskItem.Wait();
+                            taskSupplier.Wait();
 
-                            if (taskItem.IsCompleted)
+                            if (taskSupplier.IsCompleted)
                             {
-                                Task taskReceivingReceipt = Task.Run(() =>
+                                Task taskItem = Task.Run(() =>
                                 {
-                                    Controllers.ISPOSTrnReceivingReceiptController objTrnReceivingReceipt = new Controllers.ISPOSTrnReceivingReceiptController(this, dateTimePickerSalesIntegrationDate.Text);
-                                    objTrnReceivingReceipt.SyncReceivingReceipt(apiUrlHost, branchCode);
+                                    Controllers.ISPOSMstItemController objMstItem = new Controllers.ISPOSMstItemController(this, dateTimePickerSalesIntegrationDate.Text);
+                                    objMstItem.SyncItem(apiUrlHost);
                                 });
-                                taskReceivingReceipt.Wait();
+                                taskItem.Wait();
 
-                                if (taskReceivingReceipt.IsCompleted)
+                                if (taskItem.IsCompleted)
                                 {
-                                    Task taskStockIn = Task.Run(() =>
-                                    {
-                                        Controllers.ISPOSTrnStockInController objTrnStockIn = new Controllers.ISPOSTrnStockInController(this, dateTimePickerSalesIntegrationDate.Text);
-                                        objTrnStockIn.SyncStockIn(apiUrlHost, branchCode);
-                                    });
-                                    taskStockIn.Wait();
+                                    Boolean isTaskItemPriceCompleted = false;
 
-                                    if (taskStockIn.IsCompleted)
+                                    if (useItemPrice)
                                     {
-                                        Task taskStockOut = Task.Run(() =>
+                                        Task taskItemPrice = Task.Run(() =>
                                         {
-                                            Controllers.ISPOSTrnStockOutController objTrnStockOut = new Controllers.ISPOSTrnStockOutController(this, dateTimePickerSalesIntegrationDate.Text);
-                                            objTrnStockOut.SyncStockOut(apiUrlHost, branchCode);
+                                            Controllers.ISPOSTrnItemPriceController objTrnItemPrice = new Controllers.ISPOSTrnItemPriceController(this, dateTimePickerSalesIntegrationDate.Text);
+                                            objTrnItemPrice.SyncItemPrice(apiUrlHost, branchCode);
 
                                         });
-                                        taskStockOut.Wait();
+                                        taskItemPrice.Wait();
 
-                                        if (taskStockOut.IsCompleted)
+                                        if (taskItemPrice.IsCompleted)
                                         {
-                                            Task taskStockTransferIn = Task.Run(() =>
-                                            {
-                                                Controllers.ISPOSTrnStockTransferInController objTrnStockTransferIn = new Controllers.ISPOSTrnStockTransferInController(this, dateTimePickerSalesIntegrationDate.Text);
-                                                objTrnStockTransferIn.SyncStockTransferIN(apiUrlHost, branchCode);
+                                            isTaskItemPriceCompleted = true;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        isTaskItemPriceCompleted = true;
+                                    }
 
+                                    if (isTaskItemPriceCompleted == true)
+                                    {
+                                        Task taskReceivingReceipt = Task.Run(() =>
+                                        {
+                                            Controllers.ISPOSTrnReceivingReceiptController objTrnReceivingReceipt = new Controllers.ISPOSTrnReceivingReceiptController(this, dateTimePickerSalesIntegrationDate.Text);
+                                            objTrnReceivingReceipt.SyncReceivingReceipt(apiUrlHost, branchCode);
+                                        });
+                                        taskReceivingReceipt.Wait();
+
+                                        if (taskReceivingReceipt.IsCompleted)
+                                        {
+                                            Task taskStockIn = Task.Run(() =>
+                                            {
+                                                Controllers.ISPOSTrnStockInController objTrnStockIn = new Controllers.ISPOSTrnStockInController(this, dateTimePickerSalesIntegrationDate.Text);
+                                                objTrnStockIn.SyncStockIn(apiUrlHost, branchCode);
                                             });
-                                            taskStockTransferIn.Wait();
+                                            taskStockIn.Wait();
 
-                                            if (taskStockTransferIn.IsCompleted)
+                                            if (taskStockIn.IsCompleted)
                                             {
-                                                Task taskStockTransferOut = Task.Run(() =>
+                                                Task taskStockOut = Task.Run(() =>
                                                 {
-                                                    Controllers.ISPOSTrnStockTransferOutController objTrnStockTransferOut = new Controllers.ISPOSTrnStockTransferOutController(this, dateTimePickerSalesIntegrationDate.Text);
-                                                    objTrnStockTransferOut.SyncStockTransferOT(apiUrlHost, branchCode);
+                                                    Controllers.ISPOSTrnStockOutController objTrnStockOut = new Controllers.ISPOSTrnStockOutController(this, dateTimePickerSalesIntegrationDate.Text);
+                                                    objTrnStockOut.SyncStockOut(apiUrlHost, branchCode);
+
                                                 });
-                                                taskStockTransferOut.Wait();
+                                                taskStockOut.Wait();
 
-                                                if (taskStockTransferOut.IsCompleted)
+                                                if (taskStockOut.IsCompleted)
                                                 {
-                                                    Task taskCollection = Task.Run(() =>
+                                                    Task taskStockTransferIn = Task.Run(() =>
                                                     {
-                                                        Controllers.ISPOSTrnCollectionController objTrnCollection = new Controllers.ISPOSTrnCollectionController(this);
-                                                        objTrnCollection.SyncCollection(apiUrlHost, branchCode, userCode);
+                                                        Controllers.ISPOSTrnStockTransferInController objTrnStockTransferIn = new Controllers.ISPOSTrnStockTransferInController(this, dateTimePickerSalesIntegrationDate.Text);
+                                                        objTrnStockTransferIn.SyncStockTransferIN(apiUrlHost, branchCode);
+
                                                     });
-                                                    taskCollection.Wait();
+                                                    taskStockTransferIn.Wait();
 
-                                                    if (taskCollection.IsCompleted)
+                                                    if (taskStockTransferIn.IsCompleted)
                                                     {
-                                                        Task taskSalesReturn = Task.Run(() =>
+                                                        Task taskStockTransferOut = Task.Run(() =>
                                                         {
-                                                            Controllers.ISPOSTrnSalesReturnController objTrnSalesReturn = new Controllers.ISPOSTrnSalesReturnController(this);
-                                                            objTrnSalesReturn.SyncSalesReturn(apiUrlHost, branchCode, userCode);
+                                                            Controllers.ISPOSTrnStockTransferOutController objTrnStockTransferOut = new Controllers.ISPOSTrnStockTransferOutController(this, dateTimePickerSalesIntegrationDate.Text);
+                                                            objTrnStockTransferOut.SyncStockTransferOT(apiUrlHost, branchCode);
                                                         });
-                                                        taskSalesReturn.Wait();
+                                                        taskStockTransferOut.Wait();
 
-                                                        if (useItemPrice)
+                                                        if (taskStockTransferOut.IsCompleted)
                                                         {
-                                                            if (taskSalesReturn.IsCompleted)
-                                                            {
-                                                                Task taskItemPrice = Task.Run(() =>
-                                                                {
-                                                                    Controllers.ISPOSTrnItemPriceController objTrnItemPrice = new Controllers.ISPOSTrnItemPriceController(this, dateTimePickerSalesIntegrationDate.Text);
-                                                                    objTrnItemPrice.SyncItemPrice(apiUrlHost, branchCode);
-
-                                                                });
-                                                                taskItemPrice.Wait();
-                                                            }
+                                                            isMasterFileInventoryUpdating = false;
+                                                            salesIntegrationLogMessages("Sync Completed! \r\n\nTime Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n\r\n\n");
                                                         }
                                                     }
                                                 }
@@ -364,6 +363,42 @@ namespace EasyfisIntegrator.Forms
                                 }
                             }
                         }
+                    }
+                    else
+                    {
+                        Task taskCollection = Task.Run(() =>
+                        {
+                            Controllers.ISPOSTrnCollectionController objTrnCollection = new Controllers.ISPOSTrnCollectionController(this);
+                            objTrnCollection.SyncCollection(apiUrlHost, branchCode, userCode);
+                        });
+                        taskCollection.Wait();
+
+                        if (taskCollection.IsCompleted)
+                        {
+                            Task taskSalesReturn = Task.Run(() =>
+                            {
+                                Controllers.ISPOSTrnSalesReturnController objTrnSalesReturn = new Controllers.ISPOSTrnSalesReturnController(this);
+                                objTrnSalesReturn.SyncSalesReturn(apiUrlHost, branchCode, userCode);
+                            });
+                            taskSalesReturn.Wait();
+
+                            if (taskSalesReturn.IsCompleted)
+                            {
+
+                            }
+                        }
+                    }
+
+                    if (buttonUpdateMasterFileInventory.InvokeRequired && buttonSalesIntegrationStop.InvokeRequired)
+                    {
+                        BeginInvoke((MethodInvoker)delegate
+                        {
+                            if (isMasterFileInventoryUpdating == false)
+                            {
+                                buttonUpdateMasterFileInventory.Enabled = true;
+                                buttonSalesIntegrationStop.Enabled = true;
+                            }
+                        });
                     }
                 }
 
@@ -378,6 +413,7 @@ namespace EasyfisIntegrator.Forms
             {
                 isSalesIntegrationStarted = false;
 
+                buttonUpdateMasterFileInventory.Enabled = false;
                 buttonSalesIntegrationStart.Enabled = true;
                 buttonSalesIntegrationStop.Enabled = false;
 
@@ -942,6 +978,15 @@ namespace EasyfisIntegrator.Forms
                     }
                 }
             }
+        }
+
+        private void buttonUpdateMasterFileInventory_Click(object sender, EventArgs e)
+        {
+            isMasterFileInventoryUpdating = true;
+            salesIntegrationLogMessages("Synching master files and inventory... \r\n\n");
+
+            buttonUpdateMasterFileInventory.Enabled = false;
+            buttonSalesIntegrationStop.Enabled = false;
         }
     }
 }

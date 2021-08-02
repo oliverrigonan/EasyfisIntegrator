@@ -50,7 +50,6 @@
             this.checkBoxSalesIntegrationUseItemPrice = new System.Windows.Forms.CheckBox();
             this.label10 = new System.Windows.Forms.Label();
             this.textBoxSalesIntegrationUserCode = new System.Windows.Forms.TextBox();
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.dateTimePickerSalesIntegrationDate = new System.Windows.Forms.DateTimePicker();
             this.textBoxSalesIntegrationDomain = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
@@ -59,15 +58,12 @@
             this.label8 = new System.Windows.Forms.Label();
             this.buttonSalesIntegrationStart = new System.Windows.Forms.Button();
             this.buttonSalesIntegrationStop = new System.Windows.Forms.Button();
-            this.lblCurrentUser = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
             this.txtLogs = new System.Windows.Forms.TextBox();
             this.tabPagePOSManualSalesIntegration = new System.Windows.Forms.TabPage();
             this.buttonManualSalesIntegrationStop = new System.Windows.Forms.Button();
             this.textBoxPOSManualSalesIntegrationLogs = new System.Windows.Forms.TextBox();
             this.buttonManualSalesIntegrationStart = new System.Windows.Forms.Button();
             this.panel7 = new System.Windows.Forms.Panel();
-            this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.textBoxManualSalesIntegrationDomain = new System.Windows.Forms.TextBox();
             this.label15 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
@@ -75,6 +71,7 @@
             this.dateTimePickerManualSalesIntegrationDate = new System.Windows.Forms.DateTimePicker();
             this.label17 = new System.Windows.Forms.Label();
             this.tabPageFolderMonitoringIntegration = new System.Windows.Forms.TabPage();
+            this.buttonFolderMonitoringIntegrationStop = new System.Windows.Forms.Button();
             this.btnGetCSVTemplate = new System.Windows.Forms.Button();
             this.panel4 = new System.Windows.Forms.Panel();
             this.label12 = new System.Windows.Forms.Label();
@@ -88,7 +85,7 @@
             this.backgroundWorkerFolderMonitoringIntegration = new System.ComponentModel.BackgroundWorker();
             this.backgroundWorkerManualSalesIntegration = new System.ComponentModel.BackgroundWorker();
             this.backgroundWorkerSalesIntegration = new System.ComponentModel.BackgroundWorker();
-            this.buttonFolderMonitoringIntegrationStop = new System.Windows.Forms.Button();
+            this.buttonUpdateMasterFileInventory = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel2.SuspendLayout();
@@ -97,10 +94,8 @@
             this.tabIntegration.SuspendLayout();
             this.tabPagePOSSalesIntegration.SuspendLayout();
             this.panel3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.tabPagePOSManualSalesIntegration.SuspendLayout();
             this.panel7.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             this.tabPageFolderMonitoringIntegration.SuspendLayout();
             this.panel4.SuspendLayout();
             this.SuspendLayout();
@@ -142,9 +137,9 @@
             this.label1.Location = new System.Drawing.Point(10, 7);
             this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(103, 25);
+            this.label1.Size = new System.Drawing.Size(229, 25);
             this.label1.TabIndex = 0;
-            this.label1.Text = "Integration";
+            this.label1.Text = "EasyFIS Sales Integrator";
             // 
             // pictureBox1
             // 
@@ -175,7 +170,7 @@
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(156, 13);
             this.label5.TabIndex = 2;
-            this.label5.Text = "Version: 2.201911191510.NOR";
+            this.label5.Text = "Version: 2.202108020843.NOR";
             // 
             // label6
             // 
@@ -294,11 +289,10 @@
             // 
             // tabPagePOSSalesIntegration
             // 
+            this.tabPagePOSSalesIntegration.Controls.Add(this.buttonUpdateMasterFileInventory);
             this.tabPagePOSSalesIntegration.Controls.Add(this.panel3);
             this.tabPagePOSSalesIntegration.Controls.Add(this.buttonSalesIntegrationStart);
             this.tabPagePOSSalesIntegration.Controls.Add(this.buttonSalesIntegrationStop);
-            this.tabPagePOSSalesIntegration.Controls.Add(this.lblCurrentUser);
-            this.tabPagePOSSalesIntegration.Controls.Add(this.label2);
             this.tabPagePOSSalesIntegration.Controls.Add(this.txtLogs);
             this.tabPagePOSSalesIntegration.Location = new System.Drawing.Point(4, 22);
             this.tabPagePOSSalesIntegration.Margin = new System.Windows.Forms.Padding(2);
@@ -318,7 +312,6 @@
             this.panel3.Controls.Add(this.checkBoxSalesIntegrationUseItemPrice);
             this.panel3.Controls.Add(this.label10);
             this.panel3.Controls.Add(this.textBoxSalesIntegrationUserCode);
-            this.panel3.Controls.Add(this.pictureBox2);
             this.panel3.Controls.Add(this.dateTimePickerSalesIntegrationDate);
             this.panel3.Controls.Add(this.textBoxSalesIntegrationDomain);
             this.panel3.Controls.Add(this.label7);
@@ -374,18 +367,6 @@
             this.textBoxSalesIntegrationUserCode.ReadOnly = true;
             this.textBoxSalesIntegrationUserCode.Size = new System.Drawing.Size(214, 23);
             this.textBoxSalesIntegrationUserCode.TabIndex = 23;
-            // 
-            // pictureBox2
-            // 
-            this.pictureBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBox2.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox2.Image")));
-            this.pictureBox2.Location = new System.Drawing.Point(525, 12);
-            this.pictureBox2.Margin = new System.Windows.Forms.Padding(2);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(141, 119);
-            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox2.TabIndex = 21;
-            this.pictureBox2.TabStop = false;
             // 
             // dateTimePickerSalesIntegrationDate
             // 
@@ -486,28 +467,6 @@
             this.buttonSalesIntegrationStop.UseVisualStyleBackColor = false;
             this.buttonSalesIntegrationStop.Click += new System.EventHandler(this.btnStopIntegration_Click);
             // 
-            // lblCurrentUser
-            // 
-            this.lblCurrentUser.AutoSize = true;
-            this.lblCurrentUser.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.lblCurrentUser.Location = new System.Drawing.Point(74, 159);
-            this.lblCurrentUser.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.lblCurrentUser.Name = "lblCurrentUser";
-            this.lblCurrentUser.Size = new System.Drawing.Size(93, 17);
-            this.lblCurrentUser.TabIndex = 13;
-            this.lblCurrentUser.Text = "#CurrentUser";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold);
-            this.label2.Location = new System.Drawing.Point(7, 159);
-            this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(67, 17);
-            this.label2.TabIndex = 12;
-            this.label2.Text = "Current:";
-            // 
             // txtLogs
             // 
             this.txtLogs.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -599,7 +558,6 @@
             this.panel7.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel7.BackColor = System.Drawing.SystemColors.Control;
-            this.panel7.Controls.Add(this.pictureBox3);
             this.panel7.Controls.Add(this.textBoxManualSalesIntegrationDomain);
             this.panel7.Controls.Add(this.label15);
             this.panel7.Controls.Add(this.label13);
@@ -611,18 +569,6 @@
             this.panel7.Name = "panel7";
             this.panel7.Size = new System.Drawing.Size(678, 102);
             this.panel7.TabIndex = 22;
-            // 
-            // pictureBox3
-            // 
-            this.pictureBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBox3.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox3.Image")));
-            this.pictureBox3.Location = new System.Drawing.Point(568, 8);
-            this.pictureBox3.Margin = new System.Windows.Forms.Padding(2);
-            this.pictureBox3.Name = "pictureBox3";
-            this.pictureBox3.Size = new System.Drawing.Size(98, 83);
-            this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox3.TabIndex = 31;
-            this.pictureBox3.TabStop = false;
             // 
             // textBoxManualSalesIntegrationDomain
             // 
@@ -703,6 +649,24 @@
             this.tabPageFolderMonitoringIntegration.TabIndex = 1;
             this.tabPageFolderMonitoringIntegration.Text = "Folder Monitoring";
             this.tabPageFolderMonitoringIntegration.UseVisualStyleBackColor = true;
+            // 
+            // buttonFolderMonitoringIntegrationStop
+            // 
+            this.buttonFolderMonitoringIntegrationStop.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonFolderMonitoringIntegrationStop.BackColor = System.Drawing.Color.IndianRed;
+            this.buttonFolderMonitoringIntegrationStop.Enabled = false;
+            this.buttonFolderMonitoringIntegrationStop.FlatAppearance.BorderSize = 0;
+            this.buttonFolderMonitoringIntegrationStop.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttonFolderMonitoringIntegrationStop.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.buttonFolderMonitoringIntegrationStop.ForeColor = System.Drawing.Color.White;
+            this.buttonFolderMonitoringIntegrationStop.Location = new System.Drawing.Point(609, 111);
+            this.buttonFolderMonitoringIntegrationStop.Margin = new System.Windows.Forms.Padding(2);
+            this.buttonFolderMonitoringIntegrationStop.Name = "buttonFolderMonitoringIntegrationStop";
+            this.buttonFolderMonitoringIntegrationStop.Size = new System.Drawing.Size(74, 30);
+            this.buttonFolderMonitoringIntegrationStop.TabIndex = 27;
+            this.buttonFolderMonitoringIntegrationStop.Text = "Stop";
+            this.buttonFolderMonitoringIntegrationStop.UseVisualStyleBackColor = false;
+            this.buttonFolderMonitoringIntegrationStop.Click += new System.EventHandler(this.buttonFolderMonitoringIntegrationStop_Click);
             // 
             // btnGetCSVTemplate
             // 
@@ -853,23 +817,23 @@
             this.backgroundWorkerSalesIntegration.WorkerSupportsCancellation = true;
             this.backgroundWorkerSalesIntegration.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerSalesIntegration_DoWork);
             // 
-            // buttonFolderMonitoringIntegrationStop
+            // buttonUpdateMasterFileInventory
             // 
-            this.buttonFolderMonitoringIntegrationStop.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonFolderMonitoringIntegrationStop.BackColor = System.Drawing.Color.IndianRed;
-            this.buttonFolderMonitoringIntegrationStop.Enabled = false;
-            this.buttonFolderMonitoringIntegrationStop.FlatAppearance.BorderSize = 0;
-            this.buttonFolderMonitoringIntegrationStop.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonFolderMonitoringIntegrationStop.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.buttonFolderMonitoringIntegrationStop.ForeColor = System.Drawing.Color.White;
-            this.buttonFolderMonitoringIntegrationStop.Location = new System.Drawing.Point(609, 111);
-            this.buttonFolderMonitoringIntegrationStop.Margin = new System.Windows.Forms.Padding(2);
-            this.buttonFolderMonitoringIntegrationStop.Name = "buttonFolderMonitoringIntegrationStop";
-            this.buttonFolderMonitoringIntegrationStop.Size = new System.Drawing.Size(74, 30);
-            this.buttonFolderMonitoringIntegrationStop.TabIndex = 27;
-            this.buttonFolderMonitoringIntegrationStop.Text = "Stop";
-            this.buttonFolderMonitoringIntegrationStop.UseVisualStyleBackColor = false;
-            this.buttonFolderMonitoringIntegrationStop.Click += new System.EventHandler(this.buttonFolderMonitoringIntegrationStop_Click);
+            this.buttonUpdateMasterFileInventory.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonUpdateMasterFileInventory.BackColor = System.Drawing.Color.SeaGreen;
+            this.buttonUpdateMasterFileInventory.Enabled = false;
+            this.buttonUpdateMasterFileInventory.FlatAppearance.BorderSize = 0;
+            this.buttonUpdateMasterFileInventory.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttonUpdateMasterFileInventory.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.buttonUpdateMasterFileInventory.ForeColor = System.Drawing.Color.White;
+            this.buttonUpdateMasterFileInventory.Location = new System.Drawing.Point(6, 153);
+            this.buttonUpdateMasterFileInventory.Margin = new System.Windows.Forms.Padding(2);
+            this.buttonUpdateMasterFileInventory.Name = "buttonUpdateMasterFileInventory";
+            this.buttonUpdateMasterFileInventory.Size = new System.Drawing.Size(244, 30);
+            this.buttonUpdateMasterFileInventory.TabIndex = 22;
+            this.buttonUpdateMasterFileInventory.Text = "Update Master File and Inventory";
+            this.buttonUpdateMasterFileInventory.UseVisualStyleBackColor = false;
+            this.buttonUpdateMasterFileInventory.Click += new System.EventHandler(this.buttonUpdateMasterFileInventory_Click);
             // 
             // TrnIntegrationForm
             // 
@@ -886,7 +850,7 @@
             this.MaximizeBox = false;
             this.Name = "TrnIntegrationForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Integration";
+            this.Text = "EasyFIS Sales Integrator";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.TrnInnosoftPOSIntegrationForm_FormClosing);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
@@ -900,12 +864,10 @@
             this.tabPagePOSSalesIntegration.PerformLayout();
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.tabPagePOSManualSalesIntegration.ResumeLayout(false);
             this.tabPagePOSManualSalesIntegration.PerformLayout();
             this.panel7.ResumeLayout(false);
             this.panel7.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
             this.tabPageFolderMonitoringIntegration.ResumeLayout(false);
             this.tabPageFolderMonitoringIntegration.PerformLayout();
             this.panel4.ResumeLayout(false);
@@ -944,7 +906,6 @@
         private System.Windows.Forms.CheckBox checkBoxSalesIntegrationUseItemPrice;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.TextBox textBoxSalesIntegrationUserCode;
-        private System.Windows.Forms.PictureBox pictureBox2;
         private System.Windows.Forms.DateTimePicker dateTimePickerSalesIntegrationDate;
         private System.Windows.Forms.TextBox textBoxSalesIntegrationDomain;
         private System.Windows.Forms.Label label7;
@@ -953,8 +914,6 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Button buttonSalesIntegrationStart;
         private System.Windows.Forms.Button buttonSalesIntegrationStop;
-        private System.Windows.Forms.Label lblCurrentUser;
-        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox txtLogs;
         private System.Windows.Forms.Panel panel6;
         private System.ComponentModel.BackgroundWorker backgroundWorkerFolderMonitoringIntegration;
@@ -970,10 +929,10 @@
         private System.ComponentModel.BackgroundWorker backgroundWorkerSalesIntegration;
         private System.Windows.Forms.TextBox textBoxManualSalesIntegrationDomain;
         private System.Windows.Forms.Label label15;
-        private System.Windows.Forms.PictureBox pictureBox3;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.TextBox textBoxFolderToMonitor;
         private System.Windows.Forms.Button buttonManualSalesIntegrationStop;
         private System.Windows.Forms.Button buttonFolderMonitoringIntegrationStop;
+        private System.Windows.Forms.Button buttonUpdateMasterFileInventory;
     }
 }

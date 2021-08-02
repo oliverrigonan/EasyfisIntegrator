@@ -41,7 +41,7 @@ namespace EasyfisIntegrator.Controllers
             try
             {
                 var collections = from d in posdb.TrnCollections
-                                  where (d.CollectionNumber.Equals("NA") == false || d.CollectionNumber.Equals("na") == false)
+                                  where (d.CollectionNumber != "NA" || d.CollectionNumber != "na")
                                   && d.SalesId != null
                                   && d.PostCode == null
                                   && d.IsLocked == true
@@ -165,7 +165,6 @@ namespace EasyfisIntegrator.Controllers
                         trnIntegrationForm.salesIntegrationLogMessages("\r\n\n");
                     }
                 }
-
             }
             catch (WebException we)
             {
