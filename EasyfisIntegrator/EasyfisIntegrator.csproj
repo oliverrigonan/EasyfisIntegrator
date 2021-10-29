@@ -103,6 +103,7 @@
     <Compile Include="Controllers\ISPOSTrnStockOutController.cs" />
     <Compile Include="Controllers\ISPOSTrnStockTransferInController.cs" />
     <Compile Include="Controllers\ISPOSTrnStockTransferOutController.cs" />
+    <Compile Include="Entities\FolderMonitoringTrnJournal.cs" />
     <Compile Include="Entities\FolderMonitoringTrnCollection.cs" />
     <Compile Include="Entities\FolderMonitoringTrnDisbursement.cs" />
     <Compile Include="Entities\FolderMonitoringTrnJournalVoucher.cs" />

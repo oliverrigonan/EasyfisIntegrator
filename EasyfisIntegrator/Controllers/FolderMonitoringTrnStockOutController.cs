@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -15,6 +16,8 @@ namespace EasyfisIntegrator.Controllers
 {
     class FolderMonitoringTrnStockOutController
     {
+        public DateTime journalDate = DateTime.Today;
+
         // ==============
         // Send Stock Out
         // ==============
@@ -109,6 +112,8 @@ namespace EasyfisIntegrator.Controllers
                                     Amount = Convert.ToDecimal(data[12]),
                                     No = count
                                 });
+
+                                journalDate = Convert.ToDateTime(data[1]);
                             }
                         }
 
@@ -351,6 +356,31 @@ namespace EasyfisIntegrator.Controllers
                                                     trnIntegrationForm.folderMonitoringLogMessages("Post Successful!" + "\r\n\n");
                                                     trnIntegrationForm.folderMonitoringLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                                                     trnIntegrationForm.folderMonitoringLogMessages("\r\n\n");
+
+                                                    String jDate = journalDate.ToString("MM-dd-yyyy", CultureInfo.InvariantCulture);
+                                                    String apiURL = "http://" + domain + "/api/folderMonitoring/journal/" + jDate + "/OT";
+
+                                                    HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(apiURL);
+                                                    httpWebRequest.Method = "GET";
+                                                    httpWebRequest.Accept = "application/json";
+
+                                                    HttpWebResponse httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                                                    using (StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream()))
+                                                    {
+                                                        var result = streamReader.ReadToEnd();
+                                                        JavaScriptSerializer js = new JavaScriptSerializer();
+                                                        Entities.FolderMonitoringTrnJournal sumUpJournal = (Entities.FolderMonitoringTrnJournal)js.Deserialize(result, typeof(Entities.FolderMonitoringTrnJournal));
+
+                                                        if (sumUpJournal != null)
+                                                        {
+                                                            trnIntegrationForm.folderMonitoringLogMessages("Date: " + sumUpJournal.JournalDate + "\r\n\n");
+                                                            trnIntegrationForm.folderMonitoringLogMessages("Total Debit: " + sumUpJournal.TotalDebitAmount + "\r\n\n");
+                                                            trnIntegrationForm.folderMonitoringLogMessages("Total Credit: " + sumUpJournal.TotalCreditAmount + "\r\n\n");
+                                                            trnIntegrationForm.folderMonitoringLogMessages("Balance: " + sumUpJournal.TotalBalance + "\r\n\n");
+                                                            trnIntegrationForm.folderMonitoringLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                                            trnIntegrationForm.folderMonitoringLogMessages("\r\n\n");
+                                                        }
+                                                    }
                                                 }
 
                                                 break;
