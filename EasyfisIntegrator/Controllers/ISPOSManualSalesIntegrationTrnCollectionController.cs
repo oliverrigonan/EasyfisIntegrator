@@ -494,6 +494,7 @@ namespace EasyfisIntegrator.Controllers
             {
                 String apiURL = "http://" + domain + "/api/POSManualSalesIntegration/salesInvoice/temporary/delete";
 
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                 HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(apiURL);
                 httpWebRequest.ContentType = "application/json";
                 httpWebRequest.Method = "DELETE";
@@ -529,6 +530,7 @@ namespace EasyfisIntegrator.Controllers
             {
                 String apiURL = "http://" + domain + "/api/POSManualSalesIntegration/salesInvoice/temporary/insert";
 
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                 HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(apiURL);
                 httpWebRequest.ContentType = "application/json";
                 httpWebRequest.Method = "POST";
@@ -564,6 +566,7 @@ namespace EasyfisIntegrator.Controllers
             {
                 String apiURL = "http://" + domain + "/api/POSManualSalesIntegration/salesInvoice/post";
 
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                 HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(apiURL);
                 httpWebRequest.ContentType = "application/json";
                 httpWebRequest.Method = "POST";

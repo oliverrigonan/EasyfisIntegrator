@@ -127,6 +127,7 @@ namespace EasyfisIntegrator.Controllers
                 // ============
                 // Http Request
                 // ============
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                 var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://" + apiUrlHost + "/api/add/POSIntegration/salesInvoice");
                 httpWebRequest.ContentType = "application/json";
                 httpWebRequest.Method = "POST";
