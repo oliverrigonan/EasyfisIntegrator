@@ -358,7 +358,7 @@ namespace EasyfisIntegrator.Controllers
                                                     trnIntegrationForm.folderMonitoringLogMessages("\r\n\n");
 
                                                     String jDate = journalDate.ToString("MM-dd-yyyy", CultureInfo.InvariantCulture);
-                                                    String apiURL = "http://" + domain + "/api/folderMonitoring/journal/" + jDate + "/OT";
+                                                    String apiURL = "https://" + domain + "/api/folderMonitoring/journal/" + jDate + "/OT";
 
                                                     HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(apiURL);
                                                     httpWebRequest.Method = "GET";
@@ -480,7 +480,7 @@ namespace EasyfisIntegrator.Controllers
         {
             try
             {
-                String apiURL = "http://" + domain + "/api/folderMonitoring/stockOut/temporary/delete";
+                String apiURL = "https://" + domain + "/api/folderMonitoring/stockOut/temporary/delete";
 
                 HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(apiURL);
                 httpWebRequest.ContentType = "application/json";
@@ -515,7 +515,7 @@ namespace EasyfisIntegrator.Controllers
         {
             try
             {
-                String apiURL = "http://" + domain + "/api/folderMonitoring/stockOut/temporary/insert";
+                String apiURL = "https://" + domain + "/api/folderMonitoring/stockOut/temporary/insert";
 
                 HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(apiURL);
                 httpWebRequest.ContentType = "application/json";
@@ -550,7 +550,7 @@ namespace EasyfisIntegrator.Controllers
         {
             try
             {
-                String apiURL = "http://" + domain + "/api/folderMonitoring/stockOut/post";
+                String apiURL = "https://" + domain + "/api/folderMonitoring/stockOut/post";
 
                 HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(apiURL);
                 httpWebRequest.ContentType = "application/json";

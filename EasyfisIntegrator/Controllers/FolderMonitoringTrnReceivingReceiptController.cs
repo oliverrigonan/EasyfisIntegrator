@@ -367,7 +367,7 @@ namespace EasyfisIntegrator.Controllers
                                                     trnIntegrationForm.folderMonitoringLogMessages("\r\n\n");
 
                                                     String jDate = journalDate.ToString("MM-dd-yyyy", CultureInfo.InvariantCulture);
-                                                    String apiURL = "http://" + domain + "/api/folderMonitoring/journal/" + jDate + "/RR";
+                                                    String apiURL = "https://" + domain + "/api/folderMonitoring/journal/" + jDate + "/RR";
 
                                                     HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(apiURL);
                                                     httpWebRequest.Method = "GET";
@@ -489,7 +489,7 @@ namespace EasyfisIntegrator.Controllers
         {
             try
             {
-                String apiURL = "http://" + domain + "/api/folderMonitoring/receivingReceipt/temporary/delete";
+                String apiURL = "https://" + domain + "/api/folderMonitoring/receivingReceipt/temporary/delete";
 
                 HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(apiURL);
                 httpWebRequest.ContentType = "application/json";
@@ -524,7 +524,7 @@ namespace EasyfisIntegrator.Controllers
         {
             try
             {
-                String apiURL = "http://" + domain + "/api/folderMonitoring/receivingReceipt/temporary/insert";
+                String apiURL = "https://" + domain + "/api/folderMonitoring/receivingReceipt/temporary/insert";
 
                 HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(apiURL);
                 httpWebRequest.ContentType = "application/json";
@@ -559,7 +559,7 @@ namespace EasyfisIntegrator.Controllers
         {
             try
             {
-                String apiURL = "http://" + domain + "/api/folderMonitoring/receivingReceipt/post";
+                String apiURL = "https://" + domain + "/api/folderMonitoring/receivingReceipt/post";
 
                 HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(apiURL);
                 httpWebRequest.ContentType = "application/json";

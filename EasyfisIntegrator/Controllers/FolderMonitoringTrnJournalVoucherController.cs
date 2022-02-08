@@ -361,7 +361,7 @@ namespace EasyfisIntegrator.Controllers
                                                     trnIntegrationForm.folderMonitoringLogMessages("\r\n\n");
 
                                                     String jDate = journalDate.ToString("MM-dd-yyyy", CultureInfo.InvariantCulture);
-                                                    String apiURL = "http://" + domain + "/api/folderMonitoring/journal/" + jDate + "/JV";
+                                                    String apiURL = "https://" + domain + "/api/folderMonitoring/journal/" + jDate + "/JV";
 
                                                     HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(apiURL);
                                                     httpWebRequest.Method = "GET";
@@ -483,7 +483,7 @@ namespace EasyfisIntegrator.Controllers
         {
             try
             {
-                String apiURL = "http://" + domain + "/api/folderMonitoring/journalVoucher/temporary/delete";
+                String apiURL = "https://" + domain + "/api/folderMonitoring/journalVoucher/temporary/delete";
 
                 HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(apiURL);
                 httpWebRequest.ContentType = "application/json";
@@ -518,7 +518,7 @@ namespace EasyfisIntegrator.Controllers
         {
             try
             {
-                String apiURL = "http://" + domain + "/api/folderMonitoring/journalVoucher/temporary/insert";
+                String apiURL = "https://" + domain + "/api/folderMonitoring/journalVoucher/temporary/insert";
 
                 HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(apiURL);
                 httpWebRequest.ContentType = "application/json";
@@ -553,7 +553,7 @@ namespace EasyfisIntegrator.Controllers
         {
             try
             {
-                String apiURL = "http://" + domain + "/api/folderMonitoring/journalVoucher/post";
+                String apiURL = "https://" + domain + "/api/folderMonitoring/journalVoucher/post";
 
                 HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(apiURL);
                 httpWebRequest.ContentType = "application/json";
