@@ -1,10 +1,10 @@
 ﻿{
-  "ConnectionString": "Data Source=localhost;Initial Catalog=pos13;Persist Security Info=True;User ID=sa;Password=easyfis",
-  "Domain": "3abuilders.easyfis.com",
-  "LogFileLocation": "C:\\Users\\Developer\\Desktop\\JM Poultry\\Integrator\\Logs",
-  "FolderToMonitor": "C:\\Users\\Developer\\Desktop\\JM Poultry\\Integrator\\Modules",
-  "IsFolderMonitoringOnly": false,
-  "FolderMonitoringUserCode": "3abuilders",
-  "FolderForSentFiles": "C:\\Users\\Developer\\Desktop\\JM Poultry\\Integrator\\Sent",
+  "ConnectionString": "",
+  "Domain": "easyfiswebsite-jmpls.azurewebsites.net",
+  "LogFileLocation": "D:\\Easyfis\\Activity Log",
+  "FolderToMonitor": "D:\\Easyfis",
+  "IsFolderMonitoringOnly": true,
+  "FolderMonitoringUserCode": "jmpls",
+  "FolderForSentFiles": "D:\\Easyfis\\Sent Files",
   "ManualSalesIntegration": false
 }
