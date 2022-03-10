@@ -30,6 +30,8 @@ namespace EasyfisIntegrator.Forms
         public Boolean isFolderMonitoringIntegrationStarted = false;
         public Boolean isFolderMonitoringOnly = false;
         public Boolean isMasterFileInventoryUpdating = false;
+        public Boolean isManualMasterFileInventoryUpdating = false;
+        public Boolean isManualSalesIntegration = false;
 
         public TrnIntegrationForm()
         {
@@ -69,23 +71,62 @@ namespace EasyfisIntegrator.Forms
             }
             else
             {
-                salesIntegrationLogFileLocation = sysSettings.LogFileLocation;
-                textBoxSalesIntegrationDomain.Text = sysSettings.Domain;
-
-                var settings = from d in posdb.SysSettings
-                               select d;
-
-                if (settings.Any())
+                if (sysSettings.ManualSalesIntegration == true)
                 {
-                    posdb.Refresh(RefreshMode.OverwriteCurrentValues, settings);
+                    isManualSalesIntegration = true;
 
-                    textBoxSalesIntegrationBranchCode.Text = settings.FirstOrDefault().BranchCode;
-                    textBoxSalesIntegrationUserCode.Text = settings.FirstOrDefault().UserCode;
-                    checkBoxSalesIntegrationUseItemPrice.Checked = settings.FirstOrDefault().UseItemPrice;
+                    tabPagePOSSalesIntegration.Enabled = false;
+                    tabPagePOSManualSalesIntegration.Enabled = true;
+                    tabPageFolderMonitoringIntegration.Enabled = false;
+
+                    tabIntegration.SelectedTab = tabPagePOSManualSalesIntegration;
+                    tabIntegration.TabPages.Remove(tabPagePOSSalesIntegration);
+                    tabIntegration.TabPages.Remove(tabPageFolderMonitoringIntegration);
+
+                    btnLogout.Visible = false;
+                    buttonManualSalesIntegrationStart.Enabled = true;
+                    buttonManualSalesIntegrationStop.Enabled = false;
+                    buttonUpdateManualMasterFileInventory.Enabled = false;
+
+                    salesIntegrationLogFileLocation = sysSettings.LogFileLocation;
+                    textBoxSalesIntegrationDomain.Text = sysSettings.Domain;
+                    comboBoxManualSalesIntegrationTerminal.Enabled = true;
+
+                    var settings = from d in posdb.SysSettings
+                                   select d;
+
+                    if (settings.Any())
+                    {
+                        posdb.Refresh(RefreshMode.OverwriteCurrentValues, settings);
+
+                        textBoxSalesIntegrationBranchCode.Text = settings.FirstOrDefault().BranchCode;
+                        textBoxSalesIntegrationUserCode.Text = settings.FirstOrDefault().UserCode;
+                        checkBoxSalesIntegrationUseItemPrice.Checked = settings.FirstOrDefault().UseItemPrice;
+                    }
+
+                    GetTerminalList();
+                    textBoxManualSalesIntegrationDomain.Text = sysSettings.Domain;
                 }
+                else
+                {
+                    salesIntegrationLogFileLocation = sysSettings.LogFileLocation;
+                    textBoxSalesIntegrationDomain.Text = sysSettings.Domain;
 
-                GetTerminalList();
-                textBoxManualSalesIntegrationDomain.Text = sysSettings.Domain;
+                    var settings = from d in posdb.SysSettings
+                                   select d;
+
+                    if (settings.Any())
+                    {
+                        posdb.Refresh(RefreshMode.OverwriteCurrentValues, settings);
+
+                        textBoxSalesIntegrationBranchCode.Text = settings.FirstOrDefault().BranchCode;
+                        textBoxSalesIntegrationUserCode.Text = settings.FirstOrDefault().UserCode;
+                        checkBoxSalesIntegrationUseItemPrice.Checked = settings.FirstOrDefault().UseItemPrice;
+                    }
+
+                    GetTerminalList();
+                    textBoxManualSalesIntegrationDomain.Text = sysSettings.Domain;
+                }
             }
 
             textBoxFolderMonitoringUserCode.Text = sysSettings.FolderMonitoringUserCode;
@@ -504,6 +545,7 @@ namespace EasyfisIntegrator.Forms
 
             buttonManualSalesIntegrationStart.Enabled = false;
             buttonManualSalesIntegrationStop.Enabled = true;
+            buttonUpdateManualMasterFileInventory.Enabled = true;
 
             btnSaveLogs.Enabled = false;
             btnClearLogs.Enabled = false;
@@ -527,20 +569,145 @@ namespace EasyfisIntegrator.Forms
         {
             while (isManualSalesIntegrationStarted)
             {
-                Task ManualSIIntegrationTask = Task.Run(() =>
-                {
-                    ISPOSManualSalesIntegrationTrnCollectionController manualSalesIntegrationTrnCollectionController = new ISPOSManualSalesIntegrationTrnCollectionController();
-                    manualSalesIntegrationTrnCollectionController.SendSalesInvoice(this, textBoxManualSalesIntegrationDomain.Text, dateTimePickerManualSalesIntegrationDate.Value.ToShortDateString(), Convert.ToInt32(comboBoxManualSalesIntegrationTerminal.SelectedValue));
-                });
-                ManualSIIntegrationTask.Wait();
+                String apiUrlHost = textBoxSalesIntegrationDomain.Text;
 
-                if (ManualSIIntegrationTask.IsCompleted)
+                var sysSettings = from d in posdb.SysSettings select d;
+                if (sysSettings.Any())
                 {
-                    Task ManualSIIntegrationTaskIsCompleted = Task.Run(() =>
+                    if (isManualMasterFileInventoryUpdating == true)
                     {
-                        AsyncManualSIIntegrationTaskIsCompleted();
-                    });
-                    ManualSIIntegrationTaskIsCompleted.Wait();
+                        var branchCode = sysSettings.FirstOrDefault().BranchCode;
+                        var userCode = sysSettings.FirstOrDefault().UserCode;
+                        var useItemPrice = sysSettings.FirstOrDefault().UseItemPrice;
+
+                        Task taskCustomer = Task.Run(() =>
+                        {
+                            Controllers.ISPOSMstCustomerController objMstCustomer = new Controllers.ISPOSMstCustomerController(this, dateTimePickerSalesIntegrationDate.Text);
+                            objMstCustomer.SyncCustomer(apiUrlHost);
+                        });
+                        taskCustomer.Wait();
+
+                        if (taskCustomer.IsCompleted)
+                        {
+                            Task taskSupplier = Task.Run(() =>
+                            {
+                                Controllers.ISPOSMstSupplierController objMstSupplier = new Controllers.ISPOSMstSupplierController(this, dateTimePickerSalesIntegrationDate.Text);
+                                objMstSupplier.SyncSupplier(apiUrlHost);
+                            });
+                            taskSupplier.Wait();
+
+                            if (taskSupplier.IsCompleted)
+                            {
+                                Task taskItem = Task.Run(() =>
+                                {
+                                    Controllers.ISPOSMstItemController objMstItem = new Controllers.ISPOSMstItemController(this, dateTimePickerSalesIntegrationDate.Text);
+                                    objMstItem.SyncItem(apiUrlHost);
+                                });
+                                taskItem.Wait();
+
+                                if (taskItem.IsCompleted)
+                                {
+                                    Boolean isTaskItemPriceCompleted = false;
+
+                                    if (useItemPrice)
+                                    {
+                                        Task taskItemPrice = Task.Run(() =>
+                                        {
+                                            Controllers.ISPOSTrnItemPriceController objTrnItemPrice = new Controllers.ISPOSTrnItemPriceController(this, dateTimePickerSalesIntegrationDate.Text);
+                                            objTrnItemPrice.SyncItemPrice(apiUrlHost, branchCode);
+
+                                        });
+                                        taskItemPrice.Wait();
+
+                                        if (taskItemPrice.IsCompleted)
+                                        {
+                                            isTaskItemPriceCompleted = true;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        isTaskItemPriceCompleted = true;
+                                    }
+
+                                    if (isTaskItemPriceCompleted == true)
+                                    {
+                                        Task taskReceivingReceipt = Task.Run(() =>
+                                        {
+                                            Controllers.ISPOSTrnReceivingReceiptController objTrnReceivingReceipt = new Controllers.ISPOSTrnReceivingReceiptController(this, dateTimePickerSalesIntegrationDate.Text);
+                                            objTrnReceivingReceipt.SyncReceivingReceipt(apiUrlHost, branchCode);
+                                        });
+                                        taskReceivingReceipt.Wait();
+
+                                        if (taskReceivingReceipt.IsCompleted)
+                                        {
+                                            Task taskStockIn = Task.Run(() =>
+                                            {
+                                                Controllers.ISPOSTrnStockInController objTrnStockIn = new Controllers.ISPOSTrnStockInController(this, dateTimePickerSalesIntegrationDate.Text);
+                                                objTrnStockIn.SyncStockIn(apiUrlHost, branchCode);
+                                            });
+                                            taskStockIn.Wait();
+
+                                            if (taskStockIn.IsCompleted)
+                                            {
+                                                Task taskStockOut = Task.Run(() =>
+                                                {
+                                                    Controllers.ISPOSTrnStockOutController objTrnStockOut = new Controllers.ISPOSTrnStockOutController(this, dateTimePickerSalesIntegrationDate.Text);
+                                                    objTrnStockOut.SyncStockOut(apiUrlHost, branchCode);
+
+                                                });
+                                                taskStockOut.Wait();
+
+                                                if (taskStockOut.IsCompleted)
+                                                {
+                                                    Task taskStockTransferIn = Task.Run(() =>
+                                                    {
+                                                        Controllers.ISPOSTrnStockTransferInController objTrnStockTransferIn = new Controllers.ISPOSTrnStockTransferInController(this, dateTimePickerSalesIntegrationDate.Text);
+                                                        objTrnStockTransferIn.SyncStockTransferIN(apiUrlHost, branchCode);
+
+                                                    });
+                                                    taskStockTransferIn.Wait();
+
+                                                    if (taskStockTransferIn.IsCompleted)
+                                                    {
+                                                        Task taskStockTransferOut = Task.Run(() =>
+                                                        {
+                                                            Controllers.ISPOSTrnStockTransferOutController objTrnStockTransferOut = new Controllers.ISPOSTrnStockTransferOutController(this, dateTimePickerSalesIntegrationDate.Text);
+                                                            objTrnStockTransferOut.SyncStockTransferOT(apiUrlHost, branchCode);
+                                                        });
+                                                        taskStockTransferOut.Wait();
+
+                                                        if (taskStockTransferOut.IsCompleted)
+                                                        {
+                                                            isManualMasterFileInventoryUpdating = false;
+                                                            manualSalesIntegrationLogMessages("Sync Completed! \r\n\nTime Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n\r\n\n");
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Task ManualSIIntegrationTask = Task.Run(() =>
+                        {
+                            ISPOSManualSalesIntegrationTrnCollectionController manualSalesIntegrationTrnCollectionController = new ISPOSManualSalesIntegrationTrnCollectionController();
+                            manualSalesIntegrationTrnCollectionController.SendSalesInvoice(this, textBoxManualSalesIntegrationDomain.Text, dateTimePickerManualSalesIntegrationDate.Value.ToShortDateString(), Convert.ToInt32(comboBoxManualSalesIntegrationTerminal.SelectedValue));
+                        });
+                        ManualSIIntegrationTask.Wait();
+
+                        if (ManualSIIntegrationTask.IsCompleted)
+                        {
+                            Task ManualSIIntegrationTaskIsCompleted = Task.Run(() =>
+                            {
+                                AsyncManualSIIntegrationTaskIsCompleted();
+                            });
+                            ManualSIIntegrationTaskIsCompleted.Wait();
+                        }
+                    }
                 }
 
                 System.Threading.Thread.Sleep(5000);
@@ -593,6 +760,7 @@ namespace EasyfisIntegrator.Forms
 
                 buttonManualSalesIntegrationStart.Enabled = true;
                 buttonManualSalesIntegrationStop.Enabled = false;
+                buttonUpdateManualMasterFileInventory.Enabled = false;
 
                 btnSaveLogs.Enabled = true;
                 btnClearLogs.Enabled = true;
@@ -987,6 +1155,15 @@ namespace EasyfisIntegrator.Forms
 
             buttonUpdateMasterFileInventory.Enabled = false;
             buttonSalesIntegrationStop.Enabled = false;
+        }
+
+        private void buttonUpdateManualMasterFileInventory_Click(object sender, EventArgs e)
+        {
+            isManualMasterFileInventoryUpdating = true;
+            manualSalesIntegrationLogMessages("Synching master files and inventory... \r\n\n");
+
+            buttonUpdateManualMasterFileInventory.Enabled = false;
+            buttonManualSalesIntegrationStop.Enabled = false;
         }
     }
 }

@@ -1,10 +1,10 @@
 ﻿{
-  "ConnectionString": "",
+  "ConnectionString": "Data Source=DESKTOP-RT4V2EU\\SQLEXPRESS;Initial Catalog=pos13;Persist Security Info=True;User ID=sa;Password=easyfis",
   "Domain": "easyfiswebsite-jmpls.azurewebsites.net",
   "LogFileLocation": "D:\\Easyfis\\Activity Log",
   "FolderToMonitor": "D:\\Easyfis",
-  "IsFolderMonitoringOnly": true,
+  "IsFolderMonitoringOnly": false,
   "FolderMonitoringUserCode": "jmpls",
   "FolderForSentFiles": "D:\\Easyfis\\Sent Files",
-  "ManualSalesIntegration": false
+  "ManualSalesIntegration": true
 }

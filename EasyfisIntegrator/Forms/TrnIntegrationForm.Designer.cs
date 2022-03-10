@@ -45,6 +45,7 @@
             this.panel6 = new System.Windows.Forms.Panel();
             this.tabIntegration = new System.Windows.Forms.TabControl();
             this.tabPagePOSSalesIntegration = new System.Windows.Forms.TabPage();
+            this.buttonUpdateMasterFileInventory = new System.Windows.Forms.Button();
             this.panel3 = new System.Windows.Forms.Panel();
             this.label11 = new System.Windows.Forms.Label();
             this.checkBoxSalesIntegrationUseItemPrice = new System.Windows.Forms.CheckBox();
@@ -85,7 +86,7 @@
             this.backgroundWorkerFolderMonitoringIntegration = new System.ComponentModel.BackgroundWorker();
             this.backgroundWorkerManualSalesIntegration = new System.ComponentModel.BackgroundWorker();
             this.backgroundWorkerSalesIntegration = new System.ComponentModel.BackgroundWorker();
-            this.buttonUpdateMasterFileInventory = new System.Windows.Forms.Button();
+            this.buttonUpdateManualMasterFileInventory = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel2.SuspendLayout();
@@ -303,6 +304,24 @@
             this.tabPagePOSSalesIntegration.Text = "POS - Sales Integration";
             this.tabPagePOSSalesIntegration.UseVisualStyleBackColor = true;
             // 
+            // buttonUpdateMasterFileInventory
+            // 
+            this.buttonUpdateMasterFileInventory.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonUpdateMasterFileInventory.BackColor = System.Drawing.Color.SeaGreen;
+            this.buttonUpdateMasterFileInventory.Enabled = false;
+            this.buttonUpdateMasterFileInventory.FlatAppearance.BorderSize = 0;
+            this.buttonUpdateMasterFileInventory.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttonUpdateMasterFileInventory.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.buttonUpdateMasterFileInventory.ForeColor = System.Drawing.Color.White;
+            this.buttonUpdateMasterFileInventory.Location = new System.Drawing.Point(6, 153);
+            this.buttonUpdateMasterFileInventory.Margin = new System.Windows.Forms.Padding(2);
+            this.buttonUpdateMasterFileInventory.Name = "buttonUpdateMasterFileInventory";
+            this.buttonUpdateMasterFileInventory.Size = new System.Drawing.Size(244, 30);
+            this.buttonUpdateMasterFileInventory.TabIndex = 22;
+            this.buttonUpdateMasterFileInventory.Text = "Update Master File and Inventory";
+            this.buttonUpdateMasterFileInventory.UseVisualStyleBackColor = false;
+            this.buttonUpdateMasterFileInventory.Click += new System.EventHandler(this.buttonUpdateMasterFileInventory_Click);
+            // 
             // panel3
             // 
             this.panel3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -487,6 +506,7 @@
             // 
             // tabPagePOSManualSalesIntegration
             // 
+            this.tabPagePOSManualSalesIntegration.Controls.Add(this.buttonUpdateManualMasterFileInventory);
             this.tabPagePOSManualSalesIntegration.Controls.Add(this.buttonManualSalesIntegrationStop);
             this.tabPagePOSManualSalesIntegration.Controls.Add(this.textBoxPOSManualSalesIntegrationLogs);
             this.tabPagePOSManualSalesIntegration.Controls.Add(this.buttonManualSalesIntegrationStart);
@@ -817,23 +837,23 @@
             this.backgroundWorkerSalesIntegration.WorkerSupportsCancellation = true;
             this.backgroundWorkerSalesIntegration.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerSalesIntegration_DoWork);
             // 
-            // buttonUpdateMasterFileInventory
+            // buttonUpdateManualMasterFileInventory
             // 
-            this.buttonUpdateMasterFileInventory.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonUpdateMasterFileInventory.BackColor = System.Drawing.Color.SeaGreen;
-            this.buttonUpdateMasterFileInventory.Enabled = false;
-            this.buttonUpdateMasterFileInventory.FlatAppearance.BorderSize = 0;
-            this.buttonUpdateMasterFileInventory.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonUpdateMasterFileInventory.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.buttonUpdateMasterFileInventory.ForeColor = System.Drawing.Color.White;
-            this.buttonUpdateMasterFileInventory.Location = new System.Drawing.Point(6, 153);
-            this.buttonUpdateMasterFileInventory.Margin = new System.Windows.Forms.Padding(2);
-            this.buttonUpdateMasterFileInventory.Name = "buttonUpdateMasterFileInventory";
-            this.buttonUpdateMasterFileInventory.Size = new System.Drawing.Size(244, 30);
-            this.buttonUpdateMasterFileInventory.TabIndex = 22;
-            this.buttonUpdateMasterFileInventory.Text = "Update Master File and Inventory";
-            this.buttonUpdateMasterFileInventory.UseVisualStyleBackColor = false;
-            this.buttonUpdateMasterFileInventory.Click += new System.EventHandler(this.buttonUpdateMasterFileInventory_Click);
+            this.buttonUpdateManualMasterFileInventory.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonUpdateManualMasterFileInventory.BackColor = System.Drawing.Color.SeaGreen;
+            this.buttonUpdateManualMasterFileInventory.Enabled = false;
+            this.buttonUpdateManualMasterFileInventory.FlatAppearance.BorderSize = 0;
+            this.buttonUpdateManualMasterFileInventory.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttonUpdateManualMasterFileInventory.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.buttonUpdateManualMasterFileInventory.ForeColor = System.Drawing.Color.White;
+            this.buttonUpdateManualMasterFileInventory.Location = new System.Drawing.Point(6, 111);
+            this.buttonUpdateManualMasterFileInventory.Margin = new System.Windows.Forms.Padding(2);
+            this.buttonUpdateManualMasterFileInventory.Name = "buttonUpdateManualMasterFileInventory";
+            this.buttonUpdateManualMasterFileInventory.Size = new System.Drawing.Size(244, 30);
+            this.buttonUpdateManualMasterFileInventory.TabIndex = 27;
+            this.buttonUpdateManualMasterFileInventory.Text = "Update Master File and Inventory";
+            this.buttonUpdateManualMasterFileInventory.UseVisualStyleBackColor = false;
+            this.buttonUpdateManualMasterFileInventory.Click += new System.EventHandler(this.buttonUpdateManualMasterFileInventory_Click);
             // 
             // TrnIntegrationForm
             // 
@@ -934,5 +954,6 @@
         private System.Windows.Forms.Button buttonManualSalesIntegrationStop;
         private System.Windows.Forms.Button buttonFolderMonitoringIntegrationStop;
         private System.Windows.Forms.Button buttonUpdateMasterFileInventory;
+        private System.Windows.Forms.Button buttonUpdateManualMasterFileInventory;
     }
 }
