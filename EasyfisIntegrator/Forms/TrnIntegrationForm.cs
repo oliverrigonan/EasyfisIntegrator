@@ -12,6 +12,7 @@ using System.Reflection;
 using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 using System.Windows.Forms;
@@ -32,6 +33,9 @@ namespace EasyfisIntegrator.Forms
         public Boolean isMasterFileInventoryUpdating = false;
         public Boolean isManualMasterFileInventoryUpdating = false;
         public Boolean isManualSalesIntegration = false;
+        public String manualSalesIntegrationTerminal;
+        public Task ManualSIIntegrationTask;
+        private CancellationTokenSource cts;
 
         public TrnIntegrationForm()
         {
@@ -543,6 +547,8 @@ namespace EasyfisIntegrator.Forms
             dateTimePickerManualSalesIntegrationDate.Enabled = false;
             comboBoxManualSalesIntegrationTerminal.Enabled = false;
 
+            manualSalesIntegrationTerminal = comboBoxManualSalesIntegrationTerminal.SelectedValue.ToString();
+
             buttonManualSalesIntegrationStart.Enabled = false;
             buttonManualSalesIntegrationStop.Enabled = true;
             buttonUpdateManualMasterFileInventory.Enabled = true;
@@ -569,7 +575,7 @@ namespace EasyfisIntegrator.Forms
         {
             while (isManualSalesIntegrationStarted)
             {
-                String apiUrlHost = textBoxSalesIntegrationDomain.Text;
+                String apiUrlHost = textBoxManualSalesIntegrationDomain.Text;
 
                 var sysSettings = from d in posdb.SysSettings select d;
                 if (sysSettings.Any())
@@ -582,7 +588,7 @@ namespace EasyfisIntegrator.Forms
 
                         Task taskCustomer = Task.Run(() =>
                         {
-                            Controllers.ISPOSMstCustomerController objMstCustomer = new Controllers.ISPOSMstCustomerController(this, dateTimePickerSalesIntegrationDate.Text);
+                            Controllers.ISPOSMstCustomerController objMstCustomer = new Controllers.ISPOSMstCustomerController(this, dateTimePickerManualSalesIntegrationDate.Text);
                             objMstCustomer.SyncCustomer(apiUrlHost);
                         });
                         taskCustomer.Wait();
@@ -591,7 +597,7 @@ namespace EasyfisIntegrator.Forms
                         {
                             Task taskSupplier = Task.Run(() =>
                             {
-                                Controllers.ISPOSMstSupplierController objMstSupplier = new Controllers.ISPOSMstSupplierController(this, dateTimePickerSalesIntegrationDate.Text);
+                                Controllers.ISPOSMstSupplierController objMstSupplier = new Controllers.ISPOSMstSupplierController(this, dateTimePickerManualSalesIntegrationDate.Text);
                                 objMstSupplier.SyncSupplier(apiUrlHost);
                             });
                             taskSupplier.Wait();
@@ -600,7 +606,7 @@ namespace EasyfisIntegrator.Forms
                             {
                                 Task taskItem = Task.Run(() =>
                                 {
-                                    Controllers.ISPOSMstItemController objMstItem = new Controllers.ISPOSMstItemController(this, dateTimePickerSalesIntegrationDate.Text);
+                                    Controllers.ISPOSMstItemController objMstItem = new Controllers.ISPOSMstItemController(this, dateTimePickerManualSalesIntegrationDate.Text);
                                     objMstItem.SyncItem(apiUrlHost);
                                 });
                                 taskItem.Wait();
@@ -613,7 +619,7 @@ namespace EasyfisIntegrator.Forms
                                     {
                                         Task taskItemPrice = Task.Run(() =>
                                         {
-                                            Controllers.ISPOSTrnItemPriceController objTrnItemPrice = new Controllers.ISPOSTrnItemPriceController(this, dateTimePickerSalesIntegrationDate.Text);
+                                            Controllers.ISPOSTrnItemPriceController objTrnItemPrice = new Controllers.ISPOSTrnItemPriceController(this, dateTimePickerManualSalesIntegrationDate.Text);
                                             objTrnItemPrice.SyncItemPrice(apiUrlHost, branchCode);
 
                                         });
@@ -633,7 +639,7 @@ namespace EasyfisIntegrator.Forms
                                     {
                                         Task taskReceivingReceipt = Task.Run(() =>
                                         {
-                                            Controllers.ISPOSTrnReceivingReceiptController objTrnReceivingReceipt = new Controllers.ISPOSTrnReceivingReceiptController(this, dateTimePickerSalesIntegrationDate.Text);
+                                            Controllers.ISPOSTrnReceivingReceiptController objTrnReceivingReceipt = new Controllers.ISPOSTrnReceivingReceiptController(this, dateTimePickerManualSalesIntegrationDate.Text);
                                             objTrnReceivingReceipt.SyncReceivingReceipt(apiUrlHost, branchCode);
                                         });
                                         taskReceivingReceipt.Wait();
@@ -642,7 +648,7 @@ namespace EasyfisIntegrator.Forms
                                         {
                                             Task taskStockIn = Task.Run(() =>
                                             {
-                                                Controllers.ISPOSTrnStockInController objTrnStockIn = new Controllers.ISPOSTrnStockInController(this, dateTimePickerSalesIntegrationDate.Text);
+                                                Controllers.ISPOSTrnStockInController objTrnStockIn = new Controllers.ISPOSTrnStockInController(this, dateTimePickerManualSalesIntegrationDate.Text);
                                                 objTrnStockIn.SyncStockIn(apiUrlHost, branchCode);
                                             });
                                             taskStockIn.Wait();
@@ -651,7 +657,7 @@ namespace EasyfisIntegrator.Forms
                                             {
                                                 Task taskStockOut = Task.Run(() =>
                                                 {
-                                                    Controllers.ISPOSTrnStockOutController objTrnStockOut = new Controllers.ISPOSTrnStockOutController(this, dateTimePickerSalesIntegrationDate.Text);
+                                                    Controllers.ISPOSTrnStockOutController objTrnStockOut = new Controllers.ISPOSTrnStockOutController(this, dateTimePickerManualSalesIntegrationDate.Text);
                                                     objTrnStockOut.SyncStockOut(apiUrlHost, branchCode);
 
                                                 });
@@ -661,7 +667,7 @@ namespace EasyfisIntegrator.Forms
                                                 {
                                                     Task taskStockTransferIn = Task.Run(() =>
                                                     {
-                                                        Controllers.ISPOSTrnStockTransferInController objTrnStockTransferIn = new Controllers.ISPOSTrnStockTransferInController(this, dateTimePickerSalesIntegrationDate.Text);
+                                                        Controllers.ISPOSTrnStockTransferInController objTrnStockTransferIn = new Controllers.ISPOSTrnStockTransferInController(this, dateTimePickerManualSalesIntegrationDate.Text);
                                                         objTrnStockTransferIn.SyncStockTransferIN(apiUrlHost, branchCode);
 
                                                     });
@@ -671,7 +677,7 @@ namespace EasyfisIntegrator.Forms
                                                     {
                                                         Task taskStockTransferOut = Task.Run(() =>
                                                         {
-                                                            Controllers.ISPOSTrnStockTransferOutController objTrnStockTransferOut = new Controllers.ISPOSTrnStockTransferOutController(this, dateTimePickerSalesIntegrationDate.Text);
+                                                            Controllers.ISPOSTrnStockTransferOutController objTrnStockTransferOut = new Controllers.ISPOSTrnStockTransferOutController(this, dateTimePickerManualSalesIntegrationDate.Text);
                                                             objTrnStockTransferOut.SyncStockTransferOT(apiUrlHost, branchCode);
                                                         });
                                                         taskStockTransferOut.Wait();
@@ -680,6 +686,22 @@ namespace EasyfisIntegrator.Forms
                                                         {
                                                             isManualMasterFileInventoryUpdating = false;
                                                             manualSalesIntegrationLogMessages("Sync Completed! \r\n\nTime Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n\r\n\n");
+
+                                                            if (buttonManualSalesIntegrationStop.InvokeRequired)
+                                                            {
+                                                                buttonManualSalesIntegrationStop.Invoke(new MethodInvoker(delegate
+                                                                {
+                                                                    buttonManualSalesIntegrationStop.Enabled = true;
+                                                                }));
+                                                            }
+
+                                                            if (buttonUpdateManualMasterFileInventory.InvokeRequired)
+                                                            {
+                                                                buttonUpdateManualMasterFileInventory.Invoke(new MethodInvoker(delegate
+                                                                {
+                                                                    buttonUpdateManualMasterFileInventory.Enabled = true;
+                                                                }));
+                                                            }
                                                         }
                                                     }
                                                 }
@@ -692,10 +714,18 @@ namespace EasyfisIntegrator.Forms
                     }
                     else
                     {
-                        Task ManualSIIntegrationTask = Task.Run(() =>
+                        cts = new CancellationTokenSource();
+                        CancellationToken token = cts.Token;
+
+                        ManualSIIntegrationTask = Task.Run(() =>
                         {
                             ISPOSManualSalesIntegrationTrnCollectionController manualSalesIntegrationTrnCollectionController = new ISPOSManualSalesIntegrationTrnCollectionController();
-                            manualSalesIntegrationTrnCollectionController.SendSalesInvoice(this, textBoxManualSalesIntegrationDomain.Text, dateTimePickerManualSalesIntegrationDate.Value.ToShortDateString(), Convert.ToInt32(comboBoxManualSalesIntegrationTerminal.SelectedValue));
+                            manualSalesIntegrationTrnCollectionController.SendSalesInvoice(this, textBoxManualSalesIntegrationDomain.Text, dateTimePickerManualSalesIntegrationDate.Value.ToShortDateString(), Convert.ToInt32(manualSalesIntegrationTerminal));
+
+                            if (token.IsCancellationRequested)
+                            {
+                                token.ThrowIfCancellationRequested();
+                            }
                         });
                         ManualSIIntegrationTask.Wait();
 
@@ -729,9 +759,6 @@ namespace EasyfisIntegrator.Forms
 
                     dateTimePickerManualSalesIntegrationDate.Enabled = true;
                     comboBoxManualSalesIntegrationTerminal.Enabled = true;
-
-                    buttonManualSalesIntegrationStart.Enabled = true;
-                    buttonManualSalesIntegrationStop.Enabled = false;
 
                     btnSaveLogs.Enabled = true;
                     btnClearLogs.Enabled = true;
@@ -1159,6 +1186,8 @@ namespace EasyfisIntegrator.Forms
 
         private void buttonUpdateManualMasterFileInventory_Click(object sender, EventArgs e)
         {
+            cts.Cancel();
+
             isManualMasterFileInventoryUpdating = true;
             manualSalesIntegrationLogMessages("Synching master files and inventory... \r\n\n");
 
