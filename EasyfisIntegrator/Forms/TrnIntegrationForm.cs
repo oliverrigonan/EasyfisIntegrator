@@ -34,8 +34,6 @@ namespace EasyfisIntegrator.Forms
         public Boolean isManualMasterFileInventoryUpdating = false;
         public Boolean isManualSalesIntegration = false;
         public String manualSalesIntegrationTerminal;
-        public Task ManualSIIntegrationTask;
-        private CancellationTokenSource cts;
 
         public TrnIntegrationForm()
         {
@@ -714,18 +712,10 @@ namespace EasyfisIntegrator.Forms
                     }
                     else
                     {
-                        cts = new CancellationTokenSource();
-                        CancellationToken token = cts.Token;
-
-                        ManualSIIntegrationTask = Task.Run(() =>
+                        Task ManualSIIntegrationTask = Task.Run(() =>
                         {
                             ISPOSManualSalesIntegrationTrnCollectionController manualSalesIntegrationTrnCollectionController = new ISPOSManualSalesIntegrationTrnCollectionController();
                             manualSalesIntegrationTrnCollectionController.SendSalesInvoice(this, textBoxManualSalesIntegrationDomain.Text, dateTimePickerManualSalesIntegrationDate.Value.ToShortDateString(), Convert.ToInt32(manualSalesIntegrationTerminal));
-
-                            if (token.IsCancellationRequested)
-                            {
-                                token.ThrowIfCancellationRequested();
-                            }
                         });
                         ManualSIIntegrationTask.Wait();
 
@@ -1186,8 +1176,6 @@ namespace EasyfisIntegrator.Forms
 
         private void buttonUpdateManualMasterFileInventory_Click(object sender, EventArgs e)
         {
-            cts.Cancel();
-
             isManualMasterFileInventoryUpdating = true;
             manualSalesIntegrationLogMessages("Synching master files and inventory... \r\n\n");
 
