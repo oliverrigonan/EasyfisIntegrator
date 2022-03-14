@@ -715,7 +715,7 @@ namespace EasyfisIntegrator.Forms
                         Task ManualSIIntegrationTask = Task.Run(() =>
                         {
                             ISPOSManualSalesIntegrationTrnCollectionController manualSalesIntegrationTrnCollectionController = new ISPOSManualSalesIntegrationTrnCollectionController();
-                            manualSalesIntegrationTrnCollectionController.SendSalesInvoice(this, textBoxManualSalesIntegrationDomain.Text, dateTimePickerManualSalesIntegrationDate.Value.ToShortDateString(), Convert.ToInt32(manualSalesIntegrationTerminal));
+                            manualSalesIntegrationTrnCollectionController.SyncSalesInvoiceSI(this, textBoxManualSalesIntegrationDomain.Text, dateTimePickerManualSalesIntegrationDate.Value.ToShortDateString(), Convert.ToInt32(manualSalesIntegrationTerminal));
                         });
                         ManualSIIntegrationTask.Wait();
 
@@ -745,7 +745,7 @@ namespace EasyfisIntegrator.Forms
             {
                 BeginInvoke((MethodInvoker)delegate
                 {
-                    isManualSalesIntegrationStarted = false;
+                    //isManualSalesIntegrationStarted = false;
 
                     dateTimePickerManualSalesIntegrationDate.Enabled = true;
                     comboBoxManualSalesIntegrationTerminal.Enabled = true;

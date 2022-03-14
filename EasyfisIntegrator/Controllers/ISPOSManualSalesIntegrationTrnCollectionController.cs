@@ -20,10 +20,18 @@ namespace EasyfisIntegrator.Controllers
         // ====
         private InnosoftPOSData.InnosoftPOSDataDataContext posdb = new InnosoftPOSData.InnosoftPOSDataDataContext(SysGlobalSettings.getConnectionString());
 
+        // =======================
+        // Sync Sales Invoice - SI
+        // =======================
+        public async void SyncSalesInvoiceSI(Forms.TrnIntegrationForm trnIntegrationForm, String domain, String salesDate, Int32 terminalId)
+        {
+            await SendSalesInvoice(trnIntegrationForm, domain, salesDate, terminalId);
+        }
+
         // ==================
         // Send Sales Invoice
         // ==================
-        public async void SendSalesInvoice(Forms.TrnIntegrationForm trnIntegrationForm, String domain, String salesDate, Int32 terminalId)
+        public async Task SendSalesInvoice(Forms.TrnIntegrationForm trnIntegrationForm, String domain, String salesDate, Int32 terminalId)
         {
             List<Entities.FolderMonitoringTrnSalesInvoice> newSalesInvoices = new List<Entities.FolderMonitoringTrnSalesInvoice>();
             JavaScriptSerializer serializer = new JavaScriptSerializer();
@@ -206,9 +214,9 @@ namespace EasyfisIntegrator.Controllers
                     trnIntegrationForm.manualSalesIntegrationLogMessages("Error: " + e.Message + "\r\n\n");
                     trnIntegrationForm.manualSalesIntegrationLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                     trnIntegrationForm.manualSalesIntegrationLogMessages("\r\n\n");
-
-                    trnIntegrationForm.manualSalesIntegrationLogMessages("Retrying...\r\n\n");
                 }
+
+                Boolean clean = false;
 
                 // ========
                 // Cleaning
@@ -225,8 +233,6 @@ namespace EasyfisIntegrator.Controllers
                             trnIntegrationForm.manualSalesIntegrationLogMessages(deleteTemporarySalesInvoiceTask);
                             trnIntegrationForm.manualSalesIntegrationLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                             trnIntegrationForm.manualSalesIntegrationLogMessages("\r\n\n");
-
-                            trnIntegrationForm.manualSalesIntegrationLogMessages("Retrying...\r\n\n");
                         }
                         else
                         {
@@ -236,6 +242,8 @@ namespace EasyfisIntegrator.Controllers
                             trnIntegrationForm.manualSalesIntegrationLogMessages("Clean Successful!" + "\r\n\n");
                             trnIntegrationForm.manualSalesIntegrationLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                             trnIntegrationForm.manualSalesIntegrationLogMessages("\r\n\n");
+
+                            clean = true;
                         }
                     }
                     catch (Exception e)
@@ -243,186 +251,86 @@ namespace EasyfisIntegrator.Controllers
                         trnIntegrationForm.manualSalesIntegrationLogMessages("Error: " + e.Message + "\r\n\n");
                         trnIntegrationForm.manualSalesIntegrationLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                         trnIntegrationForm.manualSalesIntegrationLogMessages("\r\n\n");
-
-                        trnIntegrationForm.manualSalesIntegrationLogMessages("Retrying...\r\n\n");
                     }
 
-                    Boolean post = false;
-
-                    // =======
-                    // Sending
-                    // =======
-                    trnIntegrationForm.manualSalesIntegrationLogMessages("Sending Sales... (0%) \r\n\n");
-
-                    try
+                    if (clean)
                     {
-                        Decimal percentage = 0;
+                        Boolean post = false;
 
-                        Boolean send = false;
-                        Int32 skip = 0;
-
-                        for (Int32 i = 1; i <= newSalesInvoices.Count(); i++)
-                        {
-                            if (i % 100 == 0)
-                            {
-                                jsonData = serializer.Serialize(newSalesInvoices.Skip(skip).Take(100));
-                                skip = i;
-
-                                send = true;
-                                percentage = Convert.ToDecimal((Convert.ToDecimal(skip) / Convert.ToDecimal(newSalesInvoices.Count())) * 100);
-                            }
-                            else
-                            {
-                                if (i == newSalesInvoices.Count())
-                                {
-                                    if (newSalesInvoices.Count() <= 100)
-                                    {
-                                        jsonData = serializer.Serialize(newSalesInvoices);
-                                    }
-                                    else
-                                    {
-                                        jsonData = serializer.Serialize(newSalesInvoices.Skip(skip).Take(i - skip));
-                                    }
-
-                                    send = true;
-                                    percentage = Convert.ToDecimal((Convert.ToDecimal(i) / Convert.ToDecimal(newSalesInvoices.Count())) * 100);
-                                }
-                            }
-
-                            if (send)
-                            {
-                                try
-                                {
-                                    String insertTemporarySalesInvoiceTask = await InsertTemporarySalesInvoice(domain, jsonData);
-                                    if (!insertTemporarySalesInvoiceTask.Equals("Send Successful..."))
-                                    {
-                                        trnIntegrationForm.manualSalesIntegrationLogMessages(insertTemporarySalesInvoiceTask);
-                                        trnIntegrationForm.manualSalesIntegrationLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                        trnIntegrationForm.manualSalesIntegrationLogMessages("\r\n\n");
-
-                                        trnIntegrationForm.manualSalesIntegrationLogMessages("Retrying...\r\n\n");
-
-                                        Thread.Sleep(5000);
-                                    }
-                                    else
-                                    {
-                                        trnIntegrationForm.manualSalesIntegrationLogMessages("ManualSIIntegrationLogOnce");
-                                        trnIntegrationForm.manualSalesIntegrationLogMessages("\r\n\nSending Sales... (" + Math.Round(percentage, 2) + "%) \r\n\n");
-
-                                        if (i == newSalesInvoices.Count())
-                                        {
-                                            trnIntegrationForm.manualSalesIntegrationLogMessages("Send Successful!" + "\r\n\n");
-                                            trnIntegrationForm.manualSalesIntegrationLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                            trnIntegrationForm.manualSalesIntegrationLogMessages("\r\n\n");
-                                        }
-                                    }
-                                }
-                                catch (Exception e)
-                                {
-                                    trnIntegrationForm.manualSalesIntegrationLogMessages("Sending Error: " + e.Message + "\r\n\n");
-                                    trnIntegrationForm.manualSalesIntegrationLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                                    trnIntegrationForm.manualSalesIntegrationLogMessages("\r\n\n");
-
-                                    trnIntegrationForm.manualSalesIntegrationLogMessages("Retrying...\r\n\n");
-                                }
-
-                                send = false;
-                            }
-                        }
-
-                        post = true;
-                    }
-                    catch (Exception e)
-                    {
-                        trnIntegrationForm.manualSalesIntegrationLogMessages("Error: " + e.Message + "\r\n\n");
-                        trnIntegrationForm.manualSalesIntegrationLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
-                        trnIntegrationForm.manualSalesIntegrationLogMessages("\r\n\n");
-
-                        trnIntegrationForm.manualSalesIntegrationLogMessages("Retrying...\r\n\n");
-                    }
-
-                    // =======
-                    // Posting
-                    // =======
-                    if (post)
-                    {
-                        trnIntegrationForm.manualSalesIntegrationLogMessages("Posting Sales... (0%) \r\n\n");
+                        // =======
+                        // Sending
+                        // =======
+                        trnIntegrationForm.manualSalesIntegrationLogMessages("Sending Sales... (0%) \r\n\n");
 
                         try
                         {
-                            var groupedSalesInvoices = from d in newSalesInvoices
-                                                       group d by new
-                                                       {
-                                                           d.BranchCode,
-                                                           d.ManualSINumber
-                                                       } into g
-                                                       select g.Key;
+                            Decimal percentage = 0;
 
-                            var salesInvoices = from d in groupedSalesInvoices.ToList() select d;
-                            if (salesInvoices.Any())
+                            Boolean send = false;
+                            Int32 skip = 0;
+
+                            for (Int32 i = 1; i <= newSalesInvoices.Count(); i++)
                             {
-                                Decimal percentage = 0;
-                                Int32 count = 0;
-
-                                foreach (var salesInvoice in salesInvoices.ToList())
+                                if (i % 100 == 0)
                                 {
-                                    count += 1;
-                                    percentage = Convert.ToDecimal((Convert.ToDecimal(count) / Convert.ToDecimal(salesInvoices.Count())) * 100);
+                                    jsonData = serializer.Serialize(newSalesInvoices.Skip(skip).Take(100));
+                                    skip = i;
 
+                                    send = true;
+                                    percentage = Convert.ToDecimal((Convert.ToDecimal(skip) / Convert.ToDecimal(newSalesInvoices.Count())) * 100);
+                                }
+                                else
+                                {
+                                    if (i == newSalesInvoices.Count())
+                                    {
+                                        if (newSalesInvoices.Count() <= 100)
+                                        {
+                                            jsonData = serializer.Serialize(newSalesInvoices);
+                                        }
+                                        else
+                                        {
+                                            jsonData = serializer.Serialize(newSalesInvoices.Skip(skip).Take(i - skip));
+                                        }
+
+                                        send = true;
+                                        percentage = Convert.ToDecimal((Convert.ToDecimal(i) / Convert.ToDecimal(newSalesInvoices.Count())) * 100);
+                                    }
+                                }
+
+                                if (send)
+                                {
                                     try
                                     {
-                                        String postSalesInvoiceTask = await PostSalesInvoice(domain, salesInvoice.BranchCode, salesInvoice.ManualSINumber);
-                                        if (!postSalesInvoiceTask.Equals("Post Successful..."))
+                                        String insertTemporarySalesInvoiceTask = await InsertTemporarySalesInvoice(domain, jsonData);
+                                        if (!insertTemporarySalesInvoiceTask.Equals("Send Successful..."))
                                         {
-                                            trnIntegrationForm.manualSalesIntegrationLogMessages(postSalesInvoiceTask);
+                                            trnIntegrationForm.manualSalesIntegrationLogMessages(insertTemporarySalesInvoiceTask);
                                             trnIntegrationForm.manualSalesIntegrationLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                                             trnIntegrationForm.manualSalesIntegrationLogMessages("\r\n\n");
-
-                                            trnIntegrationForm.manualSalesIntegrationLogMessages("Retrying...\r\n\n");
-
-                                            Thread.Sleep(5000);
                                         }
                                         else
                                         {
                                             trnIntegrationForm.manualSalesIntegrationLogMessages("ManualSIIntegrationLogOnce");
-                                            trnIntegrationForm.manualSalesIntegrationLogMessages("\r\n\nPosting Sales... (" + Math.Round(percentage, 2) + "%) \r\n\n");
+                                            trnIntegrationForm.manualSalesIntegrationLogMessages("\r\n\nSending Sales... (" + Math.Round(percentage, 2) + "%) \r\n\n");
 
-                                            if (count == salesInvoices.Count())
+                                            if (i == newSalesInvoices.Count())
                                             {
-                                                trnIntegrationForm.manualSalesIntegrationLogMessages("Post Successful!" + "\r\n\n");
+                                                trnIntegrationForm.manualSalesIntegrationLogMessages("Send Successful!" + "\r\n\n");
                                                 trnIntegrationForm.manualSalesIntegrationLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                                                 trnIntegrationForm.manualSalesIntegrationLogMessages("\r\n\n");
+
+                                                post = true;
                                             }
                                         }
                                     }
                                     catch (Exception e)
                                     {
-                                        trnIntegrationForm.manualSalesIntegrationLogMessages("Posting Error: " + e.Message + "\r\n\n");
+                                        trnIntegrationForm.manualSalesIntegrationLogMessages("Sending Error: " + e.Message + "\r\n\n");
                                         trnIntegrationForm.manualSalesIntegrationLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                                         trnIntegrationForm.manualSalesIntegrationLogMessages("\r\n\n");
-
-                                        trnIntegrationForm.manualSalesIntegrationLogMessages("Retrying...\r\n\n");
                                     }
-                                }
-                            }
 
-                            if (collectionIds.Any())
-                            {
-                                foreach (var collectionId in collectionIds)
-                                {
-                                    var collection = from d in posdb.TrnCollections
-                                                     where d.Id == collectionId
-                                                     select d;
-
-                                    if (collection.Any())
-                                    {
-                                        String defaultManualSINumber = defaultReferenceNumberTimeStamp + "_" + collection.FirstOrDefault().MstCustomer.CustomerCode;
-
-                                        var updateCollectionPostCode = collection.FirstOrDefault();
-                                        updateCollectionPostCode.PostCode = defaultManualSINumber;
-
-                                        posdb.SubmitChanges();
-                                    }
+                                    send = false;
                                 }
                             }
                         }
@@ -431,8 +339,93 @@ namespace EasyfisIntegrator.Controllers
                             trnIntegrationForm.manualSalesIntegrationLogMessages("Error: " + e.Message + "\r\n\n");
                             trnIntegrationForm.manualSalesIntegrationLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
                             trnIntegrationForm.manualSalesIntegrationLogMessages("\r\n\n");
+                        }
 
-                            trnIntegrationForm.manualSalesIntegrationLogMessages("Retrying...\r\n\n");
+                        // =======
+                        // Posting
+                        // =======
+                        if (post)
+                        {
+                            trnIntegrationForm.manualSalesIntegrationLogMessages("Posting Sales... (0%) \r\n\n");
+
+                            try
+                            {
+                                var groupedSalesInvoices = from d in newSalesInvoices
+                                                           group d by new
+                                                           {
+                                                               d.BranchCode,
+                                                               d.ManualSINumber
+                                                           } into g
+                                                           select g.Key;
+
+                                var salesInvoices = from d in groupedSalesInvoices.ToList() select d;
+                                if (salesInvoices.Any())
+                                {
+                                    Decimal percentage = 0;
+                                    Int32 count = 0;
+
+                                    foreach (var salesInvoice in salesInvoices.ToList())
+                                    {
+                                        count += 1;
+                                        percentage = Convert.ToDecimal((Convert.ToDecimal(count) / Convert.ToDecimal(salesInvoices.Count())) * 100);
+
+                                        try
+                                        {
+                                            String postSalesInvoiceTask = await PostSalesInvoice(domain, salesInvoice.BranchCode, salesInvoice.ManualSINumber);
+                                            if (!postSalesInvoiceTask.Equals("Post Successful..."))
+                                            {
+                                                trnIntegrationForm.manualSalesIntegrationLogMessages(postSalesInvoiceTask);
+                                                trnIntegrationForm.manualSalesIntegrationLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                                trnIntegrationForm.manualSalesIntegrationLogMessages("\r\n\n");
+                                            }
+                                            else
+                                            {
+                                                trnIntegrationForm.manualSalesIntegrationLogMessages("ManualSIIntegrationLogOnce");
+                                                trnIntegrationForm.manualSalesIntegrationLogMessages("\r\n\nPosting Sales... (" + Math.Round(percentage, 2) + "%) \r\n\n");
+
+                                                if (count == salesInvoices.Count())
+                                                {
+                                                    trnIntegrationForm.manualSalesIntegrationLogMessages("Post Successful!" + "\r\n\n");
+                                                    trnIntegrationForm.manualSalesIntegrationLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                                    trnIntegrationForm.manualSalesIntegrationLogMessages("\r\n\n");
+                                                }
+                                            }
+                                        }
+                                        catch (Exception e)
+                                        {
+                                            trnIntegrationForm.manualSalesIntegrationLogMessages("Posting Error: " + e.Message + "\r\n\n");
+                                            trnIntegrationForm.manualSalesIntegrationLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                            trnIntegrationForm.manualSalesIntegrationLogMessages("\r\n\n");
+                                        }
+                                    }
+                                }
+
+                                if (collectionIds.Any())
+                                {
+                                    foreach (var collectionId in collectionIds)
+                                    {
+                                        var collection = from d in posdb.TrnCollections
+                                                         where d.Id == collectionId
+                                                         select d;
+
+                                        if (collection.Any())
+                                        {
+                                            String defaultManualSINumber = defaultReferenceNumberTimeStamp + "_" + collection.FirstOrDefault().MstCustomer.CustomerCode;
+
+                                            var updateCollectionPostCode = collection.FirstOrDefault();
+                                            updateCollectionPostCode.PostCode = defaultManualSINumber;
+
+                                            posdb.SubmitChanges();
+                                        }
+                                    }
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                trnIntegrationForm.manualSalesIntegrationLogMessages("Error: " + e.Message + "\r\n\n");
+                                trnIntegrationForm.manualSalesIntegrationLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                                trnIntegrationForm.manualSalesIntegrationLogMessages("\r\n\n");
+                            }
                         }
                     }
                 }
