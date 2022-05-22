@@ -855,6 +855,7 @@ namespace EasyfisIntegrator.Forms
             {
                 isFolderMonitoringIntegrationStarted = true;
 
+                buttonFolderMonitoringDeleteAllTransactions.Enabled = false;
                 buttonFolderMonitoringIntegrationStart.Enabled = false;
                 buttonFolderMonitoringIntegrationStop.Enabled = true;
 
@@ -888,6 +889,7 @@ namespace EasyfisIntegrator.Forms
             {
                 isFolderMonitoringIntegrationStarted = false;
 
+                buttonFolderMonitoringDeleteAllTransactions.Enabled = true;
                 buttonFolderMonitoringIntegrationStart.Enabled = true;
                 buttonFolderMonitoringIntegrationStop.Enabled = false;
 
@@ -1181,6 +1183,298 @@ namespace EasyfisIntegrator.Forms
 
             buttonUpdateManualMasterFileInventory.Enabled = false;
             buttonManualSalesIntegrationStop.Enabled = false;
+        }
+
+        private void buttonFolderMonitoringDeleteAllTransactions_Click(object sender, EventArgs e)
+        {
+
+            DialogResult dialogResult = MessageBox.Show("Are you sure you want to delete all transactions for date " + dateTimePickerDeleteAllTransactions.Value.ToShortDateString() + "?", "EasyFIS Integration", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (dialogResult == DialogResult.Yes)
+            {
+                buttonUpdateMasterFileInventory.Enabled = true;
+                buttonSalesIntegrationStart.Enabled = false;
+                buttonSalesIntegrationStop.Enabled = true;
+
+                folderMonitoringLogMessages("Currently deleting transactions! \r\n\nTime Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+
+                dateTimePickerSalesIntegrationDate.Enabled = false;
+
+                btnSaveLogs.Enabled = false;
+                btnClearLogs.Enabled = false;
+                btnSettings.Enabled = false;
+
+                btnLogout.Enabled = false;
+
+                tabPagePOSSalesIntegration.Enabled = true;
+                tabPagePOSManualSalesIntegration.Enabled = false;
+                tabPageFolderMonitoringIntegration.Enabled = false;
+
+                if (backgroundWorkerDeleteAllTransactions.IsBusy != true)
+                {
+                    backgroundWorkerDeleteAllTransactions.RunWorkerAsync();
+                }
+            }
+        }
+
+        private void backgroundWorkerDeleteAllTransactions_DoWork(object sender, DoWorkEventArgs e)
+        {
+
+            if (comboBoxTransactionList.InvokeRequired && dateTimePickerDeleteAllTransactions.InvokeRequired)
+            {
+                BeginInvoke((MethodInvoker)delegate
+                {
+                    String apiUrlHost = textBoxSalesIntegrationDomain.Text;
+                    String transactionType = comboBoxTransactionList.Text;
+                    String currentDate = dateTimePickerDeleteAllTransactions.Value.ToShortDateString();
+
+                    switch (transactionType)
+                    {
+                        case "OR":
+                            Task taskCollection = Task.Run(() =>
+                            {
+                                FolderMonitoringTrnCollectionController folderMonitoringOR = new FolderMonitoringTrnCollectionController();
+                                folderMonitoringOR.DeleteAllCollection(this, textBoxFolderMonitoringUserCode.Text, currentDate);
+                            });
+                            taskCollection.Wait();
+
+                            if (taskCollection.IsCompleted)
+                            {
+                                buttonUpdateMasterFileInventory.Enabled = false;
+                                buttonSalesIntegrationStart.Enabled = true;
+                                buttonSalesIntegrationStop.Enabled = false;
+
+                                dateTimePickerSalesIntegrationDate.Enabled = true;
+
+                                btnSaveLogs.Enabled = true;
+                                btnClearLogs.Enabled = true;
+                                btnSettings.Enabled = true;
+
+                                btnLogout.Enabled = true;
+
+                                tabPagePOSSalesIntegration.Enabled = true;
+                                tabPagePOSManualSalesIntegration.Enabled = true;
+                                tabPageFolderMonitoringIntegration.Enabled = true;
+                            }
+
+                            break;
+                        case "CV":
+                            Task taskDisbursement = Task.Run(() =>
+                            {
+                                FolderMonitoringTrnDisbursementController folderMonitoringOR = new FolderMonitoringTrnDisbursementController();
+                                folderMonitoringOR.DeleteAllDisbursement(this, textBoxFolderMonitoringUserCode.Text, currentDate);
+                            });
+                            taskDisbursement.Wait();
+
+                            if (taskDisbursement.IsCompleted)
+                            {
+                                buttonUpdateMasterFileInventory.Enabled = false;
+                                buttonSalesIntegrationStart.Enabled = true;
+                                buttonSalesIntegrationStop.Enabled = false;
+
+                                dateTimePickerSalesIntegrationDate.Enabled = true;
+
+                                btnSaveLogs.Enabled = true;
+                                btnClearLogs.Enabled = true;
+                                btnSettings.Enabled = true;
+
+                                btnLogout.Enabled = true;
+
+                                tabPagePOSSalesIntegration.Enabled = true;
+                                tabPagePOSManualSalesIntegration.Enabled = true;
+                                tabPageFolderMonitoringIntegration.Enabled = true;
+                            }
+
+                            break;
+                        case "JV":
+                            Task taskJournalVoucher = Task.Run(() =>
+                            {
+                                FolderMonitoringTrnJournalVoucherController folderMonitoringOR = new FolderMonitoringTrnJournalVoucherController();
+                                folderMonitoringOR.DeleteAllJournalVoucher(this, textBoxFolderMonitoringUserCode.Text, currentDate);
+                            });
+                            taskJournalVoucher.Wait();
+
+                            if (taskJournalVoucher.IsCompleted)
+                            {
+                                buttonUpdateMasterFileInventory.Enabled = false;
+                                buttonSalesIntegrationStart.Enabled = true;
+                                buttonSalesIntegrationStop.Enabled = false;
+
+                                dateTimePickerSalesIntegrationDate.Enabled = true;
+
+                                btnSaveLogs.Enabled = true;
+                                btnClearLogs.Enabled = true;
+                                btnSettings.Enabled = true;
+
+                                btnLogout.Enabled = true;
+
+                                tabPagePOSSalesIntegration.Enabled = true;
+                                tabPagePOSManualSalesIntegration.Enabled = true;
+                                tabPageFolderMonitoringIntegration.Enabled = true;
+                            }
+
+                            break;
+                        case "RR":
+                            Task taskReceivingReceipt = Task.Run(() =>
+                            {
+                                FolderMonitoringTrnReceivingReceiptController folderMonitoringOR = new FolderMonitoringTrnReceivingReceiptController();
+                                folderMonitoringOR.DeleteAllReceivingReceipt(this, textBoxFolderMonitoringUserCode.Text, currentDate);
+                            });
+                            taskReceivingReceipt.Wait();
+
+                            if (taskReceivingReceipt.IsCompleted)
+                            {
+                                buttonUpdateMasterFileInventory.Enabled = false;
+                                buttonSalesIntegrationStart.Enabled = true;
+                                buttonSalesIntegrationStop.Enabled = false;
+
+                                dateTimePickerSalesIntegrationDate.Enabled = true;
+
+                                btnSaveLogs.Enabled = true;
+                                btnClearLogs.Enabled = true;
+                                btnSettings.Enabled = true;
+
+                                btnLogout.Enabled = true;
+
+                                tabPagePOSSalesIntegration.Enabled = true;
+                                tabPagePOSManualSalesIntegration.Enabled = true;
+                                tabPageFolderMonitoringIntegration.Enabled = true;
+                            }
+
+                            break;
+                        case "SI":
+                            Task taskSalesInvoice = Task.Run(() =>
+                            {
+                                FolderMonitoringTrnSalesInvoiceController folderMonitoringOR = new FolderMonitoringTrnSalesInvoiceController();
+                                folderMonitoringOR.DeleteAllSalesInvoice(this, textBoxFolderMonitoringUserCode.Text, currentDate);
+                            });
+                            taskSalesInvoice.Wait();
+
+                            if (taskSalesInvoice.IsCompleted)
+                            {
+                                buttonUpdateMasterFileInventory.Enabled = false;
+                                buttonSalesIntegrationStart.Enabled = true;
+                                buttonSalesIntegrationStop.Enabled = false;
+
+                                dateTimePickerSalesIntegrationDate.Enabled = true;
+
+                                btnSaveLogs.Enabled = true;
+                                btnClearLogs.Enabled = true;
+                                btnSettings.Enabled = true;
+
+                                btnLogout.Enabled = true;
+
+                                tabPagePOSSalesIntegration.Enabled = true;
+                                tabPagePOSManualSalesIntegration.Enabled = true;
+                                tabPageFolderMonitoringIntegration.Enabled = true;
+                            }
+
+                            break;
+                        case "IN":
+                            Task taskStockIn = Task.Run(() =>
+                            {
+                                FolderMonitoringTrnStockInController folderMonitoringOR = new FolderMonitoringTrnStockInController();
+                                folderMonitoringOR.DeleteAllStockIn(this, textBoxFolderMonitoringUserCode.Text, currentDate);
+                            });
+                            taskStockIn.Wait();
+
+                            if (taskStockIn.IsCompleted)
+                            {
+                                buttonUpdateMasterFileInventory.Enabled = false;
+                                buttonSalesIntegrationStart.Enabled = true;
+                                buttonSalesIntegrationStop.Enabled = false;
+
+                                dateTimePickerSalesIntegrationDate.Enabled = true;
+
+                                btnSaveLogs.Enabled = true;
+                                btnClearLogs.Enabled = true;
+                                btnSettings.Enabled = true;
+
+                                btnLogout.Enabled = true;
+
+                                tabPagePOSSalesIntegration.Enabled = true;
+                                tabPagePOSManualSalesIntegration.Enabled = true;
+                                tabPageFolderMonitoringIntegration.Enabled = true;
+                            }
+
+                            break;
+                        case "OT":
+                            Task taskStockOut = Task.Run(() =>
+                            {
+                                FolderMonitoringTrnStockOutController folderMonitoringOR = new FolderMonitoringTrnStockOutController();
+                                folderMonitoringOR.DeleteAllStockOut(this, textBoxFolderMonitoringUserCode.Text, currentDate);
+                            });
+                            taskStockOut.Wait();
+
+                            if (taskStockOut.IsCompleted)
+                            {
+                                buttonUpdateMasterFileInventory.Enabled = false;
+                                buttonSalesIntegrationStart.Enabled = true;
+                                buttonSalesIntegrationStop.Enabled = false;
+
+                                dateTimePickerSalesIntegrationDate.Enabled = true;
+
+                                btnSaveLogs.Enabled = true;
+                                btnClearLogs.Enabled = true;
+                                btnSettings.Enabled = true;
+
+                                btnLogout.Enabled = true;
+
+                                tabPagePOSSalesIntegration.Enabled = true;
+                                tabPagePOSManualSalesIntegration.Enabled = true;
+                                tabPageFolderMonitoringIntegration.Enabled = true;
+                            }
+
+                            break;
+                        case "ST":
+                            Task taskStockTransfer = Task.Run(() =>
+                            {
+                                FolderMonitoringTrnStockTransferController folderMonitoringOR = new FolderMonitoringTrnStockTransferController();
+                                folderMonitoringOR.DeleteAllStockTransfer(this, textBoxFolderMonitoringUserCode.Text, currentDate);
+                            });
+                            taskStockTransfer.Wait();
+
+                            if (taskStockTransfer.IsCompleted)
+                            {
+                                buttonUpdateMasterFileInventory.Enabled = false;
+                                buttonSalesIntegrationStart.Enabled = true;
+                                buttonSalesIntegrationStop.Enabled = false;
+
+                                dateTimePickerSalesIntegrationDate.Enabled = true;
+
+                                btnSaveLogs.Enabled = true;
+                                btnClearLogs.Enabled = true;
+                                btnSettings.Enabled = true;
+
+                                btnLogout.Enabled = true;
+
+                                tabPagePOSSalesIntegration.Enabled = true;
+                                tabPagePOSManualSalesIntegration.Enabled = true;
+                                tabPageFolderMonitoringIntegration.Enabled = true;
+                            }
+
+                            break;
+                        default:
+                            buttonUpdateMasterFileInventory.Enabled = false;
+                            buttonSalesIntegrationStart.Enabled = true;
+                            buttonSalesIntegrationStop.Enabled = false;
+
+                            dateTimePickerSalesIntegrationDate.Enabled = true;
+
+                            btnSaveLogs.Enabled = true;
+                            btnClearLogs.Enabled = true;
+                            btnSettings.Enabled = true;
+
+                            btnLogout.Enabled = true;
+
+                            tabPagePOSSalesIntegration.Enabled = true;
+                            tabPagePOSManualSalesIntegration.Enabled = true;
+                            tabPageFolderMonitoringIntegration.Enabled = true;
+
+                            break;
+                    }
+                });
+            }
+
         }
     }
 }

@@ -61,6 +61,7 @@
             this.buttonSalesIntegrationStop = new System.Windows.Forms.Button();
             this.txtLogs = new System.Windows.Forms.TextBox();
             this.tabPagePOSManualSalesIntegration = new System.Windows.Forms.TabPage();
+            this.buttonUpdateManualMasterFileInventory = new System.Windows.Forms.Button();
             this.buttonManualSalesIntegrationStop = new System.Windows.Forms.Button();
             this.textBoxPOSManualSalesIntegrationLogs = new System.Windows.Forms.TextBox();
             this.buttonManualSalesIntegrationStart = new System.Windows.Forms.Button();
@@ -72,8 +73,11 @@
             this.dateTimePickerManualSalesIntegrationDate = new System.Windows.Forms.DateTimePicker();
             this.label17 = new System.Windows.Forms.Label();
             this.tabPageFolderMonitoringIntegration = new System.Windows.Forms.TabPage();
+            this.dateTimePickerDeleteAllTransactions = new System.Windows.Forms.DateTimePicker();
+            this.buttonFolderMonitoringDeleteAllTransactions = new System.Windows.Forms.Button();
             this.buttonFolderMonitoringIntegrationStop = new System.Windows.Forms.Button();
             this.btnGetCSVTemplate = new System.Windows.Forms.Button();
+            this.comboBoxTransactionList = new System.Windows.Forms.ComboBox();
             this.panel4 = new System.Windows.Forms.Panel();
             this.label12 = new System.Windows.Forms.Label();
             this.textBoxFolderToMonitor = new System.Windows.Forms.TextBox();
@@ -86,7 +90,7 @@
             this.backgroundWorkerFolderMonitoringIntegration = new System.ComponentModel.BackgroundWorker();
             this.backgroundWorkerManualSalesIntegration = new System.ComponentModel.BackgroundWorker();
             this.backgroundWorkerSalesIntegration = new System.ComponentModel.BackgroundWorker();
-            this.buttonUpdateManualMasterFileInventory = new System.Windows.Forms.Button();
+            this.backgroundWorkerDeleteAllTransactions = new System.ComponentModel.BackgroundWorker();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel2.SuspendLayout();
@@ -520,6 +524,24 @@
             this.tabPagePOSManualSalesIntegration.Text = "POS - Manual Sales Integration";
             this.tabPagePOSManualSalesIntegration.UseVisualStyleBackColor = true;
             // 
+            // buttonUpdateManualMasterFileInventory
+            // 
+            this.buttonUpdateManualMasterFileInventory.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonUpdateManualMasterFileInventory.BackColor = System.Drawing.Color.SeaGreen;
+            this.buttonUpdateManualMasterFileInventory.Enabled = false;
+            this.buttonUpdateManualMasterFileInventory.FlatAppearance.BorderSize = 0;
+            this.buttonUpdateManualMasterFileInventory.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttonUpdateManualMasterFileInventory.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.buttonUpdateManualMasterFileInventory.ForeColor = System.Drawing.Color.White;
+            this.buttonUpdateManualMasterFileInventory.Location = new System.Drawing.Point(6, 111);
+            this.buttonUpdateManualMasterFileInventory.Margin = new System.Windows.Forms.Padding(2);
+            this.buttonUpdateManualMasterFileInventory.Name = "buttonUpdateManualMasterFileInventory";
+            this.buttonUpdateManualMasterFileInventory.Size = new System.Drawing.Size(244, 30);
+            this.buttonUpdateManualMasterFileInventory.TabIndex = 27;
+            this.buttonUpdateManualMasterFileInventory.Text = "Update Master File and Inventory";
+            this.buttonUpdateManualMasterFileInventory.UseVisualStyleBackColor = false;
+            this.buttonUpdateManualMasterFileInventory.Click += new System.EventHandler(this.buttonUpdateManualMasterFileInventory_Click);
+            // 
             // buttonManualSalesIntegrationStop
             // 
             this.buttonManualSalesIntegrationStop.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -656,8 +678,11 @@
             // 
             // tabPageFolderMonitoringIntegration
             // 
+            this.tabPageFolderMonitoringIntegration.Controls.Add(this.dateTimePickerDeleteAllTransactions);
+            this.tabPageFolderMonitoringIntegration.Controls.Add(this.buttonFolderMonitoringDeleteAllTransactions);
             this.tabPageFolderMonitoringIntegration.Controls.Add(this.buttonFolderMonitoringIntegrationStop);
             this.tabPageFolderMonitoringIntegration.Controls.Add(this.btnGetCSVTemplate);
+            this.tabPageFolderMonitoringIntegration.Controls.Add(this.comboBoxTransactionList);
             this.tabPageFolderMonitoringIntegration.Controls.Add(this.panel4);
             this.tabPageFolderMonitoringIntegration.Controls.Add(this.buttonFolderMonitoringIntegrationStart);
             this.tabPageFolderMonitoringIntegration.Controls.Add(this.txtFolderMonitoringLogs);
@@ -669,6 +694,31 @@
             this.tabPageFolderMonitoringIntegration.TabIndex = 1;
             this.tabPageFolderMonitoringIntegration.Text = "Folder Monitoring";
             this.tabPageFolderMonitoringIntegration.UseVisualStyleBackColor = true;
+            // 
+            // dateTimePickerDeleteAllTransactions
+            // 
+            this.dateTimePickerDeleteAllTransactions.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dateTimePickerDeleteAllTransactions.Location = new System.Drawing.Point(306, 117);
+            this.dateTimePickerDeleteAllTransactions.Name = "dateTimePickerDeleteAllTransactions";
+            this.dateTimePickerDeleteAllTransactions.Size = new System.Drawing.Size(82, 20);
+            this.dateTimePickerDeleteAllTransactions.TabIndex = 28;
+            // 
+            // buttonFolderMonitoringDeleteAllTransactions
+            // 
+            this.buttonFolderMonitoringDeleteAllTransactions.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonFolderMonitoringDeleteAllTransactions.BackColor = System.Drawing.Color.IndianRed;
+            this.buttonFolderMonitoringDeleteAllTransactions.FlatAppearance.BorderSize = 0;
+            this.buttonFolderMonitoringDeleteAllTransactions.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttonFolderMonitoringDeleteAllTransactions.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.buttonFolderMonitoringDeleteAllTransactions.ForeColor = System.Drawing.Color.White;
+            this.buttonFolderMonitoringDeleteAllTransactions.Location = new System.Drawing.Point(393, 111);
+            this.buttonFolderMonitoringDeleteAllTransactions.Margin = new System.Windows.Forms.Padding(2);
+            this.buttonFolderMonitoringDeleteAllTransactions.Name = "buttonFolderMonitoringDeleteAllTransactions";
+            this.buttonFolderMonitoringDeleteAllTransactions.Size = new System.Drawing.Size(74, 30);
+            this.buttonFolderMonitoringDeleteAllTransactions.TabIndex = 24;
+            this.buttonFolderMonitoringDeleteAllTransactions.Text = "Delete";
+            this.buttonFolderMonitoringDeleteAllTransactions.UseVisualStyleBackColor = false;
+            this.buttonFolderMonitoringDeleteAllTransactions.Click += new System.EventHandler(this.buttonFolderMonitoringDeleteAllTransactions_Click);
             // 
             // buttonFolderMonitoringIntegrationStop
             // 
@@ -703,6 +753,24 @@
             this.btnGetCSVTemplate.Text = "Get CSV Template";
             this.btnGetCSVTemplate.UseVisualStyleBackColor = false;
             this.btnGetCSVTemplate.Click += new System.EventHandler(this.btnGetCSVTemplate_Click);
+            // 
+            // comboBoxTransactionList
+            // 
+            this.comboBoxTransactionList.FormattingEnabled = true;
+            this.comboBoxTransactionList.Items.AddRange(new object[] {
+            "OR",
+            "CV",
+            "JV",
+            "RR",
+            "SI",
+            "IN",
+            "OT",
+            "ST"});
+            this.comboBoxTransactionList.Location = new System.Drawing.Point(187, 117);
+            this.comboBoxTransactionList.Name = "comboBoxTransactionList";
+            this.comboBoxTransactionList.Size = new System.Drawing.Size(112, 21);
+            this.comboBoxTransactionList.TabIndex = 23;
+            this.comboBoxTransactionList.Text = "OR";
             // 
             // panel4
             // 
@@ -837,23 +905,11 @@
             this.backgroundWorkerSalesIntegration.WorkerSupportsCancellation = true;
             this.backgroundWorkerSalesIntegration.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerSalesIntegration_DoWork);
             // 
-            // buttonUpdateManualMasterFileInventory
+            // backgroundWorkerDeleteAllTransactions
             // 
-            this.buttonUpdateManualMasterFileInventory.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonUpdateManualMasterFileInventory.BackColor = System.Drawing.Color.SeaGreen;
-            this.buttonUpdateManualMasterFileInventory.Enabled = false;
-            this.buttonUpdateManualMasterFileInventory.FlatAppearance.BorderSize = 0;
-            this.buttonUpdateManualMasterFileInventory.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonUpdateManualMasterFileInventory.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.buttonUpdateManualMasterFileInventory.ForeColor = System.Drawing.Color.White;
-            this.buttonUpdateManualMasterFileInventory.Location = new System.Drawing.Point(6, 111);
-            this.buttonUpdateManualMasterFileInventory.Margin = new System.Windows.Forms.Padding(2);
-            this.buttonUpdateManualMasterFileInventory.Name = "buttonUpdateManualMasterFileInventory";
-            this.buttonUpdateManualMasterFileInventory.Size = new System.Drawing.Size(244, 30);
-            this.buttonUpdateManualMasterFileInventory.TabIndex = 27;
-            this.buttonUpdateManualMasterFileInventory.Text = "Update Master File and Inventory";
-            this.buttonUpdateManualMasterFileInventory.UseVisualStyleBackColor = false;
-            this.buttonUpdateManualMasterFileInventory.Click += new System.EventHandler(this.buttonUpdateManualMasterFileInventory_Click);
+            this.backgroundWorkerDeleteAllTransactions.WorkerReportsProgress = true;
+            this.backgroundWorkerDeleteAllTransactions.WorkerSupportsCancellation = true;
+            this.backgroundWorkerDeleteAllTransactions.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerDeleteAllTransactions_DoWork);
             // 
             // TrnIntegrationForm
             // 
@@ -955,5 +1011,9 @@
         private System.Windows.Forms.Button buttonFolderMonitoringIntegrationStop;
         private System.Windows.Forms.Button buttonUpdateMasterFileInventory;
         private System.Windows.Forms.Button buttonUpdateManualMasterFileInventory;
+        private System.Windows.Forms.Button buttonFolderMonitoringDeleteAllTransactions;
+        private System.Windows.Forms.ComboBox comboBoxTransactionList;
+        private System.Windows.Forms.DateTimePicker dateTimePickerDeleteAllTransactions;
+        private System.ComponentModel.BackgroundWorker backgroundWorkerDeleteAllTransactions;
     }
 }

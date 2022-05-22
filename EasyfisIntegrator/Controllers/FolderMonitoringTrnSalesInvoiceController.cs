@@ -594,5 +594,74 @@ namespace EasyfisIntegrator.Controllers
                 return Task.FromResult("Web Exception Error: " + resp.Replace("\"", "") + "\r\n\n");
             }
         }
+
+        // ========================
+        // Delete All Sales Invoice
+        // ========================
+        public async void DeleteAllSalesInvoice(Forms.TrnIntegrationForm trnIntegrationForm, String domain, String currentDate)
+        {
+            trnIntegrationForm.folderMonitoringLogMessages("\r\n\nDeleting Sales Invoice... (0%) \r\n\n");
+            try
+            {
+                String deleteUploadedSalesInvoiceTask = await DeleteUploadedSalesInvoice(domain, currentDate);
+                if (!deleteUploadedSalesInvoiceTask.Equals("Delete Successful..."))
+                {
+                    trnIntegrationForm.folderMonitoringLogMessages(deleteUploadedSalesInvoiceTask);
+                    trnIntegrationForm.folderMonitoringLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                    trnIntegrationForm.folderMonitoringLogMessages("\r\n\n");
+                }
+                else
+                {
+                    trnIntegrationForm.folderMonitoringLogMessages("SIIntegrationLogOnce");
+
+                    trnIntegrationForm.folderMonitoringLogMessages("\r\n\nDeleting Sales Invoice... (100%) \r\n\n");
+                    trnIntegrationForm.folderMonitoringLogMessages("Clean Successful!" + "\r\n\n");
+                    trnIntegrationForm.folderMonitoringLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                    trnIntegrationForm.folderMonitoringLogMessages("\r\n\n");
+                }
+            }
+            catch (Exception e)
+            {
+                trnIntegrationForm.folderMonitoringLogMessages("Error: " + e.Message + "\r\n\n");
+                trnIntegrationForm.folderMonitoringLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                trnIntegrationForm.folderMonitoringLogMessages("\r\n\n");
+            }
+        }
+
+        // =============================
+        // Delete Uploaded Sales Invoice
+        // =============================
+        public Task<String> DeleteUploadedSalesInvoice(String domain, String currentDate)
+        {
+            try
+            {
+                String apiURL = "https://" + domain + "/api/folderMonitoring/salesInvoice/uploaded/delete/" + currentDate;
+
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(apiURL);
+                httpWebRequest.ContentType = "application/json";
+                httpWebRequest.Method = "DELETE";
+                using (StreamWriter streamWriter = new StreamWriter(httpWebRequest.GetRequestStream())) { streamWriter.Write(""); }
+
+                HttpWebResponse httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                using (StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream()))
+                {
+                    String resp = streamReader.ReadToEnd().Replace("\"", "");
+                    if (resp.Equals(""))
+                    {
+                        return Task.FromResult("Delete Successful...");
+                    }
+                    else
+                    {
+                        return Task.FromResult("Delete Failed! " + resp + "\r\n\n");
+                    }
+                }
+            }
+            catch (WebException we)
+            {
+                var resp = new StreamReader(we.Response.GetResponseStream()).ReadToEnd();
+                return Task.FromResult("Web Exception Error: " + resp.Replace("\"", "") + "\r\n\n");
+            }
+        }
     }
 }

@@ -591,5 +591,74 @@ namespace EasyfisIntegrator.Controllers
                 return Task.FromResult("Web Exception Error: " + resp.Replace("\"", "") + "\r\n\n");
             }
         }
+
+        // =========================
+        // Delete All Stock Transfer
+        // =========================
+        public async void DeleteAllStockTransfer(Forms.TrnIntegrationForm trnIntegrationForm, String domain, String currentDate)
+        {
+            trnIntegrationForm.folderMonitoringLogMessages("\r\n\nDeleting Stock Transfer... (0%) \r\n\n");
+            try
+            {
+                String deleteUploadedStockTransferTask = await DeleteUploadedStockTransfer(domain, currentDate);
+                if (!deleteUploadedStockTransferTask.Equals("Delete Successful..."))
+                {
+                    trnIntegrationForm.folderMonitoringLogMessages(deleteUploadedStockTransferTask);
+                    trnIntegrationForm.folderMonitoringLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                    trnIntegrationForm.folderMonitoringLogMessages("\r\n\n");
+                }
+                else
+                {
+                    trnIntegrationForm.folderMonitoringLogMessages("STIntegrationLogOnce");
+
+                    trnIntegrationForm.folderMonitoringLogMessages("\r\n\nDeleting Stock Transfer... (100%) \r\n\n");
+                    trnIntegrationForm.folderMonitoringLogMessages("Clean Successful!" + "\r\n\n");
+                    trnIntegrationForm.folderMonitoringLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                    trnIntegrationForm.folderMonitoringLogMessages("\r\n\n");
+                }
+            }
+            catch (Exception e)
+            {
+                trnIntegrationForm.folderMonitoringLogMessages("Error: " + e.Message + "\r\n\n");
+                trnIntegrationForm.folderMonitoringLogMessages("Time Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n");
+                trnIntegrationForm.folderMonitoringLogMessages("\r\n\n");
+            }
+        }
+
+        // =========================
+        // Delete Uploaded Stock Out
+        // =========================
+        public Task<String> DeleteUploadedStockTransfer(String domain, String currentDate)
+        {
+            try
+            {
+                String apiURL = "https://" + domain + "/api/folderMonitoring/stockTransfer/uploaded/delete/" + currentDate;
+
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(apiURL);
+                httpWebRequest.ContentType = "application/json";
+                httpWebRequest.Method = "DELETE";
+                using (StreamWriter streamWriter = new StreamWriter(httpWebRequest.GetRequestStream())) { streamWriter.Write(""); }
+
+                HttpWebResponse httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                using (StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream()))
+                {
+                    String resp = streamReader.ReadToEnd().Replace("\"", "");
+                    if (resp.Equals(""))
+                    {
+                        return Task.FromResult("Delete Successful...");
+                    }
+                    else
+                    {
+                        return Task.FromResult("Delete Failed! " + resp + "\r\n\n");
+                    }
+                }
+            }
+            catch (WebException we)
+            {
+                var resp = new StreamReader(we.Response.GetResponseStream()).ReadToEnd();
+                return Task.FromResult("Web Exception Error: " + resp.Replace("\"", "") + "\r\n\n");
+            }
+        }
     }
 }
