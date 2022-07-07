@@ -13,6 +13,7 @@ namespace EasyfisIntegrator.Entities
         public String DocumentReference { get; set; }
         public String ManualSINumber { get; set; }
         public String Remarks { get; set; }
+        public String SaleAgentUserName { get; set; }
         public List<ISPOSTrnCollectionLines> ListPOSIntegrationTrnSalesInvoiceItem { get; set; }
     }
 }
