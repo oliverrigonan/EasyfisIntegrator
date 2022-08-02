@@ -358,7 +358,7 @@ namespace EasyfisIntegrator.Controllers
                                                     trnIntegrationForm.folderMonitoringLogMessages("\r\n\n");
 
                                                     String jDate = journalDate.ToString("MM-dd-yyyy", CultureInfo.InvariantCulture);
-                                                    String apiURL = "https://" + domain + "/api/folderMonitoring/journal/" + jDate + "/OT";
+                                                    String apiURL = domain + "/api/folderMonitoring/journal/" + jDate + "/OT";
 
                                                     ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                                                     HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(apiURL);
@@ -481,7 +481,7 @@ namespace EasyfisIntegrator.Controllers
         {
             try
             {
-                String apiURL = "https://" + domain + "/api/folderMonitoring/stockOut/temporary/delete";
+                String apiURL = domain + "/api/folderMonitoring/stockOut/temporary/delete";
 
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                 HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(apiURL);
@@ -517,7 +517,7 @@ namespace EasyfisIntegrator.Controllers
         {
             try
             {
-                String apiURL = "https://" + domain + "/api/folderMonitoring/stockOut/temporary/insert";
+                String apiURL = domain + "/api/folderMonitoring/stockOut/temporary/insert";
 
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                 HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(apiURL);
@@ -553,7 +553,7 @@ namespace EasyfisIntegrator.Controllers
         {
             try
             {
-                String apiURL = "https://" + domain + "/api/folderMonitoring/stockOut/post";
+                String apiURL = domain + "/api/folderMonitoring/stockOut/post";
 
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                 HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(apiURL);
@@ -632,7 +632,7 @@ namespace EasyfisIntegrator.Controllers
         {
             try
             {
-                String apiURL = "https://" + domain + "/api/folderMonitoring/stockOut/uploaded/delete/" + currentDate;
+                String apiURL = domain + "/api/folderMonitoring/stockOut/uploaded/delete/" + currentDate;
 
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                 HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(apiURL);

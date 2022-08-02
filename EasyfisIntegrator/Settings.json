@@ -1,10 +1,1 @@
-﻿{
-  "ConnectionString": "Data Source=localhost;Initial Catalog=pos13;Persist Security Info=True;User ID=sa;Password=easyfis",
-  "Domain": "localhost:8002",
-  "LogFileLocation": "D:\\Easyfis\\Activity Log",
-  "FolderToMonitor": "D:\\Research and Development\\FolderToMonitor",
-  "IsFolderMonitoringOnly": false,
-  "FolderMonitoringUserCode": "jmpls",
-  "FolderForSentFiles": "D:\\Easyfis\\Sent Files",
-  "ManualSalesIntegration": true
-}
+{"ConnectionString":"Data Source=EGGSY\\SQLEXPRESS;Initial Catalog=pos13_danenrico;Persist Security Info=True;User ID=sa;Password=easyfis","Domain":"ecom.liteclerk.com","LogFileLocation":"C:\\EasyFIS Integrator\\Release\\Logs","FolderToMonitor":"C:\\EasyFIS Integrator\\Release\\Monitor","IsFolderMonitoringOnly":false,"FolderMonitoringUserCode":"admin","FolderForSentFiles":"C:\\EasyFIS Integrator\\Release\\Sent","ManualSalesIntegration":false}

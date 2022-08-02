@@ -270,7 +270,7 @@ namespace EasyfisIntegrator.Forms
 
             btnLogout.Enabled = false;
 
-            salesIntegrationLogMessages("Sales integrtion started! \r\n\nTime Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n\r\n\n");
+            salesIntegrationLogMessages("Sales integration started! \r\n\nTime Stamp: " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt") + "\r\n\n\r\n\n");
 
             tabPagePOSSalesIntegration.Enabled = true;
             tabPagePOSManualSalesIntegration.Enabled = false;

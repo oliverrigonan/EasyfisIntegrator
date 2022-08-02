@@ -85,6 +85,10 @@ namespace EasyfisIntegrator.Controllers
                         });
                     }
 
+                    var salesAgent = from d in posdb.MstUsers
+                                     where d.Id == collection.TrnSale.SalesAgent
+                                     select d;
+
                     var collectionData = new Entities.ISPOSTrnCollection()
                     {
                         SIDate = collection.CollectionDate.ToShortDateString(),
@@ -94,8 +98,8 @@ namespace EasyfisIntegrator.Controllers
                         Term = collection.TrnSale.MstTerm.Term,
                         DocumentReference = collection.CollectionNumber,
                         ManualSINumber = collection.TrnSale.SalesNumber,
-                        Remarks = "User: " + collection.MstUser4.UserName + ", " + String.Join(", ", payTypes),
-                        SaleAgentUserName = collection.MstUser4.UserName,
+                        Remarks = "User: " + collection.MstUser3.UserName + ", " + String.Join(", ", payTypes),
+                        SalesAgentUserName = salesAgent.FirstOrDefault().UserName,
                         ListPOSIntegrationTrnSalesInvoiceItem = listCollectionLines.ToList()
                     };
 
@@ -130,7 +134,7 @@ namespace EasyfisIntegrator.Controllers
                 // ============
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
 
-                var httpWebRequest = (HttpWebRequest)WebRequest.Create("https://" + apiUrlHost + "/api/add/POSIntegration/salesInvoice");
+                var httpWebRequest = (HttpWebRequest)WebRequest.Create(apiUrlHost + "/api/add/POSIntegration/salesInvoice");
                 httpWebRequest.ContentType = "application/json";
                 httpWebRequest.Method = "POST";
 

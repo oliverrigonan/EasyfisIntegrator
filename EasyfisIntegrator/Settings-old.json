@@ -1,0 +1,10 @@
+﻿{
+  "ConnectionString": "Data Source=localhost;Initial Catalog=pos13;Persist Security Info=True;User ID=sa;Password=easyfis",
+  "Domain": "localhost:8002",
+  "LogFileLocation": "D:\\Easyfis\\Activity Log",
+  "FolderToMonitor": "D:\\Research and Development\\FolderToMonitor",
+  "IsFolderMonitoringOnly": false,
+  "FolderMonitoringUserCode": "jmpls",
+  "FolderForSentFiles": "D:\\Easyfis\\Sent Files",
+  "ManualSalesIntegration": true
+}
