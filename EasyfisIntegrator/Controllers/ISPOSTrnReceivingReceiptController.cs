@@ -66,7 +66,7 @@ namespace EasyfisIntegrator.Controllers
                 // Http Request
                 // ============
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-                var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://" + apiUrlHost + "/api/get/POSIntegration/receivingReceipt/" + receivingReceiptDate + "/" + branchCode);
+                var httpWebRequest = (HttpWebRequest)WebRequest.Create(apiUrlHost + "/api/get/POSIntegration/receivingReceipt/" + receivingReceiptDate + "/" + branchCode);
                 httpWebRequest.Method = "GET";
                 httpWebRequest.Accept = "application/json";
 
