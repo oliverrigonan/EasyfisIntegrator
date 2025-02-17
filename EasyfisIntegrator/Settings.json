@@ -1,1 +1,10 @@
-{"ConnectionString":"Data Source=EGGSY\\SQLEXPRESS;Initial Catalog=pos13_danenrico;Persist Security Info=True;User ID=sa;Password=easyfis","Domain":"ecom.liteclerk.com","LogFileLocation":"C:\\EasyFIS Integrator\\Release\\Logs","FolderToMonitor":"C:\\EasyFIS Integrator\\Release\\Monitor","IsFolderMonitoringOnly":false,"FolderMonitoringUserCode":"admin","FolderForSentFiles":"C:\\EasyFIS Integrator\\Release\\Sent","ManualSalesIntegration":false}
+{
+  "ConnectionString": "",
+  "Domain": "http://localhost:2651",
+  "LogFileLocation": "C:\\Clients\\JM Poultry\\Integrator\\Logs",
+  "FolderToMonitor": "C:\\Clients\\JM Poultry\\\\Integrator",
+  "IsFolderMonitoringOnly": true,
+  "FolderMonitoringUserCode": "jmpls",
+  "FolderForSentFiles": "C:\\Clients\\JM Poultry\\Integrator\\Sent",
+  "ManualSalesIntegration": false
+}

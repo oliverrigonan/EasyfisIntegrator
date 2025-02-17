@@ -97,7 +97,7 @@ namespace EasyfisIntegrator.Controllers
                         CreatedBy = userCode,
                         Term = collection.TrnSale.MstTerm.Term,
                         DocumentReference = collection.CollectionNumber,
-                        ManualSINumber = collection.TrnSale.SalesNumber,
+                        ManualSINumber = collection.MstTerminal.Terminal + "-" + collection.TrnSale.SalesNumber,
                         Remarks = "User: " + collection.MstUser3.UserName + ", " + String.Join(", ", payTypes),
                         SalesAgentUserName = salesAgent.FirstOrDefault().UserName,
                         ListPOSIntegrationTrnSalesInvoiceItem = listCollectionLines.ToList()
