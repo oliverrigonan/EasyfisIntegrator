@@ -114,7 +114,7 @@
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Margin = new System.Windows.Forms.Padding(2);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(698, 41);
+            this.panel1.Size = new System.Drawing.Size(872, 51);
             this.panel1.TabIndex = 8;
             // 
             // btnLogout
@@ -125,10 +125,10 @@
             this.btnLogout.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnLogout.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
             this.btnLogout.ForeColor = System.Drawing.Color.White;
-            this.btnLogout.Location = new System.Drawing.Point(615, 9);
+            this.btnLogout.Location = new System.Drawing.Point(769, 11);
             this.btnLogout.Margin = new System.Windows.Forms.Padding(2);
             this.btnLogout.Name = "btnLogout";
-            this.btnLogout.Size = new System.Drawing.Size(74, 23);
+            this.btnLogout.Size = new System.Drawing.Size(92, 29);
             this.btnLogout.TabIndex = 22;
             this.btnLogout.Text = "Logout";
             this.btnLogout.UseVisualStyleBackColor = false;
@@ -139,20 +139,20 @@
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
             this.label1.ForeColor = System.Drawing.Color.White;
-            this.label1.Location = new System.Drawing.Point(10, 7);
+            this.label1.Location = new System.Drawing.Point(12, 9);
             this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(229, 25);
+            this.label1.Size = new System.Drawing.Size(292, 29);
             this.label1.TabIndex = 0;
             this.label1.Text = "EasyFIS Sales Integrator";
             // 
             // pictureBox1
             // 
             this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(9, 8);
+            this.pictureBox1.Location = new System.Drawing.Point(11, 10);
             this.pictureBox1.Margin = new System.Windows.Forms.Padding(2);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(53, 48);
+            this.pictureBox1.Size = new System.Drawing.Size(66, 60);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
@@ -160,30 +160,30 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(70, 8);
+            this.label4.Location = new System.Drawing.Point(88, 10);
             this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(88, 13);
+            this.label4.Size = new System.Drawing.Size(118, 17);
             this.label4.TabIndex = 1;
             this.label4.Text = "Easyfis Integrator";
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(70, 29);
+            this.label5.Location = new System.Drawing.Point(88, 36);
             this.label5.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(156, 13);
+            this.label5.Size = new System.Drawing.Size(207, 17);
             this.label5.TabIndex = 2;
-            this.label5.Text = "Version: 2.202108020843.NOR";
+            this.label5.Text = "Version: 2.202502271336.NOR";
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(70, 42);
+            this.label6.Location = new System.Drawing.Point(88, 52);
             this.label6.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(152, 13);
+            this.label6.Size = new System.Drawing.Size(204, 17);
             this.label6.TabIndex = 3;
             this.label6.Text = "Developer: Easyfis Corporation";
             // 
@@ -195,10 +195,10 @@
             this.panel2.Controls.Add(this.label4);
             this.panel2.Controls.Add(this.pictureBox1);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel2.Location = new System.Drawing.Point(0, 535);
+            this.panel2.Location = new System.Drawing.Point(0, 669);
             this.panel2.Margin = new System.Windows.Forms.Padding(2);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(698, 64);
+            this.panel2.Size = new System.Drawing.Size(872, 80);
             this.panel2.TabIndex = 7;
             // 
             // btnSettings
@@ -209,10 +209,10 @@
             this.btnSettings.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.btnSettings.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
             this.btnSettings.ForeColor = System.Drawing.Color.Black;
-            this.btnSettings.Location = new System.Drawing.Point(602, 0);
+            this.btnSettings.Location = new System.Drawing.Point(752, 0);
             this.btnSettings.Margin = new System.Windows.Forms.Padding(2);
             this.btnSettings.Name = "btnSettings";
-            this.btnSettings.Size = new System.Drawing.Size(86, 32);
+            this.btnSettings.Size = new System.Drawing.Size(108, 40);
             this.btnSettings.TabIndex = 24;
             this.btnSettings.Text = "Settings";
             this.btnSettings.UseVisualStyleBackColor = false;
@@ -226,10 +226,10 @@
             this.btnClearLogs.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.btnClearLogs.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
             this.btnClearLogs.ForeColor = System.Drawing.Color.Black;
-            this.btnClearLogs.Location = new System.Drawing.Point(110, 0);
+            this.btnClearLogs.Location = new System.Drawing.Point(138, 0);
             this.btnClearLogs.Margin = new System.Windows.Forms.Padding(2);
             this.btnClearLogs.Name = "btnClearLogs";
-            this.btnClearLogs.Size = new System.Drawing.Size(86, 32);
+            this.btnClearLogs.Size = new System.Drawing.Size(108, 40);
             this.btnClearLogs.TabIndex = 23;
             this.btnClearLogs.Text = "Clear Logs";
             this.btnClearLogs.UseVisualStyleBackColor = false;
@@ -243,10 +243,10 @@
             this.btnSaveLogs.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.btnSaveLogs.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
             this.btnSaveLogs.ForeColor = System.Drawing.Color.Black;
-            this.btnSaveLogs.Location = new System.Drawing.Point(10, 0);
+            this.btnSaveLogs.Location = new System.Drawing.Point(12, 0);
             this.btnSaveLogs.Margin = new System.Windows.Forms.Padding(2);
             this.btnSaveLogs.Name = "btnSaveLogs";
-            this.btnSaveLogs.Size = new System.Drawing.Size(95, 32);
+            this.btnSaveLogs.Size = new System.Drawing.Size(119, 40);
             this.btnSaveLogs.TabIndex = 22;
             this.btnSaveLogs.Text = "Save Logs";
             this.btnSaveLogs.UseVisualStyleBackColor = false;
@@ -258,10 +258,10 @@
             this.panel5.Controls.Add(this.panel6);
             this.panel5.Controls.Add(this.tabIntegration);
             this.panel5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel5.Location = new System.Drawing.Point(0, 41);
+            this.panel5.Location = new System.Drawing.Point(0, 51);
             this.panel5.Margin = new System.Windows.Forms.Padding(2);
             this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(698, 494);
+            this.panel5.Size = new System.Drawing.Size(872, 618);
             this.panel5.TabIndex = 26;
             // 
             // panel6
@@ -271,10 +271,10 @@
             this.panel6.Controls.Add(this.btnSaveLogs);
             this.panel6.Controls.Add(this.btnClearLogs);
             this.panel6.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel6.Location = new System.Drawing.Point(0, 457);
+            this.panel6.Location = new System.Drawing.Point(0, 572);
             this.panel6.Margin = new System.Windows.Forms.Padding(2);
             this.panel6.Name = "panel6";
-            this.panel6.Size = new System.Drawing.Size(698, 37);
+            this.panel6.Size = new System.Drawing.Size(872, 46);
             this.panel6.TabIndex = 26;
             // 
             // tabIntegration
@@ -289,7 +289,7 @@
             this.tabIntegration.Margin = new System.Windows.Forms.Padding(2);
             this.tabIntegration.Name = "tabIntegration";
             this.tabIntegration.SelectedIndex = 0;
-            this.tabIntegration.Size = new System.Drawing.Size(698, 453);
+            this.tabIntegration.Size = new System.Drawing.Size(872, 566);
             this.tabIntegration.TabIndex = 0;
             // 
             // tabPagePOSSalesIntegration
@@ -299,11 +299,11 @@
             this.tabPagePOSSalesIntegration.Controls.Add(this.buttonSalesIntegrationStart);
             this.tabPagePOSSalesIntegration.Controls.Add(this.buttonSalesIntegrationStop);
             this.tabPagePOSSalesIntegration.Controls.Add(this.txtLogs);
-            this.tabPagePOSSalesIntegration.Location = new System.Drawing.Point(4, 22);
+            this.tabPagePOSSalesIntegration.Location = new System.Drawing.Point(4, 25);
             this.tabPagePOSSalesIntegration.Margin = new System.Windows.Forms.Padding(2);
             this.tabPagePOSSalesIntegration.Name = "tabPagePOSSalesIntegration";
             this.tabPagePOSSalesIntegration.Padding = new System.Windows.Forms.Padding(2);
-            this.tabPagePOSSalesIntegration.Size = new System.Drawing.Size(690, 427);
+            this.tabPagePOSSalesIntegration.Size = new System.Drawing.Size(864, 537);
             this.tabPagePOSSalesIntegration.TabIndex = 0;
             this.tabPagePOSSalesIntegration.Text = "POS - Sales Integration";
             this.tabPagePOSSalesIntegration.UseVisualStyleBackColor = true;
@@ -317,10 +317,10 @@
             this.buttonUpdateMasterFileInventory.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonUpdateMasterFileInventory.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.buttonUpdateMasterFileInventory.ForeColor = System.Drawing.Color.White;
-            this.buttonUpdateMasterFileInventory.Location = new System.Drawing.Point(6, 153);
+            this.buttonUpdateMasterFileInventory.Location = new System.Drawing.Point(8, 191);
             this.buttonUpdateMasterFileInventory.Margin = new System.Windows.Forms.Padding(2);
             this.buttonUpdateMasterFileInventory.Name = "buttonUpdateMasterFileInventory";
-            this.buttonUpdateMasterFileInventory.Size = new System.Drawing.Size(244, 30);
+            this.buttonUpdateMasterFileInventory.Size = new System.Drawing.Size(305, 38);
             this.buttonUpdateMasterFileInventory.TabIndex = 22;
             this.buttonUpdateMasterFileInventory.Text = "Update Master File and Inventory";
             this.buttonUpdateMasterFileInventory.UseVisualStyleBackColor = false;
@@ -341,20 +341,20 @@
             this.panel3.Controls.Add(this.label9);
             this.panel3.Controls.Add(this.textBoxSalesIntegrationBranchCode);
             this.panel3.Controls.Add(this.label8);
-            this.panel3.Location = new System.Drawing.Point(6, 5);
+            this.panel3.Location = new System.Drawing.Point(8, 6);
             this.panel3.Margin = new System.Windows.Forms.Padding(2);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(678, 144);
+            this.panel3.Size = new System.Drawing.Size(848, 180);
             this.panel3.TabIndex = 21;
             // 
             // label11
             // 
             this.label11.AutoSize = true;
             this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.label11.Location = new System.Drawing.Point(11, 115);
+            this.label11.Location = new System.Drawing.Point(14, 144);
             this.label11.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(103, 17);
+            this.label11.Size = new System.Drawing.Size(125, 20);
             this.label11.TabIndex = 25;
             this.label11.Text = "Use Item Price:";
             // 
@@ -363,10 +363,10 @@
             this.checkBoxSalesIntegrationUseItemPrice.AutoSize = true;
             this.checkBoxSalesIntegrationUseItemPrice.Enabled = false;
             this.checkBoxSalesIntegrationUseItemPrice.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.checkBoxSalesIntegrationUseItemPrice.Location = new System.Drawing.Point(118, 117);
+            this.checkBoxSalesIntegrationUseItemPrice.Location = new System.Drawing.Point(148, 146);
             this.checkBoxSalesIntegrationUseItemPrice.Margin = new System.Windows.Forms.Padding(2);
             this.checkBoxSalesIntegrationUseItemPrice.Name = "checkBoxSalesIntegrationUseItemPrice";
-            this.checkBoxSalesIntegrationUseItemPrice.Size = new System.Drawing.Size(15, 14);
+            this.checkBoxSalesIntegrationUseItemPrice.Size = new System.Drawing.Size(18, 17);
             this.checkBoxSalesIntegrationUseItemPrice.TabIndex = 24;
             this.checkBoxSalesIntegrationUseItemPrice.UseVisualStyleBackColor = true;
             // 
@@ -374,21 +374,21 @@
             // 
             this.label10.AutoSize = true;
             this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.label10.Location = new System.Drawing.Point(36, 91);
+            this.label10.Location = new System.Drawing.Point(45, 114);
             this.label10.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(79, 17);
+            this.label10.Size = new System.Drawing.Size(94, 20);
             this.label10.TabIndex = 22;
             this.label10.Text = "User Code:";
             // 
             // textBoxSalesIntegrationUserCode
             // 
             this.textBoxSalesIntegrationUserCode.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.textBoxSalesIntegrationUserCode.Location = new System.Drawing.Point(118, 88);
+            this.textBoxSalesIntegrationUserCode.Location = new System.Drawing.Point(148, 110);
             this.textBoxSalesIntegrationUserCode.Margin = new System.Windows.Forms.Padding(2);
             this.textBoxSalesIntegrationUserCode.Name = "textBoxSalesIntegrationUserCode";
             this.textBoxSalesIntegrationUserCode.ReadOnly = true;
-            this.textBoxSalesIntegrationUserCode.Size = new System.Drawing.Size(214, 23);
+            this.textBoxSalesIntegrationUserCode.Size = new System.Drawing.Size(266, 26);
             this.textBoxSalesIntegrationUserCode.TabIndex = 23;
             // 
             // dateTimePickerSalesIntegrationDate
@@ -396,30 +396,30 @@
             this.dateTimePickerSalesIntegrationDate.CalendarFont = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.dateTimePickerSalesIntegrationDate.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.dateTimePickerSalesIntegrationDate.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dateTimePickerSalesIntegrationDate.Location = new System.Drawing.Point(118, 12);
+            this.dateTimePickerSalesIntegrationDate.Location = new System.Drawing.Point(148, 15);
             this.dateTimePickerSalesIntegrationDate.Margin = new System.Windows.Forms.Padding(2);
             this.dateTimePickerSalesIntegrationDate.Name = "dateTimePickerSalesIntegrationDate";
-            this.dateTimePickerSalesIntegrationDate.Size = new System.Drawing.Size(122, 23);
+            this.dateTimePickerSalesIntegrationDate.Size = new System.Drawing.Size(152, 26);
             this.dateTimePickerSalesIntegrationDate.TabIndex = 18;
             // 
             // textBoxSalesIntegrationDomain
             // 
             this.textBoxSalesIntegrationDomain.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.textBoxSalesIntegrationDomain.Location = new System.Drawing.Point(118, 37);
+            this.textBoxSalesIntegrationDomain.Location = new System.Drawing.Point(148, 46);
             this.textBoxSalesIntegrationDomain.Margin = new System.Windows.Forms.Padding(2);
             this.textBoxSalesIntegrationDomain.Name = "textBoxSalesIntegrationDomain";
             this.textBoxSalesIntegrationDomain.ReadOnly = true;
-            this.textBoxSalesIntegrationDomain.Size = new System.Drawing.Size(346, 23);
+            this.textBoxSalesIntegrationDomain.Size = new System.Drawing.Size(432, 26);
             this.textBoxSalesIntegrationDomain.TabIndex = 20;
             // 
             // label7
             // 
             this.label7.AutoSize = true;
             this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.label7.Location = new System.Drawing.Point(22, 65);
+            this.label7.Location = new System.Drawing.Point(28, 81);
             this.label7.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(94, 17);
+            this.label7.Size = new System.Drawing.Size(112, 20);
             this.label7.TabIndex = 15;
             this.label7.Text = "Branch Code:";
             // 
@@ -427,31 +427,31 @@
             // 
             this.label9.AutoSize = true;
             this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.label9.Location = new System.Drawing.Point(54, 40);
+            this.label9.Location = new System.Drawing.Point(68, 50);
             this.label9.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(60, 17);
+            this.label9.Size = new System.Drawing.Size(72, 20);
             this.label9.TabIndex = 19;
             this.label9.Text = "Domain:";
             // 
             // textBoxSalesIntegrationBranchCode
             // 
             this.textBoxSalesIntegrationBranchCode.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.textBoxSalesIntegrationBranchCode.Location = new System.Drawing.Point(118, 63);
+            this.textBoxSalesIntegrationBranchCode.Location = new System.Drawing.Point(148, 79);
             this.textBoxSalesIntegrationBranchCode.Margin = new System.Windows.Forms.Padding(2);
             this.textBoxSalesIntegrationBranchCode.Name = "textBoxSalesIntegrationBranchCode";
             this.textBoxSalesIntegrationBranchCode.ReadOnly = true;
-            this.textBoxSalesIntegrationBranchCode.Size = new System.Drawing.Size(214, 23);
+            this.textBoxSalesIntegrationBranchCode.Size = new System.Drawing.Size(266, 26);
             this.textBoxSalesIntegrationBranchCode.TabIndex = 16;
             // 
             // label8
             // 
             this.label8.AutoSize = true;
             this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.label8.Location = new System.Drawing.Point(72, 16);
+            this.label8.Location = new System.Drawing.Point(90, 20);
             this.label8.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(42, 17);
+            this.label8.Size = new System.Drawing.Size(50, 20);
             this.label8.TabIndex = 17;
             this.label8.Text = "Date:";
             // 
@@ -463,10 +463,10 @@
             this.buttonSalesIntegrationStart.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonSalesIntegrationStart.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.buttonSalesIntegrationStart.ForeColor = System.Drawing.Color.White;
-            this.buttonSalesIntegrationStart.Location = new System.Drawing.Point(531, 153);
+            this.buttonSalesIntegrationStart.Location = new System.Drawing.Point(664, 191);
             this.buttonSalesIntegrationStart.Margin = new System.Windows.Forms.Padding(2);
             this.buttonSalesIntegrationStart.Name = "buttonSalesIntegrationStart";
-            this.buttonSalesIntegrationStart.Size = new System.Drawing.Size(74, 30);
+            this.buttonSalesIntegrationStart.Size = new System.Drawing.Size(92, 38);
             this.buttonSalesIntegrationStart.TabIndex = 11;
             this.buttonSalesIntegrationStart.Text = "Start";
             this.buttonSalesIntegrationStart.UseVisualStyleBackColor = false;
@@ -481,10 +481,10 @@
             this.buttonSalesIntegrationStop.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonSalesIntegrationStop.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.buttonSalesIntegrationStop.ForeColor = System.Drawing.Color.White;
-            this.buttonSalesIntegrationStop.Location = new System.Drawing.Point(610, 153);
+            this.buttonSalesIntegrationStop.Location = new System.Drawing.Point(762, 191);
             this.buttonSalesIntegrationStop.Margin = new System.Windows.Forms.Padding(2);
             this.buttonSalesIntegrationStop.Name = "buttonSalesIntegrationStop";
-            this.buttonSalesIntegrationStop.Size = new System.Drawing.Size(74, 30);
+            this.buttonSalesIntegrationStop.Size = new System.Drawing.Size(92, 38);
             this.buttonSalesIntegrationStop.TabIndex = 10;
             this.buttonSalesIntegrationStop.Text = "Stop";
             this.buttonSalesIntegrationStop.UseVisualStyleBackColor = false;
@@ -499,13 +499,13 @@
             this.txtLogs.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtLogs.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.txtLogs.ForeColor = System.Drawing.Color.White;
-            this.txtLogs.Location = new System.Drawing.Point(6, 187);
+            this.txtLogs.Location = new System.Drawing.Point(8, 234);
             this.txtLogs.Margin = new System.Windows.Forms.Padding(2);
             this.txtLogs.MaxLength = 0;
             this.txtLogs.Multiline = true;
             this.txtLogs.Name = "txtLogs";
             this.txtLogs.ReadOnly = true;
-            this.txtLogs.Size = new System.Drawing.Size(679, 236);
+            this.txtLogs.Size = new System.Drawing.Size(848, 294);
             this.txtLogs.TabIndex = 14;
             // 
             // tabPagePOSManualSalesIntegration
@@ -515,11 +515,11 @@
             this.tabPagePOSManualSalesIntegration.Controls.Add(this.textBoxPOSManualSalesIntegrationLogs);
             this.tabPagePOSManualSalesIntegration.Controls.Add(this.buttonManualSalesIntegrationStart);
             this.tabPagePOSManualSalesIntegration.Controls.Add(this.panel7);
-            this.tabPagePOSManualSalesIntegration.Location = new System.Drawing.Point(4, 22);
+            this.tabPagePOSManualSalesIntegration.Location = new System.Drawing.Point(4, 25);
             this.tabPagePOSManualSalesIntegration.Margin = new System.Windows.Forms.Padding(2);
             this.tabPagePOSManualSalesIntegration.Name = "tabPagePOSManualSalesIntegration";
             this.tabPagePOSManualSalesIntegration.Padding = new System.Windows.Forms.Padding(2);
-            this.tabPagePOSManualSalesIntegration.Size = new System.Drawing.Size(690, 427);
+            this.tabPagePOSManualSalesIntegration.Size = new System.Drawing.Size(864, 537);
             this.tabPagePOSManualSalesIntegration.TabIndex = 2;
             this.tabPagePOSManualSalesIntegration.Text = "POS - Manual Sales Integration";
             this.tabPagePOSManualSalesIntegration.UseVisualStyleBackColor = true;
@@ -533,10 +533,10 @@
             this.buttonUpdateManualMasterFileInventory.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonUpdateManualMasterFileInventory.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.buttonUpdateManualMasterFileInventory.ForeColor = System.Drawing.Color.White;
-            this.buttonUpdateManualMasterFileInventory.Location = new System.Drawing.Point(6, 111);
+            this.buttonUpdateManualMasterFileInventory.Location = new System.Drawing.Point(8, 139);
             this.buttonUpdateManualMasterFileInventory.Margin = new System.Windows.Forms.Padding(2);
             this.buttonUpdateManualMasterFileInventory.Name = "buttonUpdateManualMasterFileInventory";
-            this.buttonUpdateManualMasterFileInventory.Size = new System.Drawing.Size(244, 30);
+            this.buttonUpdateManualMasterFileInventory.Size = new System.Drawing.Size(305, 38);
             this.buttonUpdateManualMasterFileInventory.TabIndex = 27;
             this.buttonUpdateManualMasterFileInventory.Text = "Update Master File and Inventory";
             this.buttonUpdateManualMasterFileInventory.UseVisualStyleBackColor = false;
@@ -551,10 +551,10 @@
             this.buttonManualSalesIntegrationStop.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonManualSalesIntegrationStop.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.buttonManualSalesIntegrationStop.ForeColor = System.Drawing.Color.White;
-            this.buttonManualSalesIntegrationStop.Location = new System.Drawing.Point(609, 111);
+            this.buttonManualSalesIntegrationStop.Location = new System.Drawing.Point(761, 139);
             this.buttonManualSalesIntegrationStop.Margin = new System.Windows.Forms.Padding(2);
             this.buttonManualSalesIntegrationStop.Name = "buttonManualSalesIntegrationStop";
-            this.buttonManualSalesIntegrationStop.Size = new System.Drawing.Size(74, 30);
+            this.buttonManualSalesIntegrationStop.Size = new System.Drawing.Size(92, 38);
             this.buttonManualSalesIntegrationStop.TabIndex = 26;
             this.buttonManualSalesIntegrationStop.Text = "Stop";
             this.buttonManualSalesIntegrationStop.UseVisualStyleBackColor = false;
@@ -569,13 +569,13 @@
             this.textBoxPOSManualSalesIntegrationLogs.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textBoxPOSManualSalesIntegrationLogs.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.textBoxPOSManualSalesIntegrationLogs.ForeColor = System.Drawing.Color.White;
-            this.textBoxPOSManualSalesIntegrationLogs.Location = new System.Drawing.Point(6, 145);
+            this.textBoxPOSManualSalesIntegrationLogs.Location = new System.Drawing.Point(8, 181);
             this.textBoxPOSManualSalesIntegrationLogs.Margin = new System.Windows.Forms.Padding(2);
             this.textBoxPOSManualSalesIntegrationLogs.MaxLength = 0;
             this.textBoxPOSManualSalesIntegrationLogs.Multiline = true;
             this.textBoxPOSManualSalesIntegrationLogs.Name = "textBoxPOSManualSalesIntegrationLogs";
             this.textBoxPOSManualSalesIntegrationLogs.ReadOnly = true;
-            this.textBoxPOSManualSalesIntegrationLogs.Size = new System.Drawing.Size(679, 278);
+            this.textBoxPOSManualSalesIntegrationLogs.Size = new System.Drawing.Size(848, 347);
             this.textBoxPOSManualSalesIntegrationLogs.TabIndex = 25;
             // 
             // buttonManualSalesIntegrationStart
@@ -586,10 +586,10 @@
             this.buttonManualSalesIntegrationStart.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonManualSalesIntegrationStart.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.buttonManualSalesIntegrationStart.ForeColor = System.Drawing.Color.White;
-            this.buttonManualSalesIntegrationStart.Location = new System.Drawing.Point(531, 111);
+            this.buttonManualSalesIntegrationStart.Location = new System.Drawing.Point(664, 139);
             this.buttonManualSalesIntegrationStart.Margin = new System.Windows.Forms.Padding(2);
             this.buttonManualSalesIntegrationStart.Name = "buttonManualSalesIntegrationStart";
-            this.buttonManualSalesIntegrationStart.Size = new System.Drawing.Size(74, 30);
+            this.buttonManualSalesIntegrationStart.Size = new System.Drawing.Size(92, 38);
             this.buttonManualSalesIntegrationStart.TabIndex = 24;
             this.buttonManualSalesIntegrationStart.Text = "Start";
             this.buttonManualSalesIntegrationStart.UseVisualStyleBackColor = false;
@@ -606,30 +606,30 @@
             this.panel7.Controls.Add(this.comboBoxManualSalesIntegrationTerminal);
             this.panel7.Controls.Add(this.dateTimePickerManualSalesIntegrationDate);
             this.panel7.Controls.Add(this.label17);
-            this.panel7.Location = new System.Drawing.Point(6, 5);
+            this.panel7.Location = new System.Drawing.Point(8, 6);
             this.panel7.Margin = new System.Windows.Forms.Padding(2);
             this.panel7.Name = "panel7";
-            this.panel7.Size = new System.Drawing.Size(678, 102);
+            this.panel7.Size = new System.Drawing.Size(848, 128);
             this.panel7.TabIndex = 22;
             // 
             // textBoxManualSalesIntegrationDomain
             // 
             this.textBoxManualSalesIntegrationDomain.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.textBoxManualSalesIntegrationDomain.Location = new System.Drawing.Point(81, 37);
+            this.textBoxManualSalesIntegrationDomain.Location = new System.Drawing.Point(101, 46);
             this.textBoxManualSalesIntegrationDomain.Margin = new System.Windows.Forms.Padding(2);
             this.textBoxManualSalesIntegrationDomain.Name = "textBoxManualSalesIntegrationDomain";
             this.textBoxManualSalesIntegrationDomain.ReadOnly = true;
-            this.textBoxManualSalesIntegrationDomain.Size = new System.Drawing.Size(346, 23);
+            this.textBoxManualSalesIntegrationDomain.Size = new System.Drawing.Size(432, 26);
             this.textBoxManualSalesIntegrationDomain.TabIndex = 30;
             // 
             // label15
             // 
             this.label15.AutoSize = true;
             this.label15.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.label15.Location = new System.Drawing.Point(17, 40);
+            this.label15.Location = new System.Drawing.Point(21, 50);
             this.label15.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(60, 17);
+            this.label15.Size = new System.Drawing.Size(72, 20);
             this.label15.TabIndex = 29;
             this.label15.Text = "Domain:";
             // 
@@ -637,10 +637,10 @@
             // 
             this.label13.AutoSize = true;
             this.label13.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.label13.Location = new System.Drawing.Point(10, 66);
+            this.label13.Location = new System.Drawing.Point(12, 82);
             this.label13.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(67, 17);
+            this.label13.Size = new System.Drawing.Size(79, 20);
             this.label13.TabIndex = 28;
             this.label13.Text = "Terminal:";
             // 
@@ -648,10 +648,10 @@
             // 
             this.comboBoxManualSalesIntegrationTerminal.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.comboBoxManualSalesIntegrationTerminal.FormattingEnabled = true;
-            this.comboBoxManualSalesIntegrationTerminal.Location = new System.Drawing.Point(81, 63);
+            this.comboBoxManualSalesIntegrationTerminal.Location = new System.Drawing.Point(101, 79);
             this.comboBoxManualSalesIntegrationTerminal.Margin = new System.Windows.Forms.Padding(2);
             this.comboBoxManualSalesIntegrationTerminal.Name = "comboBoxManualSalesIntegrationTerminal";
-            this.comboBoxManualSalesIntegrationTerminal.Size = new System.Drawing.Size(122, 24);
+            this.comboBoxManualSalesIntegrationTerminal.Size = new System.Drawing.Size(152, 28);
             this.comboBoxManualSalesIntegrationTerminal.TabIndex = 27;
             // 
             // dateTimePickerManualSalesIntegrationDate
@@ -659,20 +659,20 @@
             this.dateTimePickerManualSalesIntegrationDate.CalendarFont = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.dateTimePickerManualSalesIntegrationDate.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.dateTimePickerManualSalesIntegrationDate.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dateTimePickerManualSalesIntegrationDate.Location = new System.Drawing.Point(81, 12);
+            this.dateTimePickerManualSalesIntegrationDate.Location = new System.Drawing.Point(101, 15);
             this.dateTimePickerManualSalesIntegrationDate.Margin = new System.Windows.Forms.Padding(2);
             this.dateTimePickerManualSalesIntegrationDate.Name = "dateTimePickerManualSalesIntegrationDate";
-            this.dateTimePickerManualSalesIntegrationDate.Size = new System.Drawing.Size(122, 23);
+            this.dateTimePickerManualSalesIntegrationDate.Size = new System.Drawing.Size(152, 26);
             this.dateTimePickerManualSalesIntegrationDate.TabIndex = 18;
             // 
             // label17
             // 
             this.label17.AutoSize = true;
             this.label17.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.label17.Location = new System.Drawing.Point(35, 16);
+            this.label17.Location = new System.Drawing.Point(44, 20);
             this.label17.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(42, 17);
+            this.label17.Size = new System.Drawing.Size(50, 20);
             this.label17.TabIndex = 17;
             this.label17.Text = "Date:";
             // 
@@ -686,11 +686,11 @@
             this.tabPageFolderMonitoringIntegration.Controls.Add(this.panel4);
             this.tabPageFolderMonitoringIntegration.Controls.Add(this.buttonFolderMonitoringIntegrationStart);
             this.tabPageFolderMonitoringIntegration.Controls.Add(this.txtFolderMonitoringLogs);
-            this.tabPageFolderMonitoringIntegration.Location = new System.Drawing.Point(4, 22);
+            this.tabPageFolderMonitoringIntegration.Location = new System.Drawing.Point(4, 25);
             this.tabPageFolderMonitoringIntegration.Margin = new System.Windows.Forms.Padding(2);
             this.tabPageFolderMonitoringIntegration.Name = "tabPageFolderMonitoringIntegration";
             this.tabPageFolderMonitoringIntegration.Padding = new System.Windows.Forms.Padding(2);
-            this.tabPageFolderMonitoringIntegration.Size = new System.Drawing.Size(690, 427);
+            this.tabPageFolderMonitoringIntegration.Size = new System.Drawing.Size(864, 537);
             this.tabPageFolderMonitoringIntegration.TabIndex = 1;
             this.tabPageFolderMonitoringIntegration.Text = "Folder Monitoring";
             this.tabPageFolderMonitoringIntegration.UseVisualStyleBackColor = true;
@@ -698,9 +698,10 @@
             // dateTimePickerDeleteAllTransactions
             // 
             this.dateTimePickerDeleteAllTransactions.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dateTimePickerDeleteAllTransactions.Location = new System.Drawing.Point(306, 117);
+            this.dateTimePickerDeleteAllTransactions.Location = new System.Drawing.Point(382, 146);
+            this.dateTimePickerDeleteAllTransactions.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.dateTimePickerDeleteAllTransactions.Name = "dateTimePickerDeleteAllTransactions";
-            this.dateTimePickerDeleteAllTransactions.Size = new System.Drawing.Size(82, 20);
+            this.dateTimePickerDeleteAllTransactions.Size = new System.Drawing.Size(102, 22);
             this.dateTimePickerDeleteAllTransactions.TabIndex = 28;
             // 
             // buttonFolderMonitoringDeleteAllTransactions
@@ -711,10 +712,10 @@
             this.buttonFolderMonitoringDeleteAllTransactions.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonFolderMonitoringDeleteAllTransactions.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.buttonFolderMonitoringDeleteAllTransactions.ForeColor = System.Drawing.Color.White;
-            this.buttonFolderMonitoringDeleteAllTransactions.Location = new System.Drawing.Point(393, 111);
+            this.buttonFolderMonitoringDeleteAllTransactions.Location = new System.Drawing.Point(491, 139);
             this.buttonFolderMonitoringDeleteAllTransactions.Margin = new System.Windows.Forms.Padding(2);
             this.buttonFolderMonitoringDeleteAllTransactions.Name = "buttonFolderMonitoringDeleteAllTransactions";
-            this.buttonFolderMonitoringDeleteAllTransactions.Size = new System.Drawing.Size(74, 30);
+            this.buttonFolderMonitoringDeleteAllTransactions.Size = new System.Drawing.Size(92, 38);
             this.buttonFolderMonitoringDeleteAllTransactions.TabIndex = 24;
             this.buttonFolderMonitoringDeleteAllTransactions.Text = "Delete";
             this.buttonFolderMonitoringDeleteAllTransactions.UseVisualStyleBackColor = false;
@@ -729,10 +730,10 @@
             this.buttonFolderMonitoringIntegrationStop.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonFolderMonitoringIntegrationStop.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.buttonFolderMonitoringIntegrationStop.ForeColor = System.Drawing.Color.White;
-            this.buttonFolderMonitoringIntegrationStop.Location = new System.Drawing.Point(609, 111);
+            this.buttonFolderMonitoringIntegrationStop.Location = new System.Drawing.Point(761, 139);
             this.buttonFolderMonitoringIntegrationStop.Margin = new System.Windows.Forms.Padding(2);
             this.buttonFolderMonitoringIntegrationStop.Name = "buttonFolderMonitoringIntegrationStop";
-            this.buttonFolderMonitoringIntegrationStop.Size = new System.Drawing.Size(74, 30);
+            this.buttonFolderMonitoringIntegrationStop.Size = new System.Drawing.Size(92, 38);
             this.buttonFolderMonitoringIntegrationStop.TabIndex = 27;
             this.buttonFolderMonitoringIntegrationStop.Text = "Stop";
             this.buttonFolderMonitoringIntegrationStop.UseVisualStyleBackColor = false;
@@ -745,10 +746,10 @@
             this.btnGetCSVTemplate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnGetCSVTemplate.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.btnGetCSVTemplate.ForeColor = System.Drawing.Color.White;
-            this.btnGetCSVTemplate.Location = new System.Drawing.Point(6, 111);
+            this.btnGetCSVTemplate.Location = new System.Drawing.Point(8, 139);
             this.btnGetCSVTemplate.Margin = new System.Windows.Forms.Padding(2);
             this.btnGetCSVTemplate.Name = "btnGetCSVTemplate";
-            this.btnGetCSVTemplate.Size = new System.Drawing.Size(176, 30);
+            this.btnGetCSVTemplate.Size = new System.Drawing.Size(220, 38);
             this.btnGetCSVTemplate.TabIndex = 23;
             this.btnGetCSVTemplate.Text = "Get CSV Template";
             this.btnGetCSVTemplate.UseVisualStyleBackColor = false;
@@ -766,9 +767,10 @@
             "IN",
             "OT",
             "ST"});
-            this.comboBoxTransactionList.Location = new System.Drawing.Point(187, 117);
+            this.comboBoxTransactionList.Location = new System.Drawing.Point(234, 146);
+            this.comboBoxTransactionList.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.comboBoxTransactionList.Name = "comboBoxTransactionList";
-            this.comboBoxTransactionList.Size = new System.Drawing.Size(112, 21);
+            this.comboBoxTransactionList.Size = new System.Drawing.Size(139, 24);
             this.comboBoxTransactionList.TabIndex = 23;
             this.comboBoxTransactionList.Text = "OR";
             // 
@@ -783,72 +785,72 @@
             this.panel4.Controls.Add(this.textBoxFolderMonitoringUserCode);
             this.panel4.Controls.Add(this.textBoxFolderMonitoringDomain);
             this.panel4.Controls.Add(this.label14);
-            this.panel4.Location = new System.Drawing.Point(6, 5);
+            this.panel4.Location = new System.Drawing.Point(8, 6);
             this.panel4.Margin = new System.Windows.Forms.Padding(2);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(678, 102);
+            this.panel4.Size = new System.Drawing.Size(848, 128);
             this.panel4.TabIndex = 22;
             // 
             // label12
             // 
             this.label12.AutoSize = true;
             this.label12.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.label12.Location = new System.Drawing.Point(11, 64);
+            this.label12.Location = new System.Drawing.Point(14, 80);
             this.label12.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(119, 17);
+            this.label12.Size = new System.Drawing.Size(141, 20);
             this.label12.TabIndex = 26;
             this.label12.Text = "Folder to Monitor:";
             // 
             // textBoxFolderToMonitor
             // 
             this.textBoxFolderToMonitor.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.textBoxFolderToMonitor.Location = new System.Drawing.Point(134, 61);
+            this.textBoxFolderToMonitor.Location = new System.Drawing.Point(168, 76);
             this.textBoxFolderToMonitor.Margin = new System.Windows.Forms.Padding(2);
             this.textBoxFolderToMonitor.Name = "textBoxFolderToMonitor";
             this.textBoxFolderToMonitor.ReadOnly = true;
-            this.textBoxFolderToMonitor.Size = new System.Drawing.Size(435, 23);
+            this.textBoxFolderToMonitor.Size = new System.Drawing.Size(543, 26);
             this.textBoxFolderToMonitor.TabIndex = 27;
             // 
             // label3
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.label3.Location = new System.Drawing.Point(51, 39);
+            this.label3.Location = new System.Drawing.Point(64, 49);
             this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(79, 17);
+            this.label3.Size = new System.Drawing.Size(94, 20);
             this.label3.TabIndex = 24;
             this.label3.Text = "User Code:";
             // 
             // textBoxFolderMonitoringUserCode
             // 
             this.textBoxFolderMonitoringUserCode.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.textBoxFolderMonitoringUserCode.Location = new System.Drawing.Point(134, 36);
+            this.textBoxFolderMonitoringUserCode.Location = new System.Drawing.Point(168, 45);
             this.textBoxFolderMonitoringUserCode.Margin = new System.Windows.Forms.Padding(2);
             this.textBoxFolderMonitoringUserCode.Name = "textBoxFolderMonitoringUserCode";
             this.textBoxFolderMonitoringUserCode.ReadOnly = true;
-            this.textBoxFolderMonitoringUserCode.Size = new System.Drawing.Size(214, 23);
+            this.textBoxFolderMonitoringUserCode.Size = new System.Drawing.Size(266, 26);
             this.textBoxFolderMonitoringUserCode.TabIndex = 25;
             // 
             // textBoxFolderMonitoringDomain
             // 
             this.textBoxFolderMonitoringDomain.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.textBoxFolderMonitoringDomain.Location = new System.Drawing.Point(134, 11);
+            this.textBoxFolderMonitoringDomain.Location = new System.Drawing.Point(168, 14);
             this.textBoxFolderMonitoringDomain.Margin = new System.Windows.Forms.Padding(2);
             this.textBoxFolderMonitoringDomain.Name = "textBoxFolderMonitoringDomain";
             this.textBoxFolderMonitoringDomain.ReadOnly = true;
-            this.textBoxFolderMonitoringDomain.Size = new System.Drawing.Size(346, 23);
+            this.textBoxFolderMonitoringDomain.Size = new System.Drawing.Size(432, 26);
             this.textBoxFolderMonitoringDomain.TabIndex = 20;
             // 
             // label14
             // 
             this.label14.AutoSize = true;
             this.label14.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.label14.Location = new System.Drawing.Point(70, 14);
+            this.label14.Location = new System.Drawing.Point(88, 18);
             this.label14.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(60, 17);
+            this.label14.Size = new System.Drawing.Size(72, 20);
             this.label14.TabIndex = 19;
             this.label14.Text = "Domain:";
             // 
@@ -860,10 +862,10 @@
             this.buttonFolderMonitoringIntegrationStart.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonFolderMonitoringIntegrationStart.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.buttonFolderMonitoringIntegrationStart.ForeColor = System.Drawing.Color.White;
-            this.buttonFolderMonitoringIntegrationStart.Location = new System.Drawing.Point(531, 111);
+            this.buttonFolderMonitoringIntegrationStart.Location = new System.Drawing.Point(664, 139);
             this.buttonFolderMonitoringIntegrationStart.Margin = new System.Windows.Forms.Padding(2);
             this.buttonFolderMonitoringIntegrationStart.Name = "buttonFolderMonitoringIntegrationStart";
-            this.buttonFolderMonitoringIntegrationStart.Size = new System.Drawing.Size(74, 30);
+            this.buttonFolderMonitoringIntegrationStart.Size = new System.Drawing.Size(92, 38);
             this.buttonFolderMonitoringIntegrationStart.TabIndex = 16;
             this.buttonFolderMonitoringIntegrationStart.Text = "Start";
             this.buttonFolderMonitoringIntegrationStart.UseVisualStyleBackColor = false;
@@ -878,13 +880,13 @@
             this.txtFolderMonitoringLogs.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtFolderMonitoringLogs.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.txtFolderMonitoringLogs.ForeColor = System.Drawing.Color.White;
-            this.txtFolderMonitoringLogs.Location = new System.Drawing.Point(6, 145);
+            this.txtFolderMonitoringLogs.Location = new System.Drawing.Point(8, 181);
             this.txtFolderMonitoringLogs.Margin = new System.Windows.Forms.Padding(2);
             this.txtFolderMonitoringLogs.MaxLength = 0;
             this.txtFolderMonitoringLogs.Multiline = true;
             this.txtFolderMonitoringLogs.Name = "txtFolderMonitoringLogs";
             this.txtFolderMonitoringLogs.ReadOnly = true;
-            this.txtFolderMonitoringLogs.Size = new System.Drawing.Size(679, 278);
+            this.txtFolderMonitoringLogs.Size = new System.Drawing.Size(848, 347);
             this.txtFolderMonitoringLogs.TabIndex = 17;
             // 
             // backgroundWorkerFolderMonitoringIntegration
@@ -913,10 +915,10 @@
             // 
             // TrnIntegrationForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(120F, 120F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(698, 599);
+            this.ClientSize = new System.Drawing.Size(872, 749);
             this.Controls.Add(this.panel5);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.panel2);
