@@ -139,20 +139,28 @@ namespace EasyfisIntegrator.Controllers
                                                     StockOutId = newStockOut.Id,
                                                     ItemId = currentItem.FirstOrDefault().Id,
                                                     UnitId = currentItem.FirstOrDefault().UnitId,
-                                                    Quantity = item.Quantity,
+                                                    Quantity = item.SCQuantity > 0 ? currentItem.FirstOrDefault().OnhandQuantity - item.SCQuantity : item.Quantity,
+                                                    SCQuantity = item.SCQuantity,
                                                     Cost = item.Cost,
-                                                    Amount = item.Amount,
+                                                    Amount = item.SCQuantity > 0 ? (currentItem.FirstOrDefault().OnhandQuantity - item.SCQuantity) * item.Cost : item.Amount,
                                                     AssetAccountId = currentItem.FirstOrDefault().AssetAccountId,
                                                 };
 
                                                 posdb.TrnStockOutLines.InsertOnSubmit(newStockOutLine);
 
                                                 var updateItem = currentItem.FirstOrDefault();
-                                                updateItem.OnhandQuantity = currentItem.FirstOrDefault().OnhandQuantity - Convert.ToDecimal(item.Quantity);
+                                                updateItem.OnhandQuantity = Convert.ToDecimal(item.SCQuantity) > 0 ? Convert.ToDecimal(item.SCQuantity) : Convert.ToDecimal(item.Quantity);
 
                                                 posdb.SubmitChanges();
 
-                                                trnIntegrationForm.salesIntegrationLogMessages(" > " + currentItem.FirstOrDefault().ItemDescription + " * " + item.Quantity.ToString("#,##0.00") + "\r\n\n");
+                                                if(Convert.ToDecimal(item.SCQuantity) > 0)
+                                                {
+                                                    trnIntegrationForm.salesIntegrationLogMessages(" > " + currentItem.FirstOrDefault().ItemDescription + " * " + newStockOutLine.Quantity.ToString("#,##0.00") + "\r\n\n");
+                                                }
+                                                else
+                                                {
+                                                    trnIntegrationForm.salesIntegrationLogMessages(" > " + currentItem.FirstOrDefault().ItemDescription + " * " + item.Quantity.ToString("#,##0.00") + "\r\n\n");
+                                                }
                                             }
                                         }
                                     }

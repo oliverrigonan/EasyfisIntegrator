@@ -125,7 +125,7 @@
             this.label6.AutoSize = true;
             this.label6.Location = new System.Drawing.Point(88, 55);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(204, 17);
+            this.label6.Size = new System.Drawing.Size(194, 16);
             this.label6.TabIndex = 3;
             this.label6.Text = "Developer: Easyfis Corporation";
             // 
@@ -134,16 +134,16 @@
             this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(88, 38);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(207, 17);
+            this.label5.Size = new System.Drawing.Size(183, 16);
             this.label5.TabIndex = 2;
-            this.label5.Text = "Version: 2.201911191510.NOR";
+            this.label5.Text = "Version: 2.202605291411.ECP";
             // 
             // label4
             // 
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(88, 12);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(118, 17);
+            this.label4.Size = new System.Drawing.Size(110, 16);
             this.label4.TabIndex = 1;
             this.label4.Text = "Easyfis Integrator";
             // 

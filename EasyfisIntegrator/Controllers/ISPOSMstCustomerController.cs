@@ -173,7 +173,7 @@ namespace EasyfisIntegrator.Controllers
                                         TIN = customer.TaxNumber,
                                         WithReward = false,
                                         RewardNumber = null,
-                                        RewardConversion = 4,
+                                        RewardConversion = 0,
                                         AccountId = 64,
                                         EntryUserId = defaultSettings.FirstOrDefault().PostUserId,
                                         EntryDateTime = DateTime.Now,

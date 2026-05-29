@@ -33,9 +33,6 @@ namespace EasyfisIntegrator.InnosoftPOSData
     partial void InsertMstAccount(MstAccount instance);
     partial void UpdateMstAccount(MstAccount instance);
     partial void DeleteMstAccount(MstAccount instance);
-    partial void InsertTrnStockOutLine(TrnStockOutLine instance);
-    partial void UpdateTrnStockOutLine(TrnStockOutLine instance);
-    partial void DeleteTrnStockOutLine(TrnStockOutLine instance);
     partial void InsertMstCustomer(MstCustomer instance);
     partial void UpdateMstCustomer(MstCustomer instance);
     partial void DeleteMstCustomer(MstCustomer instance);
@@ -159,6 +156,9 @@ namespace EasyfisIntegrator.InnosoftPOSData
     partial void InsertTrnStockOut(TrnStockOut instance);
     partial void UpdateTrnStockOut(TrnStockOut instance);
     partial void DeleteTrnStockOut(TrnStockOut instance);
+    partial void InsertTrnStockOutLine(TrnStockOutLine instance);
+    partial void UpdateTrnStockOutLine(TrnStockOutLine instance);
+    partial void DeleteTrnStockOutLine(TrnStockOutLine instance);
     #endregion
 		
 		public InnosoftPOSDataDataContext() : 
@@ -196,14 +196,6 @@ namespace EasyfisIntegrator.InnosoftPOSData
 			get
 			{
 				return this.GetTable<MstAccount>();
-			}
-		}
-		
-		public System.Data.Linq.Table<TrnStockOutLine> TrnStockOutLines
-		{
-			get
-			{
-				return this.GetTable<TrnStockOutLine>();
 			}
 		}
 		
@@ -534,6 +526,14 @@ namespace EasyfisIntegrator.InnosoftPOSData
 				return this.GetTable<TrnStockOut>();
 			}
 		}
+		
+		public System.Data.Linq.Table<TrnStockOutLine> TrnStockOutLines
+		{
+			get
+			{
+				return this.GetTable<TrnStockOutLine>();
+			}
+		}
 	}
 	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.MstAccount")]
@@ -551,8 +551,6 @@ namespace EasyfisIntegrator.InnosoftPOSData
 		private bool _IsLocked;
 		
 		private string _AccountType;
-		
-		private EntitySet<TrnStockOutLine> _TrnStockOutLines;
 		
 		private EntitySet<MstCustomer> _MstCustomers;
 		
@@ -588,6 +586,8 @@ namespace EasyfisIntegrator.InnosoftPOSData
 		
 		private EntitySet<TrnStockOut> _TrnStockOuts;
 		
+		private EntitySet<TrnStockOutLine> _TrnStockOutLines;
+		
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -606,7 +606,6 @@ namespace EasyfisIntegrator.InnosoftPOSData
 		
 		public MstAccount()
 		{
-			this._TrnStockOutLines = new EntitySet<TrnStockOutLine>(new Action<TrnStockOutLine>(this.attach_TrnStockOutLines), new Action<TrnStockOutLine>(this.detach_TrnStockOutLines));
 			this._MstCustomers = new EntitySet<MstCustomer>(new Action<MstCustomer>(this.attach_MstCustomers), new Action<MstCustomer>(this.detach_MstCustomers));
 			this._MstItems = new EntitySet<MstItem>(new Action<MstItem>(this.attach_MstItems), new Action<MstItem>(this.detach_MstItems));
 			this._MstItems1 = new EntitySet<MstItem>(new Action<MstItem>(this.attach_MstItems1), new Action<MstItem>(this.detach_MstItems1));
@@ -624,6 +623,7 @@ namespace EasyfisIntegrator.InnosoftPOSData
 			this._TrnSalesLines3 = new EntitySet<TrnSalesLine>(new Action<TrnSalesLine>(this.attach_TrnSalesLines3), new Action<TrnSalesLine>(this.detach_TrnSalesLines3));
 			this._TrnStockInLines = new EntitySet<TrnStockInLine>(new Action<TrnStockInLine>(this.attach_TrnStockInLines), new Action<TrnStockInLine>(this.detach_TrnStockInLines));
 			this._TrnStockOuts = new EntitySet<TrnStockOut>(new Action<TrnStockOut>(this.attach_TrnStockOuts), new Action<TrnStockOut>(this.detach_TrnStockOuts));
+			this._TrnStockOutLines = new EntitySet<TrnStockOutLine>(new Action<TrnStockOutLine>(this.attach_TrnStockOutLines), new Action<TrnStockOutLine>(this.detach_TrnStockOutLines));
 			OnCreated();
 		}
 		
@@ -724,19 +724,6 @@ namespace EasyfisIntegrator.InnosoftPOSData
 					this.SendPropertyChanged("AccountType");
 					this.OnAccountTypeChanged();
 				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="MstAccount_TrnStockOutLine", Storage="_TrnStockOutLines", ThisKey="Id", OtherKey="AssetAccountId")]
-		public EntitySet<TrnStockOutLine> TrnStockOutLines
-		{
-			get
-			{
-				return this._TrnStockOutLines;
-			}
-			set
-			{
-				this._TrnStockOutLines.Assign(value);
 			}
 		}
 		
@@ -961,6 +948,19 @@ namespace EasyfisIntegrator.InnosoftPOSData
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="MstAccount_TrnStockOutLine", Storage="_TrnStockOutLines", ThisKey="Id", OtherKey="AssetAccountId")]
+		public EntitySet<TrnStockOutLine> TrnStockOutLines
+		{
+			get
+			{
+				return this._TrnStockOutLines;
+			}
+			set
+			{
+				this._TrnStockOutLines.Assign(value);
+			}
+		}
+		
 		public event PropertyChangingEventHandler PropertyChanging;
 		
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -979,18 +979,6 @@ namespace EasyfisIntegrator.InnosoftPOSData
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
-		}
-		
-		private void attach_TrnStockOutLines(TrnStockOutLine entity)
-		{
-			this.SendPropertyChanging();
-			entity.MstAccount = this;
-		}
-		
-		private void detach_TrnStockOutLines(TrnStockOutLine entity)
-		{
-			this.SendPropertyChanging();
-			entity.MstAccount = null;
 		}
 		
 		private void attach_MstCustomers(MstCustomer entity)
@@ -1196,399 +1184,17 @@ namespace EasyfisIntegrator.InnosoftPOSData
 			this.SendPropertyChanging();
 			entity.MstAccount = null;
 		}
-	}
-	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.TrnStockOutLine")]
-	public partial class TrnStockOutLine : INotifyPropertyChanging, INotifyPropertyChanged
-	{
 		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private int _Id;
-		
-		private int _StockOutId;
-		
-		private int _ItemId;
-		
-		private int _UnitId;
-		
-		private decimal _Quantity;
-		
-		private decimal _Cost;
-		
-		private decimal _Amount;
-		
-		private int _AssetAccountId;
-		
-		private EntityRef<MstAccount> _MstAccount;
-		
-		private EntityRef<MstItem> _MstItem;
-		
-		private EntityRef<MstUnit> _MstUnit;
-		
-		private EntityRef<TrnStockOut> _TrnStockOut;
-		
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void OnIdChanging(int value);
-    partial void OnIdChanged();
-    partial void OnStockOutIdChanging(int value);
-    partial void OnStockOutIdChanged();
-    partial void OnItemIdChanging(int value);
-    partial void OnItemIdChanged();
-    partial void OnUnitIdChanging(int value);
-    partial void OnUnitIdChanged();
-    partial void OnQuantityChanging(decimal value);
-    partial void OnQuantityChanged();
-    partial void OnCostChanging(decimal value);
-    partial void OnCostChanged();
-    partial void OnAmountChanging(decimal value);
-    partial void OnAmountChanged();
-    partial void OnAssetAccountIdChanging(int value);
-    partial void OnAssetAccountIdChanged();
-    #endregion
-		
-		public TrnStockOutLine()
+		private void attach_TrnStockOutLines(TrnStockOutLine entity)
 		{
-			this._MstAccount = default(EntityRef<MstAccount>);
-			this._MstItem = default(EntityRef<MstItem>);
-			this._MstUnit = default(EntityRef<MstUnit>);
-			this._TrnStockOut = default(EntityRef<TrnStockOut>);
-			OnCreated();
+			this.SendPropertyChanging();
+			entity.MstAccount = this;
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int Id
+		private void detach_TrnStockOutLines(TrnStockOutLine entity)
 		{
-			get
-			{
-				return this._Id;
-			}
-			set
-			{
-				if ((this._Id != value))
-				{
-					this.OnIdChanging(value);
-					this.SendPropertyChanging();
-					this._Id = value;
-					this.SendPropertyChanged("Id");
-					this.OnIdChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_StockOutId", DbType="Int NOT NULL")]
-		public int StockOutId
-		{
-			get
-			{
-				return this._StockOutId;
-			}
-			set
-			{
-				if ((this._StockOutId != value))
-				{
-					if (this._TrnStockOut.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnStockOutIdChanging(value);
-					this.SendPropertyChanging();
-					this._StockOutId = value;
-					this.SendPropertyChanged("StockOutId");
-					this.OnStockOutIdChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ItemId", DbType="Int NOT NULL")]
-		public int ItemId
-		{
-			get
-			{
-				return this._ItemId;
-			}
-			set
-			{
-				if ((this._ItemId != value))
-				{
-					if (this._MstItem.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnItemIdChanging(value);
-					this.SendPropertyChanging();
-					this._ItemId = value;
-					this.SendPropertyChanged("ItemId");
-					this.OnItemIdChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UnitId", DbType="Int NOT NULL")]
-		public int UnitId
-		{
-			get
-			{
-				return this._UnitId;
-			}
-			set
-			{
-				if ((this._UnitId != value))
-				{
-					if (this._MstUnit.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnUnitIdChanging(value);
-					this.SendPropertyChanging();
-					this._UnitId = value;
-					this.SendPropertyChanged("UnitId");
-					this.OnUnitIdChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Quantity", DbType="Decimal(18,5) NOT NULL")]
-		public decimal Quantity
-		{
-			get
-			{
-				return this._Quantity;
-			}
-			set
-			{
-				if ((this._Quantity != value))
-				{
-					this.OnQuantityChanging(value);
-					this.SendPropertyChanging();
-					this._Quantity = value;
-					this.SendPropertyChanged("Quantity");
-					this.OnQuantityChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Cost", DbType="Decimal(18,5) NOT NULL")]
-		public decimal Cost
-		{
-			get
-			{
-				return this._Cost;
-			}
-			set
-			{
-				if ((this._Cost != value))
-				{
-					this.OnCostChanging(value);
-					this.SendPropertyChanging();
-					this._Cost = value;
-					this.SendPropertyChanged("Cost");
-					this.OnCostChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Amount", DbType="Decimal(18,5) NOT NULL")]
-		public decimal Amount
-		{
-			get
-			{
-				return this._Amount;
-			}
-			set
-			{
-				if ((this._Amount != value))
-				{
-					this.OnAmountChanging(value);
-					this.SendPropertyChanging();
-					this._Amount = value;
-					this.SendPropertyChanged("Amount");
-					this.OnAmountChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AssetAccountId", DbType="Int NOT NULL")]
-		public int AssetAccountId
-		{
-			get
-			{
-				return this._AssetAccountId;
-			}
-			set
-			{
-				if ((this._AssetAccountId != value))
-				{
-					if (this._MstAccount.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnAssetAccountIdChanging(value);
-					this.SendPropertyChanging();
-					this._AssetAccountId = value;
-					this.SendPropertyChanged("AssetAccountId");
-					this.OnAssetAccountIdChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="MstAccount_TrnStockOutLine", Storage="_MstAccount", ThisKey="AssetAccountId", OtherKey="Id", IsForeignKey=true)]
-		public MstAccount MstAccount
-		{
-			get
-			{
-				return this._MstAccount.Entity;
-			}
-			set
-			{
-				MstAccount previousValue = this._MstAccount.Entity;
-				if (((previousValue != value) 
-							|| (this._MstAccount.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._MstAccount.Entity = null;
-						previousValue.TrnStockOutLines.Remove(this);
-					}
-					this._MstAccount.Entity = value;
-					if ((value != null))
-					{
-						value.TrnStockOutLines.Add(this);
-						this._AssetAccountId = value.Id;
-					}
-					else
-					{
-						this._AssetAccountId = default(int);
-					}
-					this.SendPropertyChanged("MstAccount");
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="MstItem_TrnStockOutLine", Storage="_MstItem", ThisKey="ItemId", OtherKey="Id", IsForeignKey=true)]
-		public MstItem MstItem
-		{
-			get
-			{
-				return this._MstItem.Entity;
-			}
-			set
-			{
-				MstItem previousValue = this._MstItem.Entity;
-				if (((previousValue != value) 
-							|| (this._MstItem.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._MstItem.Entity = null;
-						previousValue.TrnStockOutLines.Remove(this);
-					}
-					this._MstItem.Entity = value;
-					if ((value != null))
-					{
-						value.TrnStockOutLines.Add(this);
-						this._ItemId = value.Id;
-					}
-					else
-					{
-						this._ItemId = default(int);
-					}
-					this.SendPropertyChanged("MstItem");
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="MstUnit_TrnStockOutLine", Storage="_MstUnit", ThisKey="UnitId", OtherKey="Id", IsForeignKey=true)]
-		public MstUnit MstUnit
-		{
-			get
-			{
-				return this._MstUnit.Entity;
-			}
-			set
-			{
-				MstUnit previousValue = this._MstUnit.Entity;
-				if (((previousValue != value) 
-							|| (this._MstUnit.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._MstUnit.Entity = null;
-						previousValue.TrnStockOutLines.Remove(this);
-					}
-					this._MstUnit.Entity = value;
-					if ((value != null))
-					{
-						value.TrnStockOutLines.Add(this);
-						this._UnitId = value.Id;
-					}
-					else
-					{
-						this._UnitId = default(int);
-					}
-					this.SendPropertyChanged("MstUnit");
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="TrnStockOut_TrnStockOutLine", Storage="_TrnStockOut", ThisKey="StockOutId", OtherKey="Id", IsForeignKey=true, DeleteOnNull=true, DeleteRule="CASCADE")]
-		public TrnStockOut TrnStockOut
-		{
-			get
-			{
-				return this._TrnStockOut.Entity;
-			}
-			set
-			{
-				TrnStockOut previousValue = this._TrnStockOut.Entity;
-				if (((previousValue != value) 
-							|| (this._TrnStockOut.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._TrnStockOut.Entity = null;
-						previousValue.TrnStockOutLines.Remove(this);
-					}
-					this._TrnStockOut.Entity = value;
-					if ((value != null))
-					{
-						value.TrnStockOutLines.Add(this);
-						this._StockOutId = value.Id;
-					}
-					else
-					{
-						this._StockOutId = default(int);
-					}
-					this.SendPropertyChanged("TrnStockOut");
-				}
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
+			this.SendPropertyChanging();
+			entity.MstAccount = null;
 		}
 	}
 	
@@ -3264,8 +2870,6 @@ namespace EasyfisIntegrator.InnosoftPOSData
 		
 		private bool _IsPackage;
 		
-		private EntitySet<TrnStockOutLine> _TrnStockOutLines;
-		
 		private EntitySet<MstDiscountItem> _MstDiscountItems;
 		
 		private EntitySet<MstItemComponent> _MstItemComponents;
@@ -3287,6 +2891,8 @@ namespace EasyfisIntegrator.InnosoftPOSData
 		private EntitySet<TrnStockCountLine> _TrnStockCountLines;
 		
 		private EntitySet<TrnStockInLine> _TrnStockInLines;
+		
+		private EntitySet<TrnStockOutLine> _TrnStockOutLines;
 		
 		private EntityRef<MstAccount> _MstAccount;
 		
@@ -3374,7 +2980,6 @@ namespace EasyfisIntegrator.InnosoftPOSData
 		
 		public MstItem()
 		{
-			this._TrnStockOutLines = new EntitySet<TrnStockOutLine>(new Action<TrnStockOutLine>(this.attach_TrnStockOutLines), new Action<TrnStockOutLine>(this.detach_TrnStockOutLines));
 			this._MstDiscountItems = new EntitySet<MstDiscountItem>(new Action<MstDiscountItem>(this.attach_MstDiscountItems), new Action<MstDiscountItem>(this.detach_MstDiscountItems));
 			this._MstItemComponents = new EntitySet<MstItemComponent>(new Action<MstItemComponent>(this.attach_MstItemComponents), new Action<MstItemComponent>(this.detach_MstItemComponents));
 			this._MstItemComponents1 = new EntitySet<MstItemComponent>(new Action<MstItemComponent>(this.attach_MstItemComponents1), new Action<MstItemComponent>(this.detach_MstItemComponents1));
@@ -3386,6 +2991,7 @@ namespace EasyfisIntegrator.InnosoftPOSData
 			this._TrnSalesLines = new EntitySet<TrnSalesLine>(new Action<TrnSalesLine>(this.attach_TrnSalesLines), new Action<TrnSalesLine>(this.detach_TrnSalesLines));
 			this._TrnStockCountLines = new EntitySet<TrnStockCountLine>(new Action<TrnStockCountLine>(this.attach_TrnStockCountLines), new Action<TrnStockCountLine>(this.detach_TrnStockCountLines));
 			this._TrnStockInLines = new EntitySet<TrnStockInLine>(new Action<TrnStockInLine>(this.attach_TrnStockInLines), new Action<TrnStockInLine>(this.detach_TrnStockInLines));
+			this._TrnStockOutLines = new EntitySet<TrnStockOutLine>(new Action<TrnStockOutLine>(this.attach_TrnStockOutLines), new Action<TrnStockOutLine>(this.detach_TrnStockOutLines));
 			this._MstAccount = default(EntityRef<MstAccount>);
 			this._MstAccount1 = default(EntityRef<MstAccount>);
 			this._MstAccount2 = default(EntityRef<MstAccount>);
@@ -4049,19 +3655,6 @@ namespace EasyfisIntegrator.InnosoftPOSData
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="MstItem_TrnStockOutLine", Storage="_TrnStockOutLines", ThisKey="Id", OtherKey="ItemId")]
-		public EntitySet<TrnStockOutLine> TrnStockOutLines
-		{
-			get
-			{
-				return this._TrnStockOutLines;
-			}
-			set
-			{
-				this._TrnStockOutLines.Assign(value);
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="MstItem_MstDiscountItem", Storage="_MstDiscountItems", ThisKey="Id", OtherKey="ItemId")]
 		public EntitySet<MstDiscountItem> MstDiscountItems
 		{
@@ -4202,6 +3795,19 @@ namespace EasyfisIntegrator.InnosoftPOSData
 			set
 			{
 				this._TrnStockInLines.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="MstItem_TrnStockOutLine", Storage="_TrnStockOutLines", ThisKey="Id", OtherKey="ItemId")]
+		public EntitySet<TrnStockOutLine> TrnStockOutLines
+		{
+			get
+			{
+				return this._TrnStockOutLines;
+			}
+			set
+			{
+				this._TrnStockOutLines.Assign(value);
 			}
 		}
 		
@@ -4497,18 +4103,6 @@ namespace EasyfisIntegrator.InnosoftPOSData
 			}
 		}
 		
-		private void attach_TrnStockOutLines(TrnStockOutLine entity)
-		{
-			this.SendPropertyChanging();
-			entity.MstItem = this;
-		}
-		
-		private void detach_TrnStockOutLines(TrnStockOutLine entity)
-		{
-			this.SendPropertyChanging();
-			entity.MstItem = null;
-		}
-		
 		private void attach_MstDiscountItems(MstDiscountItem entity)
 		{
 			this.SendPropertyChanging();
@@ -4636,6 +4230,18 @@ namespace EasyfisIntegrator.InnosoftPOSData
 		}
 		
 		private void detach_TrnStockInLines(TrnStockInLine entity)
+		{
+			this.SendPropertyChanging();
+			entity.MstItem = null;
+		}
+		
+		private void attach_TrnStockOutLines(TrnStockOutLine entity)
+		{
+			this.SendPropertyChanging();
+			entity.MstItem = this;
+		}
+		
+		private void detach_TrnStockOutLines(TrnStockOutLine entity)
 		{
 			this.SendPropertyChanging();
 			entity.MstItem = null;
@@ -8403,8 +8009,6 @@ namespace EasyfisIntegrator.InnosoftPOSData
 		
 		private string _Unit;
 		
-		private EntitySet<TrnStockOutLine> _TrnStockOutLines;
-		
 		private EntitySet<MstItem> _MstItems;
 		
 		private EntitySet<MstItemComponent> _MstItemComponents;
@@ -8416,6 +8020,8 @@ namespace EasyfisIntegrator.InnosoftPOSData
 		private EntitySet<TrnStockCountLine> _TrnStockCountLines;
 		
 		private EntitySet<TrnStockInLine> _TrnStockInLines;
+		
+		private EntitySet<TrnStockOutLine> _TrnStockOutLines;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -8429,13 +8035,13 @@ namespace EasyfisIntegrator.InnosoftPOSData
 		
 		public MstUnit()
 		{
-			this._TrnStockOutLines = new EntitySet<TrnStockOutLine>(new Action<TrnStockOutLine>(this.attach_TrnStockOutLines), new Action<TrnStockOutLine>(this.detach_TrnStockOutLines));
 			this._MstItems = new EntitySet<MstItem>(new Action<MstItem>(this.attach_MstItems), new Action<MstItem>(this.detach_MstItems));
 			this._MstItemComponents = new EntitySet<MstItemComponent>(new Action<MstItemComponent>(this.attach_MstItemComponents), new Action<MstItemComponent>(this.detach_MstItemComponents));
 			this._MstItemPackages = new EntitySet<MstItemPackage>(new Action<MstItemPackage>(this.attach_MstItemPackages), new Action<MstItemPackage>(this.detach_MstItemPackages));
 			this._TrnSalesLines = new EntitySet<TrnSalesLine>(new Action<TrnSalesLine>(this.attach_TrnSalesLines), new Action<TrnSalesLine>(this.detach_TrnSalesLines));
 			this._TrnStockCountLines = new EntitySet<TrnStockCountLine>(new Action<TrnStockCountLine>(this.attach_TrnStockCountLines), new Action<TrnStockCountLine>(this.detach_TrnStockCountLines));
 			this._TrnStockInLines = new EntitySet<TrnStockInLine>(new Action<TrnStockInLine>(this.attach_TrnStockInLines), new Action<TrnStockInLine>(this.detach_TrnStockInLines));
+			this._TrnStockOutLines = new EntitySet<TrnStockOutLine>(new Action<TrnStockOutLine>(this.attach_TrnStockOutLines), new Action<TrnStockOutLine>(this.detach_TrnStockOutLines));
 			OnCreated();
 		}
 		
@@ -8476,19 +8082,6 @@ namespace EasyfisIntegrator.InnosoftPOSData
 					this.SendPropertyChanged("Unit");
 					this.OnUnitChanged();
 				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="MstUnit_TrnStockOutLine", Storage="_TrnStockOutLines", ThisKey="Id", OtherKey="UnitId")]
-		public EntitySet<TrnStockOutLine> TrnStockOutLines
-		{
-			get
-			{
-				return this._TrnStockOutLines;
-			}
-			set
-			{
-				this._TrnStockOutLines.Assign(value);
 			}
 		}
 		
@@ -8570,6 +8163,19 @@ namespace EasyfisIntegrator.InnosoftPOSData
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="MstUnit_TrnStockOutLine", Storage="_TrnStockOutLines", ThisKey="Id", OtherKey="UnitId")]
+		public EntitySet<TrnStockOutLine> TrnStockOutLines
+		{
+			get
+			{
+				return this._TrnStockOutLines;
+			}
+			set
+			{
+				this._TrnStockOutLines.Assign(value);
+			}
+		}
+		
 		public event PropertyChangingEventHandler PropertyChanging;
 		
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -8588,18 +8194,6 @@ namespace EasyfisIntegrator.InnosoftPOSData
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
-		}
-		
-		private void attach_TrnStockOutLines(TrnStockOutLine entity)
-		{
-			this.SendPropertyChanging();
-			entity.MstUnit = this;
-		}
-		
-		private void detach_TrnStockOutLines(TrnStockOutLine entity)
-		{
-			this.SendPropertyChanging();
-			entity.MstUnit = null;
 		}
 		
 		private void attach_MstItems(MstItem entity)
@@ -8669,6 +8263,18 @@ namespace EasyfisIntegrator.InnosoftPOSData
 		}
 		
 		private void detach_TrnStockInLines(TrnStockInLine entity)
+		{
+			this.SendPropertyChanging();
+			entity.MstUnit = null;
+		}
+		
+		private void attach_TrnStockOutLines(TrnStockOutLine entity)
+		{
+			this.SendPropertyChanging();
+			entity.MstUnit = this;
+		}
+		
+		private void detach_TrnStockOutLines(TrnStockOutLine entity)
 		{
 			this.SendPropertyChanging();
 			entity.MstUnit = null;
@@ -21653,9 +21259,9 @@ namespace EasyfisIntegrator.InnosoftPOSData
 		
 		private System.DateTime _UpdateDateTime;
 		
-		private EntitySet<TrnStockOutLine> _TrnStockOutLines;
-		
 		private EntitySet<TrnJournal> _TrnJournals;
+		
+		private EntitySet<TrnStockOutLine> _TrnStockOutLines;
 		
 		private EntityRef<MstAccount> _MstAccount;
 		
@@ -21707,8 +21313,8 @@ namespace EasyfisIntegrator.InnosoftPOSData
 		
 		public TrnStockOut()
 		{
-			this._TrnStockOutLines = new EntitySet<TrnStockOutLine>(new Action<TrnStockOutLine>(this.attach_TrnStockOutLines), new Action<TrnStockOutLine>(this.detach_TrnStockOutLines));
 			this._TrnJournals = new EntitySet<TrnJournal>(new Action<TrnJournal>(this.attach_TrnJournals), new Action<TrnJournal>(this.detach_TrnJournals));
+			this._TrnStockOutLines = new EntitySet<TrnStockOutLine>(new Action<TrnStockOutLine>(this.attach_TrnStockOutLines), new Action<TrnStockOutLine>(this.detach_TrnStockOutLines));
 			this._MstAccount = default(EntityRef<MstAccount>);
 			this._MstPeriod = default(EntityRef<MstPeriod>);
 			this._MstUser = default(EntityRef<MstUser>);
@@ -22027,19 +21633,6 @@ namespace EasyfisIntegrator.InnosoftPOSData
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="TrnStockOut_TrnStockOutLine", Storage="_TrnStockOutLines", ThisKey="Id", OtherKey="StockOutId")]
-		public EntitySet<TrnStockOutLine> TrnStockOutLines
-		{
-			get
-			{
-				return this._TrnStockOutLines;
-			}
-			set
-			{
-				this._TrnStockOutLines.Assign(value);
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="TrnStockOut_TrnJournal", Storage="_TrnJournals", ThisKey="Id", OtherKey="StockOutId")]
 		public EntitySet<TrnJournal> TrnJournals
 		{
@@ -22050,6 +21643,19 @@ namespace EasyfisIntegrator.InnosoftPOSData
 			set
 			{
 				this._TrnJournals.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="TrnStockOut_TrnStockOutLine", Storage="_TrnStockOutLines", ThisKey="Id", OtherKey="StockOutId")]
+		public EntitySet<TrnStockOutLine> TrnStockOutLines
+		{
+			get
+			{
+				return this._TrnStockOutLines;
+			}
+			set
+			{
+				this._TrnStockOutLines.Assign(value);
 			}
 		}
 		
@@ -22311,6 +21917,18 @@ namespace EasyfisIntegrator.InnosoftPOSData
 			}
 		}
 		
+		private void attach_TrnJournals(TrnJournal entity)
+		{
+			this.SendPropertyChanging();
+			entity.TrnStockOut = this;
+		}
+		
+		private void detach_TrnJournals(TrnJournal entity)
+		{
+			this.SendPropertyChanging();
+			entity.TrnStockOut = null;
+		}
+		
 		private void attach_TrnStockOutLines(TrnStockOutLine entity)
 		{
 			this.SendPropertyChanging();
@@ -22322,17 +21940,423 @@ namespace EasyfisIntegrator.InnosoftPOSData
 			this.SendPropertyChanging();
 			entity.TrnStockOut = null;
 		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.TrnStockOutLine")]
+	public partial class TrnStockOutLine : INotifyPropertyChanging, INotifyPropertyChanged
+	{
 		
-		private void attach_TrnJournals(TrnJournal entity)
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _Id;
+		
+		private int _StockOutId;
+		
+		private int _ItemId;
+		
+		private int _UnitId;
+		
+		private decimal _Quantity;
+		
+		private decimal _Cost;
+		
+		private decimal _Amount;
+		
+		private int _AssetAccountId;
+		
+		private decimal _SCQuantity;
+		
+		private EntityRef<MstAccount> _MstAccount;
+		
+		private EntityRef<MstItem> _MstItem;
+		
+		private EntityRef<MstUnit> _MstUnit;
+		
+		private EntityRef<TrnStockOut> _TrnStockOut;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnIdChanging(int value);
+    partial void OnIdChanged();
+    partial void OnStockOutIdChanging(int value);
+    partial void OnStockOutIdChanged();
+    partial void OnItemIdChanging(int value);
+    partial void OnItemIdChanged();
+    partial void OnUnitIdChanging(int value);
+    partial void OnUnitIdChanged();
+    partial void OnQuantityChanging(decimal value);
+    partial void OnQuantityChanged();
+    partial void OnCostChanging(decimal value);
+    partial void OnCostChanged();
+    partial void OnAmountChanging(decimal value);
+    partial void OnAmountChanged();
+    partial void OnAssetAccountIdChanging(int value);
+    partial void OnAssetAccountIdChanged();
+    partial void OnSCQuantityChanging(decimal value);
+    partial void OnSCQuantityChanged();
+    #endregion
+		
+		public TrnStockOutLine()
 		{
-			this.SendPropertyChanging();
-			entity.TrnStockOut = this;
+			this._MstAccount = default(EntityRef<MstAccount>);
+			this._MstItem = default(EntityRef<MstItem>);
+			this._MstUnit = default(EntityRef<MstUnit>);
+			this._TrnStockOut = default(EntityRef<TrnStockOut>);
+			OnCreated();
 		}
 		
-		private void detach_TrnJournals(TrnJournal entity)
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int Id
 		{
-			this.SendPropertyChanging();
-			entity.TrnStockOut = null;
+			get
+			{
+				return this._Id;
+			}
+			set
+			{
+				if ((this._Id != value))
+				{
+					this.OnIdChanging(value);
+					this.SendPropertyChanging();
+					this._Id = value;
+					this.SendPropertyChanged("Id");
+					this.OnIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_StockOutId", DbType="Int NOT NULL")]
+		public int StockOutId
+		{
+			get
+			{
+				return this._StockOutId;
+			}
+			set
+			{
+				if ((this._StockOutId != value))
+				{
+					if (this._TrnStockOut.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnStockOutIdChanging(value);
+					this.SendPropertyChanging();
+					this._StockOutId = value;
+					this.SendPropertyChanged("StockOutId");
+					this.OnStockOutIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ItemId", DbType="Int NOT NULL")]
+		public int ItemId
+		{
+			get
+			{
+				return this._ItemId;
+			}
+			set
+			{
+				if ((this._ItemId != value))
+				{
+					if (this._MstItem.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnItemIdChanging(value);
+					this.SendPropertyChanging();
+					this._ItemId = value;
+					this.SendPropertyChanged("ItemId");
+					this.OnItemIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UnitId", DbType="Int NOT NULL")]
+		public int UnitId
+		{
+			get
+			{
+				return this._UnitId;
+			}
+			set
+			{
+				if ((this._UnitId != value))
+				{
+					if (this._MstUnit.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnUnitIdChanging(value);
+					this.SendPropertyChanging();
+					this._UnitId = value;
+					this.SendPropertyChanged("UnitId");
+					this.OnUnitIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Quantity", DbType="Decimal(18,5) NOT NULL")]
+		public decimal Quantity
+		{
+			get
+			{
+				return this._Quantity;
+			}
+			set
+			{
+				if ((this._Quantity != value))
+				{
+					this.OnQuantityChanging(value);
+					this.SendPropertyChanging();
+					this._Quantity = value;
+					this.SendPropertyChanged("Quantity");
+					this.OnQuantityChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Cost", DbType="Decimal(18,5) NOT NULL")]
+		public decimal Cost
+		{
+			get
+			{
+				return this._Cost;
+			}
+			set
+			{
+				if ((this._Cost != value))
+				{
+					this.OnCostChanging(value);
+					this.SendPropertyChanging();
+					this._Cost = value;
+					this.SendPropertyChanged("Cost");
+					this.OnCostChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Amount", DbType="Decimal(18,5) NOT NULL")]
+		public decimal Amount
+		{
+			get
+			{
+				return this._Amount;
+			}
+			set
+			{
+				if ((this._Amount != value))
+				{
+					this.OnAmountChanging(value);
+					this.SendPropertyChanging();
+					this._Amount = value;
+					this.SendPropertyChanged("Amount");
+					this.OnAmountChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AssetAccountId", DbType="Int NOT NULL")]
+		public int AssetAccountId
+		{
+			get
+			{
+				return this._AssetAccountId;
+			}
+			set
+			{
+				if ((this._AssetAccountId != value))
+				{
+					if (this._MstAccount.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnAssetAccountIdChanging(value);
+					this.SendPropertyChanging();
+					this._AssetAccountId = value;
+					this.SendPropertyChanged("AssetAccountId");
+					this.OnAssetAccountIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SCQuantity", DbType="Decimal(18,5) NOT NULL")]
+		public decimal SCQuantity
+		{
+			get
+			{
+				return this._SCQuantity;
+			}
+			set
+			{
+				if ((this._SCQuantity != value))
+				{
+					this.OnSCQuantityChanging(value);
+					this.SendPropertyChanging();
+					this._SCQuantity = value;
+					this.SendPropertyChanged("SCQuantity");
+					this.OnSCQuantityChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="MstAccount_TrnStockOutLine", Storage="_MstAccount", ThisKey="AssetAccountId", OtherKey="Id", IsForeignKey=true)]
+		public MstAccount MstAccount
+		{
+			get
+			{
+				return this._MstAccount.Entity;
+			}
+			set
+			{
+				MstAccount previousValue = this._MstAccount.Entity;
+				if (((previousValue != value) 
+							|| (this._MstAccount.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._MstAccount.Entity = null;
+						previousValue.TrnStockOutLines.Remove(this);
+					}
+					this._MstAccount.Entity = value;
+					if ((value != null))
+					{
+						value.TrnStockOutLines.Add(this);
+						this._AssetAccountId = value.Id;
+					}
+					else
+					{
+						this._AssetAccountId = default(int);
+					}
+					this.SendPropertyChanged("MstAccount");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="MstItem_TrnStockOutLine", Storage="_MstItem", ThisKey="ItemId", OtherKey="Id", IsForeignKey=true)]
+		public MstItem MstItem
+		{
+			get
+			{
+				return this._MstItem.Entity;
+			}
+			set
+			{
+				MstItem previousValue = this._MstItem.Entity;
+				if (((previousValue != value) 
+							|| (this._MstItem.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._MstItem.Entity = null;
+						previousValue.TrnStockOutLines.Remove(this);
+					}
+					this._MstItem.Entity = value;
+					if ((value != null))
+					{
+						value.TrnStockOutLines.Add(this);
+						this._ItemId = value.Id;
+					}
+					else
+					{
+						this._ItemId = default(int);
+					}
+					this.SendPropertyChanged("MstItem");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="MstUnit_TrnStockOutLine", Storage="_MstUnit", ThisKey="UnitId", OtherKey="Id", IsForeignKey=true)]
+		public MstUnit MstUnit
+		{
+			get
+			{
+				return this._MstUnit.Entity;
+			}
+			set
+			{
+				MstUnit previousValue = this._MstUnit.Entity;
+				if (((previousValue != value) 
+							|| (this._MstUnit.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._MstUnit.Entity = null;
+						previousValue.TrnStockOutLines.Remove(this);
+					}
+					this._MstUnit.Entity = value;
+					if ((value != null))
+					{
+						value.TrnStockOutLines.Add(this);
+						this._UnitId = value.Id;
+					}
+					else
+					{
+						this._UnitId = default(int);
+					}
+					this.SendPropertyChanged("MstUnit");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="TrnStockOut_TrnStockOutLine", Storage="_TrnStockOut", ThisKey="StockOutId", OtherKey="Id", IsForeignKey=true, DeleteOnNull=true, DeleteRule="CASCADE")]
+		public TrnStockOut TrnStockOut
+		{
+			get
+			{
+				return this._TrnStockOut.Entity;
+			}
+			set
+			{
+				TrnStockOut previousValue = this._TrnStockOut.Entity;
+				if (((previousValue != value) 
+							|| (this._TrnStockOut.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._TrnStockOut.Entity = null;
+						previousValue.TrnStockOutLines.Remove(this);
+					}
+					this._TrnStockOut.Entity = value;
+					if ((value != null))
+					{
+						value.TrnStockOutLines.Add(this);
+						this._StockOutId = value.Id;
+					}
+					else
+					{
+						this._StockOutId = default(int);
+					}
+					this.SendPropertyChanged("TrnStockOut");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
 		}
 	}
 }

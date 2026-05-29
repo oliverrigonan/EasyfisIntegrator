@@ -1,10 +1,10 @@
 {
-  "ConnectionString": "",
+  "ConnectionString": "Data Source=localhost;Initial Catalog=pos13;Persist Security Info=True;User ID=sa;Password=easyfis",
   "Domain": "http://localhost:2651",
-  "LogFileLocation": "C:\\Clients\\JM Poultry\\Integrator\\Logs",
-  "FolderToMonitor": "C:\\Clients\\JM Poultry\\\\Integrator",
+  "LogFileLocation": "C:\\Clients\\YY Homebuilders\\Integrator\\Logs",
+  "FolderToMonitor": "C:\\Clients\\YY Homebuilders\\Integrator",
   "IsFolderMonitoringOnly": true,
   "FolderMonitoringUserCode": "jmpls",
-  "FolderForSentFiles": "C:\\Clients\\JM Poultry\\Integrator\\Sent",
+  "FolderForSentFiles": "C:\\Clients\\YY Homebuilders\\Integrator\\Sent",
   "ManualSalesIntegration": false
 }

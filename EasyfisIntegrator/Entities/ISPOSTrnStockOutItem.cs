@@ -9,6 +9,7 @@ namespace EasyfisIntegrator.Entities
         public String Item { get; set; }
         public String Unit { get; set; }
         public Decimal Quantity { get; set; }
+        public Decimal SCQuantity { get; set; }
         public Decimal Cost { get; set; }
         public Decimal Amount { get; set; }
     }
